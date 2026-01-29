@@ -22,8 +22,8 @@ exports.createPortfolio = async (req, res) => {
             });
         }
 
-        const slug = slugify(title, { lower: true, strict: true });
-
+        const slugBase = slugify(title, { lower: true, strict: true });
+        const slug = `${slugBase}-${Date.now()}`;
         const portfolio = await Portfolio.create({
             user: userId,
             title,
