@@ -21,7 +21,7 @@ export const sendOtp = async (email) => {
 }
 
 // verify-otp
-export const sverifyOtp = async (email, otp) => {
+export const verifyOtp = async (email, otp) => {
     try {
         const response = await apiConnector("POST", VERIFY_OTP, { email, otp });
         return response.data;
