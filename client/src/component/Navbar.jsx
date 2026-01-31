@@ -8,17 +8,15 @@ const Navbar = () => {
     const token = localStorage.getItem("token");
     // login modal
     const [isOpenLogin, setOpenLogin] = useState(false);
-    // signup modal
-    const [isOpenSignUp, setOpenSignUp] = useState(false);
 
     const handleRequest = () => {
         localStorage.removeItem("token");
-        navigate("/login");
+        navigate("/");
     }
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        window.location.href = "/login"; // or navigate("/login")
+        window.location.href = "/";
     };
 
 
