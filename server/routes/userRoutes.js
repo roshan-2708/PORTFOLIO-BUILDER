@@ -7,7 +7,12 @@ const {
     verifyOtp,
     signUp,
     login,
+    getUserProfile,
+    logout,
+    changePassword,
 } = require('../controllers/UserController');
+
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // auth routes
 
@@ -22,5 +27,14 @@ router.post("/signup", signUp);
 
 // login
 router.post("/login", login);
+
+// getUserProfile
+router.get('/me', authMiddleware, getUserProfile);
+
+// logout
+router.post('/logout', logout);
+
+// change password
+router.put('/change-password', authMiddleware, changePassword);
 
 module.exports = router;
