@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background: black;
+body {
+    background: linear-gradient(to bottom right,
+            #0f172a,
+            /* slate-900 */
+            #1e293b,
+            /* slate-800 */
+            #0f172a
+            /* slate-900 */
+        );
+}
+
+
+.footer-title {
+    @apply text-white font-semibold mb-3;
 }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/operation/authAPI";
 import { MdOutlineCancel, MdEmail, MdLock } from "react-icons/md";
+import Dashboard from "../pages/Dashboard";
 
 const LoginModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
@@ -23,7 +24,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             if (response?.success) {
                 localStorage.setItem("token", response.token);
                 onClose();
-                navigate("/dashboard");
+                navigate(<Dashboard />);
             } else {
                 setError(response?.message || "Invalid credentials");
             }
@@ -96,7 +97,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                     <div className="relative">
                         <MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
-                            
+
                             type="password"
                             placeholder="Password"
                             value={password}

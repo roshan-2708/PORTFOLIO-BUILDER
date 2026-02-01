@@ -7,6 +7,8 @@ const {
     VERIFY_OTP,
     SIGNUP,
     LOGIN,
+    GET_USER_PROFILE,
+    CHANGE_PASSWORD,
 } = authEndpoints;
 
 // send-otp
@@ -54,3 +56,43 @@ export const login = async (credentials) => {
         throw error;
     }
 }
+
+// get user profile details
+export const userProfile = async () => {
+    try {
+        const response = await apiConnector('GET', GET_USER_PROFILE, null, {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('getUserProfile error : ', error.response?.data || error.message);
+        throw error;
+    }
+}
+
+// change password
+export const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const token = localStorage.getItem("token");
+
+        const response = await apiConnector(
+            'PUT',
+            CHANGE_PASSWORD,
+            {
+                oldPassword,
+                newPassword,
+            },
+            {
+                Authorization: `Bearer ${token}`,
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.log(
+            'change password error : ',
+            error.response?.data || error.message
+        );
+        throw error;
+    }
+};

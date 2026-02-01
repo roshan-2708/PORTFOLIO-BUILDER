@@ -52,7 +52,8 @@ const Navbar = () => {
                                 Logout
                             </button>
 
-                            <h1>Dashboard</h1>
+                            <Link to='/dashboard' className='bg-yellow-600 px-4 py-2 rounded-lg hover:bg-yellow-700 transition'>
+                                Dashboard</Link>
                         </div>)
                     }
                 </div>

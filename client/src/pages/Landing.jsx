@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import LoginModal from '../component/LoginModal';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { features } from '../Data/features';
+import FeatureCard from '../component/FeatureCard';
 
-const Landing = ({ onLoginClick, onSignupClick }) => {
+const Landing = ({ onLoginClick, onSignupClick, }) => {
 
     const token = localStorage.getItem('token');
     const [isOpenLogin, setOpenLogin] = useState(false);
@@ -85,14 +87,14 @@ const Landing = ({ onLoginClick, onSignupClick }) => {
 
             </section>
 
-            {/* features */}
+
             {/* How it works section */}
             <section>
                 <div className="max-w-6xl mx-auto px-6">
 
                     {/* Section Header */}
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-indigo-400">
+                        <h2 className="text-5xl font-bold text-indigo-400">
                             Build your portfolio in 3 simple steps
                         </h2>
                         <p className="mt-4 text-gray-200 max-w-2xl mx-auto">
@@ -174,6 +176,32 @@ const Landing = ({ onLoginClick, onSignupClick }) => {
                 </div>
             </section>
 
+            {/* features */}
+            <section>
+                <div className="max-w-6xl mx-auto px-6 mt-6">
+                    <div className='text-center mb-16'>
+                        <h1 className='text-4xl font-bold text-indigo-400 '>
+                            Everything you need to build a professional portfolio
+                        </h1>
+                        <p className='mt-4 text-gray-300 max-w-2xl mx-auto'>
+                            From secure authentication to instant deployment, our platform provides all the tools you need to create, manage, and share your portfolio effortlessly.
+                        </p>
+                    </div>
+
+                    {/* feature card */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                        {features.map((feature) => (
+                            <FeatureCard
+                                key={feature.id}
+                                title={feature.title}
+                                description={feature.description}
+                                whyItMatters={feature.whyItMatters}
+                            />
+                        ))}
+                    </div>
+
+                </div>
+            </section>
 
             <LoginModal
                 isOpen={isOpenLogin}
