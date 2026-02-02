@@ -10,5 +10,8 @@ export const authEndpoints = {
 }
 
 export const profileEndpoints = {
-    DELETE_ACCOUNT: '/profile/delete-account'
+    CREATE_ACCOUNT: '/profile/create',
+    DELETE_ACCOUNT: '/profile/delete-account',
+    GET_ACCOUNT: '/profile/profile-details',
+    UPDATE_ACCOUNT: '/profile/update'
 }

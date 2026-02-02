@@ -5,6 +5,8 @@ import { Route, Routes } from 'react-router-dom'
 import Footer from './component/Footer'
 import VerifyEmail from './component/VerifyEmail'
 import Dashboard from './pages/Dashboard'
+import UsersPortfolio from './Portfolio/UsersPortfolio'
+import BuildingPortfolio from './Portfolio/BuildingPortfolio'
 
 const App = () => {
   const token = localStorage.getItem('token');
@@ -18,7 +20,11 @@ const App = () => {
 
         {
           token && (
-            <Route path='/dashboard' element={<Dashboard />} />
+            <>
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path='/my-portfolios' element={<UsersPortfolio />} />
+              <Route path='/create-portfolio' element={<BuildingPortfolio />} />
+            </>
           )
         }
 

@@ -17,3 +17,7 @@ body {
 .footer-title {
     @apply text-white font-semibold mb-3;
 }
+
+.input {
+    @apply w-full p-2 rounded-lg bg-slate-800 border border-slate-700 focus:outline-none focus:border-blue-500;
+}
