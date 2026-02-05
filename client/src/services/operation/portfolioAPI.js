@@ -2,12 +2,11 @@ import { apiConnector } from "../axios";
 import { portfolioEndpoints } from "../apis";
 
 const {
-    CREATE_PORTFOLIO
+    CREATE_PORTFOLIO,
+    PUBLISH_PORTFOLIO,
 } = portfolioEndpoints;
 
-exports.createPortfolio = async (formData, token) => {
-    let result = null;
-
+export const createPortfolio = async (formData, token) => {
     try {
         const response = await apiConnector(
             "POST",
@@ -15,16 +14,31 @@ exports.createPortfolio = async (formData, token) => {
             formData,
             {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data",
             }
         );
-        if (!response?.data?.success) {
-            throw new Error("Could not create ");
-        }
 
-        result = response.data.portfolio;
+        // 🔥 ALWAYS RETURN DATA ONLY
+        return response.data;
     } catch (error) {
-        console.log("create portfolio api error", error);
+        console.error("create portfolio error", error);
+        throw error;
     }
-    return result;
+};
+
+
+export const publishPortfolio = async (portfolioId, token) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await apiConnector(
+            'PUT',
+            PUBLISH_PORTFOLIO.replace(":portfolioId", portfolioId),
+            null, {
+            Authorization: `Bearer ${token}`,
+        }
+        );
+        return response.data;
+    } catch (error) {
+        console.log('publish portfolio error', error);
+        throw error;
+    }
 }

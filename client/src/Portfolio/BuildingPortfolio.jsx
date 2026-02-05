@@ -3,6 +3,8 @@ import UserInfo from './builder_folder/UserInfo';
 import TemplateChoose from './builder_folder/TemplateChoose';
 import PublishModal from './builder_folder/PublishModal';
 import DeployLink from './builder_folder/DeployLink';
+import { publishPortfolio } from '../services/operation/portfolioAPI'
+
 
 const BuildingPortfolio = () => {
     const [step, setStep] = useState(1);
@@ -10,6 +12,7 @@ const BuildingPortfolio = () => {
     const [portfolioData, setPortfolioData] = useState({
         userInfo: {},
         template: null,
+        portfolio: null,
         status: "draft",
         deployLink: "",
     });
@@ -97,38 +100,56 @@ const BuildingPortfolio = () => {
                     }
                     onNext={nextStep}
                     onBack={prevStep}
+                    portfolioData={portfolioData}
+                    setPortfolioData={setPortfolioData}
                 />
             )}
 
-            {
-                step === 3 && (
-                    <PublishModal
-                        onPublish={() => {
-                            setPortfolioData((prev) => ({
-                                ...prev,
-                                status: "published",
-                            }));
+            {step === 3 && (
+                <PublishModal
+                    onPublish={async () => {
+                        try {
+                            const token = localStorage.getItem("token");
+                            const portfolioId = portfolioData?.portfolio?._id;
+
+                            if (!portfolioId) {
+                                alert("Portfolio ID not found");
+                                return;
+                            }
+
+                            const result = await publishPortfolio(portfolioId, token);
+
+                            if (result?.deployUrl) {
+                                setPortfolioData(prev => ({
+                                    ...prev,
+                                    status: "published",
+                                    deployLink: result.deployUrl,
+                                }));
+                            }
+
                             nextStep();
-                        }}
-                        onDraft={() => {
-                            setPortfolioData((prev) => ({
-                                ...prev,
-                                status: "draft",
-                            }));
-                            nextStep();
-                        }}
-                        onBack={prevStep}
-                    />
-                )
-            }
-            {
-                step === 4 && (
-                    <DeployLink
-                        portfolioData={portfolioData}
-                        onBack={prevStep}
-                    />
-                )
-            }
+                        } catch (error) {
+                            console.error(error);
+                            alert("Failed to publish portfolio");
+                        }
+                    }}
+
+                    onDraft={() => {
+                        window.location.href = "/my-portfolios";
+                    }}
+
+                    onBack={prevStep}
+                />
+            )}
+
+
+            {step === 4 && (
+                <DeployLink
+                    portfolioData={portfolioData}
+                    onBack={prevStep}
+                />
+            )}
+
         </div>
     )
 }

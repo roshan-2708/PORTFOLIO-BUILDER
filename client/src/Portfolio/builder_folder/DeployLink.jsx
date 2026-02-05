@@ -1,35 +1,35 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom'
 
-const DeployLink = () => {
+const DeployLink = ({ portfolioData, onBack }) => {
+    const navigate = useNavigate()
+    if (!portfolioData?.deployLink) {
+        return <p>Deploy link not available</p>;
+    }
+
     return (
-        <div className="min-h-screen flex items-center justify-center text-white">
-            {/* Card */}
-            <div className="border-2 border-orange-500 rounded-2xl w-[540px] p-8 space-y-8">
+        <div className="flex flex-col items-center gap-6 text-white">
+            <h2 className="text-2xl font-bold">🎉 Portfolio Published!</h2>
 
-                {/* Heading */}
-                <h2 className="text-2xl font-semibold text-center">
-                    Deploy link
-                </h2>
+            <input
+                value={portfolioData.deployLink}
+                readOnly
+                className="px-4 py-2 w-[400px] text-black rounded"
+            />
 
-                {/* Link Box */}
-                <div className="border-2 border-orange-500 rounded-xl px-6 py-5 text-center text-lg">
-                    localhost link
-                </div>
+            <button
+                onClick={() => navigator.clipboard.writeText(portfolioData.deployLink)}
+                className="px-6 py-2 bg-green-600 rounded"
+            >
+                Copy Link
+            </button>
 
-                {/* Actions */}
-                <div className="flex justify-center gap-10 pt-4">
-                    <button className="border-2 border-orange-500 rounded-xl px-8 py-3 text-lg hover:bg-orange-500 hover:text-black transition">
-                        Copy
-                    </button>
-
-                    <button className="border-2 border-orange-500 rounded-xl px-8 py-3 text-lg hover:bg-orange-500 hover:text-black transition">
-                        Preview
-                    </button>
-                </div>
-                <button className="border-2 border-orange-500 rounded-xl px-8 py-3 text-lg hover:bg-orange-500 hover:text-black transition">
-                    Done
-                </button>
-            </div>
+            <button
+                onClick={() => { navigate('/dashboard') }}
+                className="px-6 py-2 border rounded"
+            >
+                Back
+            </button>
         </div>
     );
 };
