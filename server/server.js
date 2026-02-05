@@ -46,6 +46,7 @@ app.get("/", (req, res) => {
         time: new Date().toISOString(),
     });
 });
+console.log("CLIENT_URL =", process.env.CLIENT_URL);
 
 // =======================
 // DATABASE + CLOUDINARY + SERVER START

@@ -1,14 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
-const { createPortfolio, getPortfolioBySlug } = require('../controllers/portfolioController');
+const { createPortfolio, getPortfolioBySlug, publishPortfolio } = require('../controllers/portfolioController');
 const upload = require('../utils/uploader');
 
 router.post(
     "/create",
-    upload.single("userImage"),
     authMiddleware,
+    upload.fields([
+        { name: "profileImage", maxCount: 1 },   // for main profile
+        { name: "projectImages", maxCount: 10 }  // for projects
+    ]),
     createPortfolio
+);
+
+router.put(
+    '/publish/:portfolioId',
+    authMiddleware,
+    publishPortfolio,
 );
 
 router.get("/:slug", getPortfolioBySlug);

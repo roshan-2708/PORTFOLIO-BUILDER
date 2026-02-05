@@ -149,11 +149,14 @@ exports.publishPortfolio = async (req, res) => {
         portfolio.isPublished = true;
         await portfolio.save();
 
+        const baseUrl = process.env.CLIENT_URL || "http://localhost:5173";
+
         res.status(200).json({
             success: true,
             message: "Portfolio published successfully",
-            deployUrl: `${process.env.CLIENT_URL}/portfolio/${slug}`,
+            deployUrl: `${baseUrl}/portfolio/${slug}`,
         });
+
 
     } catch (error) {
         res.status(500).json({
