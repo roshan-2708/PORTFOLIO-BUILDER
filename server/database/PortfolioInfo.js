@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const slugify = require('slugify');
 
 const portfolioSchema = new mongoose.Schema(
     {
@@ -8,16 +7,23 @@ const portfolioSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
+
         title: {
             type: String,
             required: true,
         },
+
+        // slug only exists AFTER publish
         slug: {
             type: String,
             unique: true,
-            required: true,
+            sparse: true, // allows multiple null values
         },
+
+        profileImage: { type: String, default: null },
+
         about: String,
+
         skills: [String],
 
         projects: [
@@ -55,25 +61,4 @@ const portfolioSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-// pre-save hook to generate unique slug
-portfolioSchema.pre("validate", async function (next) {
-    if (this.title && !this.slug) {
-        let baseSlug = slugify(this.title, {
-            lower: true,
-            strict: true,
-        });
-        let slug = baseSlug;
-        let counter = 1;
-
-        // ensure slug is unique
-        while (await constructor.findOne({ slug })) {
-            slug = `${baseSlug}-${counter}`;
-            counter++;
-        }
-        this.slug = slug;
-    }
-    // next();
-})
-
 module.exports = mongoose.model("Portfolio", portfolioSchema);
-
