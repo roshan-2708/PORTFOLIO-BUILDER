@@ -15,3 +15,7 @@ export const profileEndpoints = {
     GET_ACCOUNT: '/profile/profile-details',
     UPDATE_ACCOUNT: '/profile/update'
 }
+
+export const portfolioEndpoints = {
+    CREATE_PORTFOLIO: '/portfolio/create',
+}
