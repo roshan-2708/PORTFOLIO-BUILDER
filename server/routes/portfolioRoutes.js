@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
-const { createPortfolio, getPortfolioBySlug, publishPortfolio } = require('../controllers/portfolioController');
+const { createPortfolio, getPortfolioBySlug, publishPortfolio, getUserPortfolioCount } = require('../controllers/portfolioController');
 const upload = require('../utils/uploader');
 
 router.post(
@@ -20,6 +20,8 @@ router.put(
     publishPortfolio,
 );
 
+router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get("/:slug", getPortfolioBySlug);
+
 
 module.exports = router;

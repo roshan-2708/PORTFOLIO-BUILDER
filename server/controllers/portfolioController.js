@@ -165,3 +165,35 @@ exports.publishPortfolio = async (req, res) => {
         });
     }
 };
+
+
+// count portfolio controller
+exports.getUserPortfolioCount = async (req, res) => {
+    try {
+        const userId = req.user.id; // from auth middleware
+        console.log("USER ID:", req.user.id);
+
+        const total = await Portfolio.countDocuments({
+            user: userId,
+        });
+
+        const published = await Portfolio.countDocuments({
+            user: userId,
+            isPublished: true,
+        });
+
+        const drafts = total - published;
+
+        res.status(200).json({
+            success: true,
+            totalPortfolios: total,
+            publishedPortfolios: published,
+            draftPortfolios: drafts,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch portfolio stats",
+        });
+    }
+};
