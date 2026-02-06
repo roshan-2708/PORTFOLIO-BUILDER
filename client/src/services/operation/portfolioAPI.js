@@ -4,6 +4,7 @@ import { portfolioEndpoints } from "../apis";
 const {
     CREATE_PORTFOLIO,
     PUBLISH_PORTFOLIO,
+    COUNT_PORTFOLIO
 } = portfolioEndpoints;
 
 export const createPortfolio = async (formData, token) => {
@@ -41,4 +42,16 @@ export const publishPortfolio = async (portfolioId, token) => {
         console.log('publish portfolio error', error);
         throw error;
     }
+}
+
+export const getPortfolioCount = async (token) => {
+    const res = await apiConnector(
+        'GET',
+        COUNT_PORTFOLIO,
+        null,
+        {
+            Authorization: `Bearer ${token}`,
+        }
+    );
+    return res.data;
 }

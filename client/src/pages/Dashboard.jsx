@@ -5,6 +5,7 @@ import EditProfile from "../component/EditProfileModal";
 import CreateProfileModal from "../component/CreateProfileModal";
 import { deleteAccount } from "../services/operation/profileAPI";
 import { Navigate, useNavigate } from "react-router-dom";
+import { getPortfolioCount } from "../services/operation/portfolioAPI";
 
 /* ------------------ Small UI Components ------------------ */
 
@@ -39,6 +40,7 @@ export default function Dashboard() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openCreateProfile, setOpenCreateProfile] = useState(false);
+    const [stats, setStats] = useState(null);
 
     const navigate = useNavigate();
 
@@ -113,6 +115,25 @@ export default function Dashboard() {
         }
     };
 
+    // count portfolio
+    useEffect(() => {
+        const fetchCount = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const data = await getPortfolioCount(token);
+
+                if (data?.success) {
+                    setStats(data);
+                }
+            } catch (error) {
+                console.log("Stats error", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchCount();
+    }, []);
+
     if (loading) return <p className="p-8">Loading profile...</p>;
 
     /* ------------------ UI ------------------ */
@@ -128,17 +149,17 @@ export default function Dashboard() {
                     </span>
                 </h1>
                 <button
-                onClick={()=>navigate('/create-portfolio')}
-                        className="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">
+                    onClick={() => navigate('/create-portfolio')}
+                    className="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">
                     Start Creating New Portfolio
                 </button>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                <StatCard title="Total Portfolio" value="3" onClick={() => navigate('/my-portfolios')} />
-                <StatCard title="Draft" value="1" />
-                <StatCard title="Published" value="2" />
+                <StatCard title="Total Portfolio" value={stats?.totalPortfolios || 0} onClick={() => navigate('/my-portfolios')} />
+                <StatCard title="Draft" value={stats?.draftPortfolios || 0} />
+                <StatCard title="Published" value={stats?.publishedPortfolios || 0} />
                 <StatCard title="Views" value="124" />
             </div>
 

@@ -126,206 +126,235 @@ const UserInfo = ({ data, setData, onNext }) => {
     };
 
     return (
-        <div className="p-6 text-white space-y-6">
+        <div className="min-h-screen bg-slate-900 text-white flex justify-center py-10">
+            <div className="w-full max-w-4xl bg-slate-800 rounded-2xl shadow-xl p-8 space-y-10">
 
-            {/* USER IMAGE */}
-            <img
-                src={user?.image}
-                alt="profile"
-                className="w-24 h-24 rounded-full object-cover"
-            />
+                {/* HEADER */}
+                <div className="flex items-center gap-6">
+                    <img
+                        src={user?.image}
+                        alt="profile"
+                        className="w-24 h-24 rounded-full object-cover border-4 border-slate-700"
+                    />
+                    <div>
+                        <h2 className="text-2xl font-bold">
+                            {user?.firstName} {user?.lastName}
+                        </h2>
+                        <p className="text-slate-400 text-sm">
+                            Let’s build your professional portfolio
+                        </p>
+                    </div>
+                </div>
 
-            {/* NAME */}
-            <input value={user?.firstName || ""} disabled />
-            <input value={user?.lastName || ""} disabled />
+                {/* BASIC INFO */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b border-slate-700 pb-2">
+                        Basic Information
+                    </h3>
 
-            {/* TITLE */}
-            <input
-                placeholder="Portfolio Title"
-                value={formData.title}
-                onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                }
-            />
+                    <input
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Portfolio Title (e.g. Full Stack Developer)"
+                        value={formData.title}
+                        onChange={(e) =>
+                            setFormData({ ...formData, title: e.target.value })
+                        }
+                    />
 
-            {/* ABOUT */}
-            <textarea
-                placeholder="About You"
-                value={formData.about}
-                onChange={(e) =>
-                    setFormData({ ...formData, about: e.target.value })
-                }
-            />
-            {/* contact */}
-            <div>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.contacts.email}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            contacts: {
-                                ...formData.contacts, // keep other contact fields
-                                email: e.target.value, // update only email
-                            },
-                        })
-                    }
-                />
+                    <textarea
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="About you..."
+                        value={formData.about}
+                        onChange={(e) =>
+                            setFormData({ ...formData, about: e.target.value })
+                        }
+                    />
+                </div>
 
-                <input
-                    type="text"
-                    name="github"
-                    placeholder="GitHub"
-                    value={formData.contacts.github}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            contacts: {
-                                ...formData.contacts,
-                                github: e.target.value,
-                            },
-                        })
-                    }
-                />
+                {/* CONTACTS */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b border-slate-700 pb-2">
+                        Contact Details
+                    </h3>
 
-                <input
-                    type="text"
-                    name="linkedin"
-                    placeholder="LinkedIn"
-                    value={formData.contacts.linkedin}
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            contacts: {
-                                ...formData.contacts,
-                                linkedin: e.target.value,
-                            },
-                        })
-                    }
-                />
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="input"
+                            value={formData.contacts.email}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    contacts: { ...formData.contacts, email: e.target.value },
+                                })
+                            }
+                        />
+                        <input
+                            placeholder="GitHub"
+                            className="input"
+                            value={formData.contacts.github}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    contacts: { ...formData.contacts, github: e.target.value },
+                                })
+                            }
+                        />
+                        <input
+                            placeholder="LinkedIn"
+                            className="input"
+                            value={formData.contacts.linkedin}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    contacts: { ...formData.contacts, linkedin: e.target.value },
+                                })
+                            }
+                        />
+                    </div>
+                </div>
 
-            </div>
+                {/* SKILLS */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b border-slate-700 pb-2">
+                        Skills
+                    </h3>
 
-
-
-            {/* SKILLS */}
-            <div>
-                <input
-                    placeholder="Skill"
-                    value={skillInput}
-                    onChange={(e) => setSkillInput(e.target.value)}
-                />
-                <button onClick={addSkill}>Add +</button>
-
-                <div className="flex gap-2 flex-wrap mt-2">
-                    {formData.skills.map((skill, i) => (
-                        <span
-                            key={i}
-                            className="bg-gray-700 px-3 py-1 rounded-full"
+                    <div className="flex gap-2">
+                        <input
+                            className="flex-1 input"
+                            placeholder="Add a skill"
+                            value={skillInput}
+                            onChange={(e) => setSkillInput(e.target.value)}
+                        />
+                        <button
+                            onClick={addSkill}
+                            className="bg-blue-600 hover:bg-blue-700 px-5 rounded-lg font-medium"
                         >
-                            {skill}
-                            <button onClick={() => removeSkill(i)}> ✕</button>
-                        </span>
+                            Add
+                        </button>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                        {formData.skills.map((skill, i) => (
+                            <span
+                                key={i}
+                                className="flex items-center gap-2 bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-sm"
+                            >
+                                {skill}
+                                <button onClick={() => removeSkill(i)}>✕</button>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* PROJECTS */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b border-slate-700 pb-2">
+                        Projects
+                    </h3>
+
+                    {formData.projects.map((project, index) => (
+                        <div key={index} className="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-3">
+                            <input
+                                className="input"
+                                placeholder="Project Title"
+                                value={project.title}
+                                onChange={(e) =>
+                                    updateProject(index, "title", e.target.value)
+                                }
+                            />
+                            <textarea
+                                className="input min-h-[80px]"
+                                placeholder="Project Description"
+                                value={project.description}
+                                onChange={(e) =>
+                                    updateProject(index, "description", e.target.value)
+                                }
+                            />
+                            <input
+                                className="input"
+                                placeholder="Project Link"
+                                value={project.link}
+                                onChange={(e) =>
+                                    updateProject(index, "link", e.target.value)
+                                }
+                            />
+                            <input
+                                type="file"
+                                className="text-sm text-slate-400"
+                                onChange={(e) =>
+                                    updateProject(index, "image", e.target.files[0])
+                                }
+                            />
+                            <button
+                                onClick={() => removeProject(index)}
+                                className="text-red-400 hover:text-red-500 text-sm"
+                            >
+                                Remove Project
+                            </button>
+                        </div>
                     ))}
+
+                    <button
+                        onClick={addProject}
+                        className="border border-dashed border-slate-600 hover:border-blue-500 rounded-lg py-2 w-full text-slate-400 hover:text-blue-400"
+                    >
+                        + Add Project
+                    </button>
+                </div>
+
+                {/* LANGUAGES */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b border-slate-700 pb-2">
+                        Languages
+                    </h3>
+
+                    {formData.languages.map((lang, index) => (
+                        <div key={index} className="grid grid-cols-2 gap-3">
+                            <input
+                                className="input"
+                                placeholder="Language"
+                                value={lang.name}
+                                onChange={(e) =>
+                                    updateLanguage(index, "name", e.target.value)
+                                }
+                            />
+                            <input
+                                className="input"
+                                placeholder="Proficiency"
+                                value={lang.proficiency}
+                                onChange={(e) =>
+                                    updateLanguage(index, "proficiency", e.target.value)
+                                }
+                            />
+                        </div>
+                    ))}
+
+                    <button
+                        onClick={addLanguage}
+                        className="text-blue-400 hover:text-blue-500 text-sm"
+                    >
+                        + Add Language
+                    </button>
+                </div>
+
+                {error && <p className="text-red-400 text-sm">{error}</p>}
+
+                {/* NEXT BUTTON */}
+                <div className="flex justify-end">
+                    <button
+                        onClick={handleNext}
+                        className="bg-blue-600 hover:bg-blue-700 px-8 py-2 rounded-lg font-semibold"
+                    >
+                        Next →
+                    </button>
                 </div>
             </div>
-
-            {/* PROJECTS */}
-            <div className="border p-4 rounded space-y-4">
-                <h3 className="font-semibold">Projects</h3>
-
-                {formData.projects.map((project, index) => (
-                    <div key={index} className="space-y-2 border p-3 rounded">
-                        <input
-                            placeholder="Project Title"
-                            value={project.title}
-                            onChange={(e) =>
-                                updateProject(index, "title", e.target.value)
-                            }
-                        />
-
-                        <textarea
-                            placeholder="Description"
-                            value={project.description}
-                            onChange={(e) =>
-                                updateProject(index, "description", e.target.value)
-                            }
-                        />
-
-                        <input
-                            placeholder="Project Link"
-                            value={project.link}
-                            onChange={(e) =>
-                                updateProject(index, "link", e.target.value)
-                            }
-                        />
-
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) =>
-                                updateProject(index, "image", e.target.files[0])
-                            }
-                        />
-
-                        <button
-                            className="text-red-400"
-                            onClick={() => removeProject(index)}
-                        >
-                            Remove
-                        </button>
-                    </div>
-                ))}
-
-                <button onClick={addProject}>Add Project +</button>
-            </div>
-
-            {/* LANGUAGES */}
-            <div className="border p-4 rounded space-y-4">
-                <h3 className="font-semibold">Languages</h3>
-
-                {formData.languages.map((lang, index) => (
-                    <div key={index} className="flex gap-3">
-                        <input
-                            placeholder="Language"
-                            value={lang.name}
-                            onChange={(e) =>
-                                updateLanguage(index, "name", e.target.value)
-                            }
-                        />
-
-                        <input
-                            placeholder="Proficiency"
-                            value={lang.proficiency}
-                            onChange={(e) =>
-                                updateLanguage(index, "proficiency", e.target.value)
-                            }
-                        />
-
-                        <button
-                            className="text-red-400"
-                            onClick={() => removeLanguage(index)}
-                        >
-                            ✕
-                        </button>
-                    </div>
-                ))}
-
-                <button onClick={addLanguage}>Add Language +</button>
-            </div>
-
-            {error && <p className="text-red-400">{error}</p>}
-
-            <button
-                onClick={handleNext}
-                className="bg-blue-600 px-6 py-2 rounded"
-            >
-                Next →
-            </button>
         </div>
     );
+
 };
 
 export default UserInfo;
