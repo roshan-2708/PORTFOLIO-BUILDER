@@ -2,24 +2,38 @@ import React from 'react'
 import TemplateOne from '../Portfolio/builder_folder/templates/TemplateOne'
 
 const TemplateRenderer = ({ template, data }) => {
+    console.log("RAW TEMPLATE VALUE 👉", template)
 
     if (!template) {
         return (
-            <div className="flex items-center justify-center h-full text-slate-400">
-                Select a template to preview
+            <div className="text-white text-center mt-20">
+                Template not found
             </div>
         )
     }
 
-    switch (template.name) {
-        case "Template 1":
-            return <TemplateOne data={data} />;
-        // case "Template 2":
-        //     return <TemplateTwo data={data} />;
-        // case "Template 3":
-        //     return <TemplateThree data={data} />;
+    // Normalize everything
+    const templateName = String(
+        typeof template === "string"
+            ? template
+            : template?.name
+    )
+        .replace(/\s+/g, '')  // remove spaces
+        .toLowerCase()
+
+    console.log("NORMALIZED 👉", templateName)
+
+    switch (templateName) {
+        case "template1":
+            return <TemplateOne data={data} />
+
         default:
-            return null;
+            return (
+                <div className="text-white text-center mt-20">
+                    Template not found
+                </div>
+            )
     }
-};
-export default TemplateRenderer;
+}
+
+export default TemplateRenderer

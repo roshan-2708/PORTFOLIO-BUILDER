@@ -4,7 +4,8 @@ import { portfolioEndpoints } from "../apis";
 const {
     CREATE_PORTFOLIO,
     PUBLISH_PORTFOLIO,
-    COUNT_PORTFOLIO
+    USERS_PORTFOLIO,
+    COUNT_PORTFOLIO,
 } = portfolioEndpoints;
 
 export const createPortfolio = async (formData, token) => {
@@ -44,6 +45,36 @@ export const publishPortfolio = async (portfolioId, token) => {
     }
 }
 
+export const fetchMyPortfolio = async (token) => {
+    const res = await apiConnector(
+        'GET',
+        USERS_PORTFOLIO,
+        null,
+        {
+            Authorization: `Bearer ${token}`,
+        }
+    );
+
+    return res.data.portfolios;
+};
+
+export const fetchSinglePortfolio = async (id) => {
+    const token = localStorage.getItem('token');
+
+    const res = await apiConnector(
+        "GET",
+        `/portfolio/${id}`,
+        null,
+        {
+            Authorization: `Bearer ${token}`,
+        }
+    );
+
+    return res.data.portfolio;
+};
+
+
+
 export const getPortfolioCount = async (token) => {
     const res = await apiConnector(
         'GET',
@@ -55,3 +86,8 @@ export const getPortfolioCount = async (token) => {
     );
     return res.data;
 }
+
+// export const fetchMyPortfolio = async () => {
+//     const res = await apiConnector("GET", USERS_PORTFOLIO);
+//     return res.data.portfolio;
+// };

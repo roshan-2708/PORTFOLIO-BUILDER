@@ -19,6 +19,7 @@ const parseObject = (value) => {
         return {};
     }
 };
+
 const uploadToCloudinary = (buffer, folder) => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
@@ -30,6 +31,7 @@ const uploadToCloudinary = (buffer, folder) => {
         ).end(buffer);
     });
 };
+
 // create portfolio
 exports.createPortfolio = async (req, res) => {
     try {
@@ -90,7 +92,6 @@ exports.createPortfolio = async (req, res) => {
         });
     }
 };
-
 
 // get portfolio
 exports.getPortfolioBySlug = async (req, res) => {
@@ -166,7 +167,6 @@ exports.publishPortfolio = async (req, res) => {
     }
 };
 
-
 // count portfolio controller
 exports.getUserPortfolioCount = async (req, res) => {
     try {
@@ -197,3 +197,57 @@ exports.getUserPortfolioCount = async (req, res) => {
         });
     }
 };
+
+// get user's portfolio
+exports.getUsersPortfolio = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log("JWT USER ID:", userId);
+
+        const portfolios = await Portfolio.find({ user: userId });
+
+        if (portfolios.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Portfolio not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            portfolios,
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch user's portfolio.",
+        });
+    }
+};
+
+// get single portfolio
+exports.getSinglePortfolio = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const portfolio = await Portfolio.findById(id);
+        if (!portfolio) {
+            return res.status(404).json({
+                success: false,
+                message: "Portfolio not found for single",
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "portfolio successfully found",
+            portfolio,
+        });
+    } catch (error) {
+        console.error('error in get users api ', error);
+        return res.status(500).json({
+            success: false,
+            message: "error in controller",
+        });
+    }
+}

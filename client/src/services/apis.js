@@ -19,5 +19,6 @@ export const profileEndpoints = {
 export const portfolioEndpoints = {
     CREATE_PORTFOLIO: '/portfolio/create',
     PUBLISH_PORTFOLIO: '/portfolio/publish/:portfolioId',
+    USERS_PORTFOLIO : '/portfolio/my-portfolio',
     COUNT_PORTFOLIO : '/portfolio/stats/me'
 }

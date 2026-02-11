@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import LoginModal from './LoginModal';
 
 const Navbar = () => {
@@ -8,6 +8,8 @@ const Navbar = () => {
     const token = localStorage.getItem("token");
     // login modal
     const [isOpenLogin, setOpenLogin] = useState(false);
+    const location = useLocation();
+    const isDashboardPage = location.pathname.startsWith('/dashboard');
 
     const handleRequest = () => {
         localStorage.removeItem("token");
@@ -21,6 +23,7 @@ const Navbar = () => {
 
 
     return (
+
         <>
             <nav className='bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow-md'>
                 {/* logo of portfolio-builder */}
@@ -46,7 +49,7 @@ const Navbar = () => {
                                     signup
                                 </Link>
                             </>
-                        ) : (<div className="flex items-center space-x-4">
+                        ) : !isDashboardPage ? (<div className="flex items-center space-x-4">
 
                             <button onClick={handleLogout} className="btn">
                                 Logout
@@ -54,12 +57,18 @@ const Navbar = () => {
 
                             <Link to='/dashboard' className='bg-yellow-600 px-4 py-2 rounded-lg hover:bg-yellow-700 transition'>
                                 Dashboard</Link>
-                        </div>)
+                        </div>) : (
+                            <div className="flex items-center space-x-4">
+                                <button onClick={handleLogout} className="btn">
+                                    Logout
+                                </button>
+                            </div>
+                        )
                     }
-                </div>
-            </nav>
+                </div >
+            </nav >
             {/* call login modal */}
-            <LoginModal
+            < LoginModal
                 isOpen={isOpenLogin}
                 onClose={() => setOpenLogin(false)}
             />

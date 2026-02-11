@@ -7,6 +7,8 @@ import VerifyEmail from './component/VerifyEmail'
 import Dashboard from './pages/Dashboard'
 import UsersPortfolio from './Portfolio/UsersPortfolio'
 import BuildingPortfolio from './Portfolio/BuildingPortfolio'
+// import PortfolioPreview from './Portfolio/PortfolioPreview'
+import ViewPortfolio from './Portfolio/ViewPortfolio'
 
 const App = () => {
   const token = localStorage.getItem('token');
@@ -24,6 +26,7 @@ const App = () => {
               <Route path='/dashboard' element={<Dashboard />} />
               <Route path='/my-portfolios' element={<UsersPortfolio />} />
               <Route path='/create-portfolio' element={<BuildingPortfolio />} />
+              <Route path="/portfolio/:id" element={<ViewPortfolio />} />
             </>
           )
         }
