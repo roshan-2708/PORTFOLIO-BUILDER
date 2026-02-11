@@ -1,5 +1,7 @@
 import React from 'react'
 import TemplateOne from '../Portfolio/builder_folder/templates/TemplateOne'
+import TemplateTwo from './builder_folder/templates/TemplateTwo'
+import TemplateThree from './builder_folder/templates/TemplateThree'
 
 const TemplateRenderer = ({ template, data }) => {
     console.log("RAW TEMPLATE VALUE 👉", template)
@@ -26,6 +28,10 @@ const TemplateRenderer = ({ template, data }) => {
     switch (templateName) {
         case "template1":
             return <TemplateOne data={data} />
+        case "template2":
+            return <TemplateTwo data={data} />
+        case "template3":
+            return <TemplateThree data={data} />
 
         default:
             return (
