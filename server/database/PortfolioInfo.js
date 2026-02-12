@@ -7,6 +7,26 @@ const portfolioSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
+        experience: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Experience",
+            required: true,
+        }],
+        services: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Service",
+            required: true,
+        }],
+        blogs: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Blog",
+            required: true,
+        }],
+        educations: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Education",
+            required: true,
+        }],
 
         title: {
             type: String,
@@ -17,7 +37,7 @@ const portfolioSchema = new mongoose.Schema(
         slug: {
             type: String,
             unique: true,
-            sparse: true, // allows multiple null values
+            sparse: true,
         },
 
         profileImage: { type: String, default: null },
@@ -60,6 +80,7 @@ const portfolioSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+
     },
     { timestamps: true }
 );

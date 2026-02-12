@@ -2,7 +2,10 @@ const Portfolio = require('../database/PortfolioInfo');
 const slugify = require("slugify");
 const cloudinary = require("../config/cloudinaryConnection");
 const { nanoid } = require("nanoid");
-
+const Experience = require('../database/experience');
+const EducationInfo = require('../database/educationInfo');
+const Services = require('../database/services');
+const Blogs = require('../database/blogs');
 
 const parseArray = (value) => {
     try {
@@ -33,6 +36,7 @@ const uploadToCloudinary = (buffer, folder) => {
 };
 
 // create portfolio
+
 exports.createPortfolio = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -52,32 +56,71 @@ exports.createPortfolio = async (req, res) => {
         const projects = parseArray(req.body.projects);
         const languages = parseArray(req.body.languages);
         const contact = parseObject(req.body.contact);
+        const experienceData = parseArray(req.body.experience);
+        const educationData = parseArray(req.body.education);
+        const serviceData = parseArray(req.body.services);
+        const blogData = parseArray(req.body.blogs);
 
         /* ================= PROJECT IMAGES ================= */
         const projectImages = req.files?.projectImages || [];
 
-        const projectsWithImages = projects.map((project, index) => {
-            if (projectImages[index]) {
-                project.image = projectImages[index].secure_url;
+        const projectsWithImages = [];
+
+        for (let i = 0; i < projects.length; i++) {
+            let project = projects[i];
+
+            if (projectImages[i]) {
+                const imageUrl = await uploadToCloudinary(
+                    projectImages[i].buffer,
+                    "portfolio/projects"
+                );
+                project.image = imageUrl;
             }
-            return project;
-        });
+
+            projectsWithImages.push(project);
+        }
+        const slug =
+            slugify(req.body.title || "portfolio", {
+                lower: true,
+                strict: true,
+            }) + "-" + nanoid(5);
 
         // ---------- Create portfolio ----------
         const portfolio = await Portfolio.create({
             user: userId,
             title: req.body.title,
+            slug: slug,
             about: req.body.about,
             template: req.body.template,
             profileImage: profileImageUrl,
             userImage: profileImageUrl,
             skills,
-            projects: projectsWithImages,
+            projects,
             languages,
             contact,
             isPublished: false,
         });
+        if (experienceData.length > 0) {
+            const docs = await Experience.insertMany(experienceData.map(d => ({ ...d, user: userId })));
+            portfolio.experience = docs.map(d => d._id);
+        }
 
+        if (educationData.length > 0) {
+            const docs = await EducationInfo.insertMany(educationData.map(d => ({ ...d, user: userId })));
+            portfolio.educations = docs.map(d => d._id);
+        }
+
+        if (serviceData.length > 0) {
+            const docs = await Services.insertMany(serviceData.map(d => ({ ...d, user: userId })));
+            portfolio.services = docs.map(d => d._id);
+        }
+
+        if (blogData.length > 0) {
+            const docs = await Blogs.insertMany(blogData.map(d => ({ ...d, user: userId })));
+            portfolio.blogs = docs.map(d => d._id);
+        }
+
+        await portfolio.save();
         return res.status(201).json({
             success: true,
             message: "Portfolio created successfully",
