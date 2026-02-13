@@ -131,7 +131,11 @@ const TemplateTwo = ({ data }) => {
                             <div key={i} className="group bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500">
                                 <div className="h-72 bg-slate-100 relative overflow-hidden">
                                     <img
-                                        src={project.image || "https://via.placeholder.com/600x400"}
+                                        src={
+                                            profileImage instanceof File
+                                                ? URL.createObjectURL(profileImage)
+                                                : profileImage || "https://via.placeholder.com/400"
+                                        }
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                         alt={project.title}
                                     />

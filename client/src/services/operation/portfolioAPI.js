@@ -86,8 +86,3 @@ export const getPortfolioCount = async (token) => {
     );
     return res.data;
 }
-
-// export const fetchMyPortfolio = async () => {
-//     const res = await apiConnector("GET", USERS_PORTFOLIO);
-//     return res.data.portfolio;
-// };

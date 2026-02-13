@@ -205,7 +205,11 @@ const TemplateThree = ({ data }) => {
 
                                     {/* Profile Image */}
                                     <img
-                                        src={profileImage || user?.image || "https://via.placeholder.com/400"}
+                                        src={
+                                            profileImage instanceof File
+                                                ? URL.createObjectURL(profileImage)
+                                                : profileImage || "https://via.placeholder.com/400"
+                                        }
                                         alt="Profile"
                                         className="w-56 h-56 md:w-72 md:h-72 rounded-2xl  object-cover transition duration-500 hover:scale-105"
                                     />
@@ -442,11 +446,7 @@ const TemplateThree = ({ data }) => {
                                     <div className="relative overflow-hidden">
 
                                         <img
-                                            src={
-                                                project.image && project.image.trim() !== ""
-                                                    ? project.image
-                                                    : "https://via.placeholder.com/600x400/10131A/2EB2D3?text=Project"
-                                            }
+                                            src={project.image || "https://via.placeholder.com/600x400"}
                                             alt={project.title}
                                             className="w-full h-60 object-cover transition duration-700 group-hover:scale-110"
                                         />

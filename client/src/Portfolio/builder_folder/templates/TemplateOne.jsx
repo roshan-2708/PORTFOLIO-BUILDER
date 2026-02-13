@@ -22,6 +22,7 @@ const TemplateOne = ({ data }) => {
     const {
         title,
         about,
+        profileImage,
         skills = [],
         projects = [],
         contact = {},
@@ -113,7 +114,12 @@ const TemplateOne = ({ data }) => {
                             <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                             <div className="relative w-72 h-72 md:w-80 md:h-80 bg-slate-900 rounded-[2rem] overflow-hidden border border-slate-800">
                                 <img
-                                    src={user?.image || "https://via.placeholder.com/400"}
+                                    src={
+                                        profileImage instanceof File
+                                            ? URL.createObjectURL(profileImage)
+                                            : profileImage || "https://via.placeholder.com/400"
+                                    }
+
                                     alt="Profile"
                                     className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                                 />

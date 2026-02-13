@@ -40,6 +40,11 @@ const TemplateChoose = ({
             formData.append("skills", JSON.stringify(userInfo.skills));
             formData.append("languages", JSON.stringify(userInfo.languages));
             formData.append("contact", JSON.stringify(userInfo.contacts));
+            formData.append("experience", JSON.stringify(userInfo.experience));
+            formData.append("education", JSON.stringify(userInfo.education));
+            formData.append("services", JSON.stringify(userInfo.services));
+            formData.append("blogs", JSON.stringify(userInfo.blogs));
+
 
             // PROJECTS (without images)
             const projectsWithoutImages = userInfo.projects.map(
