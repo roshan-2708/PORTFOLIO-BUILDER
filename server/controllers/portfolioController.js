@@ -36,7 +36,6 @@ const uploadToCloudinary = (buffer, folder) => {
 };
 
 // create portfolio
-
 exports.createPortfolio = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -141,7 +140,12 @@ exports.getPortfolioBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
 
-        const portfolio = await Portfolio.findOne({ slug, isPublished: true }).populate("user");
+        const portfolio = await Portfolio.findOne({ slug, isPublished: true }).populate("user").populate("services")
+            .populate("projects")
+            .populate("educations")
+            .populate("experience")
+            .populate("blogs")
+            .exec();
 
         if (!portfolio) {
             return res.status(404).json({
@@ -247,7 +251,12 @@ exports.getUsersPortfolio = async (req, res) => {
         const userId = req.user.id;
         console.log("JWT USER ID:", userId);
 
-        const portfolios = await Portfolio.find({ user: userId });
+        const portfolios = await Portfolio.find({ user: userId }).populate("services")
+            .populate("projects")
+            .populate("educations")
+            .populate("experience")
+            .populate("blogs")
+            .exec();;
 
         if (portfolios.length === 0) {
             return res.status(404).json({
@@ -274,7 +283,12 @@ exports.getUsersPortfolio = async (req, res) => {
 exports.getSinglePortfolio = async (req, res) => {
     try {
         const { id } = req.params;
-        const portfolio = await Portfolio.findById(id);
+        const portfolio = await Portfolio.findById(id).populate("services")
+            .populate("projects")
+            .populate("educations")
+            .populate("experience")
+            .populate("blogs")
+            .exec();;
         if (!portfolio) {
             return res.status(404).json({
                 success: false,
