@@ -27,15 +27,20 @@ const TemplateTwo = ({ data }) => {
         languages = [],
         contact = {},
         profileImage,
+        services = [],
+        educations = [],
+        experience = [],
+        blogs = [],
     } = data;
 
     const navLinks = [
         { name: "Home", href: '#home' },
-        { name: "Experience", href: '#experience' },
-        { name: "About", href: '#about' },
+        { name: "Skills", href: "#skills" },
+        { name: "Services", href: "#services" },
         { name: "Blogs", href: '#Blogs' },
         { name: "Projects", href: '#projects' },
-        { name: "Contact", href: '#contact' },
+        { name: "Experience", href: '#experience' },
+        { name: "Education", href: "#education" },
     ];
 
     return (
@@ -103,7 +108,7 @@ const TemplateTwo = ({ data }) => {
             </section>
 
             {/* --- Skills Section --- */}
-            <section className="py-20 bg-white border-y border-slate-100">
+            <section id='skills' className="py-20 bg-white border-y border-slate-100">
                 <div className="max-w-6xl mx-auto px-6 text-center">
                     <h2 className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-10">Tech Stack</h2>
                     <div className="flex flex-wrap justify-center gap-3">
@@ -112,6 +117,63 @@ const TemplateTwo = ({ data }) => {
                                 {skill}
                             </span>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- Services Section --- */}
+            <section id="services" className="py-24 px-6 bg-white border-y border-slate-100">
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-3">What I Do</h2>
+                        <h3 className="text-4xl font-extrabold text-slate-900">Services & Solutions</h3>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {services?.length > 0 ? services.map((service, i) => (
+                            <div key={i} className="p-10 bg-slate-50 border border-slate-200 rounded-[2.5rem] hover:shadow-xl hover:shadow-indigo-100 transition-all duration-500">
+                                <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-8">
+                                    <Code size={24} />
+                                </div>
+                                <h4 className="text-xl font-bold mb-4 text-slate-900">{service.title}</h4>
+                                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                    {service.description}
+                                </p>
+                                {service.link && (
+                                    <a href={service.link} className="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-2">
+                                        View Details <ExternalLink size={14} />
+                                    </a>
+                                )}
+                            </div>
+                        )) : <p className="text-center col-span-full text-slate-400 italic">No services listed yet.</p>}
+                    </div>
+                </div>
+            </section>
+            
+            {/* --- Blog Section --- */}
+            <section id="Blogs" className="py-24 px-6 bg-slate-50">
+                <div className="max-w-6xl mx-auto">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-16">
+                        <h2 className="text-4xl font-extrabold text-slate-900">Latest Insights</h2>
+                        <p className="text-slate-500 md:text-right max-w-xs mt-4 md:mt-0">Thoughts on development, design, and digital trends.</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {blogs?.length > 0 ? blogs.map((blog, i) => (
+                            <div key={i} className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:shadow-xl transition-all duration-500">
+                                <div className="p-8">
+                                    <h4 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">
+                                        {blog.title}
+                                    </h4>
+                                    <p className="text-sm text-slate-500 leading-relaxed mb-6 line-clamp-2">
+                                        {blog.description}
+                                    </p>
+                                    <a href={blog.link} target="_blank" rel="noreferrer" className="text-xs font-black tracking-widest text-indigo-600 uppercase flex items-center gap-2">
+                                        Read More <ExternalLink size={14} />
+                                    </a>
+                                </div>
+                            </div>
+                        )) : <p className="text-center col-span-full text-slate-400 italic">No articles published yet.</p>}
                     </div>
                 </div>
             </section>
@@ -150,6 +212,75 @@ const TemplateTwo = ({ data }) => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- Languages Section --- */}
+            <section className="py-20 bg-white border-y border-slate-100">
+                <div className="max-w-4xl mx-auto px-6">
+                    <h3 className="text-center text-sm font-bold text-indigo-600 uppercase tracking-widest mb-10">Languages</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                        {languages.map((lang, i) => (
+                            <div key={i} className="text-center">
+                                <p className="text-lg font-bold text-slate-900">{lang.name || lang}</p>
+                                <p className="text-sm text-indigo-600 font-medium">{lang.proficiency || "Fluent"}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- Experience & Education --- */}
+            <section id="experience" className="py-24 px-6">
+                <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16">
+
+                    {/* Experience Side */}
+                    <div>
+                        <div className="flex items-center gap-4 mb-12">
+                            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                                <Briefcase size={24} />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-900">Experience</h3>
+                        </div>
+
+                        <div className="space-y-8 border-l-2 border-slate-100 ml-6 pl-8">
+                            {experience?.length > 0 ? experience.map((exp, i) => (
+                                <div key={i} className="relative">
+                                    <div className="absolute -left-[41px] top-1.5 w-4 h-4 bg-white border-2 border-indigo-600 rounded-full"></div>
+                                    <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
+                                        {new Date(exp.startDate).getFullYear()} — {exp.currentlyWorking ? "Present" : new Date(exp.endDate).getFullYear()}
+                                    </span>
+                                    <h4 className="text-xl font-bold text-slate-900 mt-1">{exp.role}</h4>
+                                    <p className="text-slate-500 font-medium mb-3">{exp.companyName}</p>
+                                    <p className="text-sm text-slate-600 leading-relaxed">{exp.description}</p>
+                                </div>
+                            )) : <p className="text-slate-400">No experience added.</p>}
+                        </div>
+                    </div>
+
+                    {/* Education Side */}
+                    <div id="education">
+                        <div className="flex items-center gap-4 mb-12">
+                            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                                <GraduationCap size={24} />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-900">Education</h3>
+                        </div>
+
+                        <div className="space-y-8 border-l-2 border-slate-100 ml-6 pl-8">
+                            {educations?.length > 0 ? educations.map((edu, i) => (
+                                <div key={i} className="relative">
+                                    <div className="absolute -left-[41px] top-1.5 w-4 h-4 bg-white border-2 border-slate-300 rounded-full"></div>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                        {new Date(edu.startDate).getFullYear()} — {edu.currentlyStudying ? "Present" : new Date(edu.endDate).getFullYear()}
+                                    </span>
+                                    <h4 className="text-xl font-bold text-slate-900 mt-1">{edu.degree}</h4>
+                                    <p className="text-slate-600 mb-2">{edu.institution}</p>
+                                    {edu.grade && <span className="inline-block px-2 py-1 rounded bg-slate-100 text-xs font-bold text-slate-500">Grade: {edu.grade}</span>}
+                                </div>
+                            )) : <p className="text-slate-400">No education history added.</p>}
+                        </div>
                     </div>
                 </div>
             </section>

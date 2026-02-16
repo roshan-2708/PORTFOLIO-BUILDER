@@ -26,53 +26,11 @@ const TemplateThree = ({ data }) => {
         languages = [],
         contact = {},
         profileImage,
+        services = [],
+        educations = [],
+        experience = [],
+        blogs = [],
     } = data;
-    // const projects = [
-    //     {
-    //         id: 1,
-    //         title: "E-Commerce Website",
-    //         description: "Modern online store with cart & payment integration.",
-    //         image: "/project1.png",
-    //         link: "#"
-    //     },
-    //     {
-    //         id: 2,
-    //         title: "Portfolio Website",
-    //         description: "Personal portfolio with responsive design.",
-    //         image: "/project2.png",
-    //         link: "#"
-    //     },
-    //     {
-    //         id: 3,
-    //         title: "Blog Platform",
-    //         description: "Full stack blog app with authentication.",
-    //         image: "/project3.png",
-    //         link: "#"
-    //     }
-    // ];
-    const blogs = [
-        {
-            id: 1,
-            title: "Understanding React Hooks",
-            description: "A complete beginner guide to React hooks.",
-            image: "/blog1.jpg",
-            link: "#"
-        },
-        {
-            id: 2,
-            title: "Node.js Best Practices",
-            description: "How to structure scalable backend apps.",
-            image: "/blog2.jpg",
-            link: "#"
-        },
-        {
-            id: 3,
-            title: "MongoDB Optimization",
-            description: "Improve performance with indexing.",
-            image: "/blog3.jpg",
-            link: "#"
-        }
-    ];
 
     const [isOpen, setOpen] = useState(false);
 
@@ -82,7 +40,7 @@ const TemplateThree = ({ data }) => {
         { name: "About", href: '#about' },
         { name: "Blogs", href: '#blogs' },
         { name: "Projects", href: '#projects' },
-        { name: "Contact", href: '#contact' },
+        { name: "Experience", href: '#experience' },
     ]
     return (
         <div className='bg-[#10131A]'>
@@ -224,17 +182,15 @@ const TemplateThree = ({ data }) => {
             </section >
 
             {/* my service section */}
-            < section
+            <section
                 id="services"
                 className="relative bg-gradient-to-b from-[#0E1117] to-[#10131A] text-[#EFF0F2] py-28 overflow-hidden"
             >
-
-                {/* Background Glow */}
-                < div className="absolute top-0 left-0 w-80 h-80 bg-[#2EB2D3]/10 blur-[120px] rounded-full" ></div >
+                {/* Background Glows to match Hero */}
+                <div className="absolute top-0 left-0 w-80 h-80 bg-[#2EB2D3]/10 blur-[120px] rounded-full"></div>
                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#2EB2D3]/10 blur-[150px] rounded-full"></div>
 
                 <div className="relative max-w-7xl mx-auto px-6">
-
                     {/* Section Title */}
                     <div className="text-center mb-20">
                         <h2 className="text-4xl md:text-5xl font-bold tracking-wide">
@@ -244,59 +200,47 @@ const TemplateThree = ({ data }) => {
                     </div>
 
                     {/* Services Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {services?.length > 0 ? (
+                            services.map((service, i) => (
+                                <div
+                                    key={i}
+                                    className="group bg-[#161B22]/80 backdrop-blur-md border border-[#2EB2D3]/20 rounded-2xl p-8 transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_0_30px_#2EB2D3]/30 hover:border-[#2EB2D3]/50"
+                                >
 
-                        {[
-                            {
-                                title: "Frontend Developer",
-                                desc: "Building responsive and interactive user interfaces using modern frameworks.",
-                                icon: "💻",
-                            },
-                            {
-                                title: "Backend Developer",
-                                desc: "Developing scalable APIs and server-side applications.",
-                                icon: "⚙️",
-                            },
-                            {
-                                title: "UI/UX Designer",
-                                desc: "Designing intuitive and engaging user experiences.",
-                                icon: "🎨",
-                            },
-                            {
-                                title: "Project Management",
-                                desc: "Planning, organizing, and managing development workflows.",
-                                icon: "📊",
-                            },
-                        ].map((service, i) => (
-                            <div
-                                key={i}
-                                className="group bg-[#161B22] border border-[#2EB2D3]/20 rounded-2xl p-8 transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_0_30px_#2EB2D3]"
-                            >
-                                {/* Icon */}
-                                <div className="text-4xl mb-6 transition duration-300 group-hover:scale-110">
-                                    {service.icon}
+                                    {/* Title */}
+                                    <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-[#2EB2D3] transition-colors">
+                                        {service.title}
+                                    </h3>
+
+                                    {/* Description */}
+                                    <p className="text-gray-400 text-sm mb-8 leading-relaxed line-clamp-4">
+                                        {service.description}
+                                    </p>
+
+                                    {/* Action Link / Button */}
+                                    {service.link && (
+                                        <a
+                                            href={service.link}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-block px-6 py-2 text-sm rounded-lg border border-[#2EB2D3] text-[#2EB2D3] hover:bg-[#2EB2D3] hover:text-[#10131A] transition duration-300 font-medium"
+                                        >
+                                            Learn More
+                                        </a>
+                                    )}
                                 </div>
-
-                                {/* Title */}
-                                <h3 className="text-xl font-semibold mb-4">
-                                    {service.title}
-                                </h3>
-
-                                {/* Description */}
-                                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                                    {service.desc}
+                            ))
+                        ) : (
+                            <div className="text-center col-span-full py-10">
+                                <p className="text-gray-500 text-lg italic">
+                                    No services added yet. Check back soon!
                                 </p>
-
-                                {/* Button */}
-                                <button className="px-6 py-2 text-sm rounded-lg border border-[#2EB2D3] text-[#2EB2D3] hover:bg-[#2EB2D3] hover:text-[#10131A] transition duration-300">
-                                    Read More
-                                </button>
                             </div>
-                        ))}
-
+                        )}
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* More about me */}
             < section id="about"
@@ -324,27 +268,68 @@ const TemplateThree = ({ data }) => {
                                 My Education
                             </h3>
 
-                            <div className="relative border-l-2 border-[#2EB2D3]/30 pl-10 space-y-14">
+                            <div className="relative border-l-2 border-[#2EB2D3]/30 pl-10 space-y-12">
+                                {educations?.length > 0 ? (
+                                    educations.map((education, i) => {
+                                        if (typeof education === 'string') {
+                                            return (
+                                                <div key={i} className="relative mb-10">
+                                                    <div className="absolute -left-[49px] top-2 w-4 h-4 bg-red-500 rounded-full border-4 border-[#10131A]"></div>
+                                                    <p className="text-gray-500 italic">Education data not loaded (ID: {education})</p>
+                                                </div>
+                                            );
+                                        }
 
-                                {[
-                                    { title: "Graduation", desc: "B.Tech in Computer Science" },
-                                    { title: "Higher Secondary", desc: "Science Stream" },
-                                    { title: "High School", desc: "General Education" },
-                                ].map((edu, i) => (
-                                    <div key={i} className="relative">
+                                        return (
+                                            <div key={i} className="relative group">
+                                                {/* Timeline Dot */}
+                                                <div className="absolute -left-[49px] top-2 w-6 h-6 bg-[#2EB2D3] rounded-full border-4 border-[#10131A] transition-transform duration-300 group-hover:scale-125 shadow-[0_0_10px_#2EB2D3]"></div>
 
-                                        {/* Timeline Dot */}
-                                        <div className="absolute -left-[13px] top-2 w-6 h-6 bg-[#2EB2D3] rounded-full border-4 border-[#10131A]"></div>
+                                                {/* Education Card */}
+                                                <div className="bg-[#161B22]/60 backdrop-blur-md border border-[#2EB2D3]/20 rounded-2xl p-7 transition-all duration-300 hover:shadow-[0_0_25px_#2EB2D3]/20 hover:-translate-y-2">
 
-                                        {/* Card */}
-                                        <div className="bg-[#161B22] border border-[#2EB2D3]/20 rounded-2xl p-6 transition duration-300 hover:shadow-[0_0_25px_#2EB2D3] hover:-translate-y-2">
-                                            <h4 className="text-xl font-semibold">{edu.title}</h4>
-                                            <p className="mt-2 text-gray-400">{edu.desc}</p>
-                                        </div>
+                                                    {/* Header: Degree and Date */}
+                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
+                                                        <h4 className="text-2xl font-bold text-white group-hover:text-[#2EB2D3] transition-colors">
+                                                            {education.degree}
+                                                        </h4>
+                                                        <span className="text-sm font-medium px-4 py-1 rounded-full bg-[#2EB2D3]/10 text-[#2EB2D3] border border-[#2EB2D3]/20">
+                                                            {new Date(education.startDate).getFullYear()} — {education.currentlyStudying ? "Present" : new Date(education.endDate).getFullYear()}
+                                                        </span>
+                                                    </div>
 
+                                                    {/* Institution & Field */}
+                                                    <div className="mb-4">
+                                                        <p className="text-[#EFF0F2] font-medium text-lg">
+                                                            {education.fieldOfStudy}
+                                                        </p>
+                                                        <p className="text-gray-400 flex items-center gap-2">
+                                                            <span className="text-[#2EB2D3]">@</span> {education.institution}
+                                                            {education.location && <span className="text-xs text-gray-600">• {education.location}</span>}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Grade & Description */}
+                                                    {education.grade && (
+                                                        <div className="inline-block mb-4 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-sm">
+                                                            <span className="text-gray-400">Grade:</span> <span className="text-white font-semibold">{education.grade}</span>
+                                                        </div>
+                                                    )}
+
+                                                    {education.description && (
+                                                        <p className="text-gray-400 text-sm leading-relaxed border-t border-white/5 pt-4">
+                                                            {education.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="text-gray-500 italic py-4">
+                                        No education history found.
                                     </div>
-                                ))}
-
+                                )}
                             </div>
                         </div>
 
@@ -497,6 +482,88 @@ const TemplateThree = ({ data }) => {
                 </div>
             </section >
 
+            {/* My Experience Section */}
+            <section id="experience" className="bg-gradient-to-b from-[#0E1117] to-[#10131A] py-28 px-6 text-[#EFF0F2]">
+                {/* Added this wrapper div to match the Blog section's width and centering */}
+                <div className="max-w-7xl mx-auto">
+
+                    {/* Title matches the "Latest Articles" alignment style */}
+                    <div className="mb-14 flex justify-center items-center flex-col">
+                        <h3 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            Work <span className="text-[#2EB2D3]">Experience</span>
+                        </h3>
+                        <div className="w-24 h-1 bg-[#2EB2D3] mt-6 rounded-full"></div>
+                    </div>
+
+                    <div className="relative border-l-2 border-[#2EB2D3]/30 pl-10 space-y-12">
+                        {experience?.length > 0 ? (
+                            experience.map((experience, i) => {
+                                if (typeof experience === 'string') {
+                                    return (
+                                        <div key={i} className="relative mb-10">
+                                            <div className="absolute -left-[49px] top-2 w-4 h-4 bg-red-500 rounded-full border-4 border-[#10131A]"></div>
+                                            <p className="text-gray-500 italic">Experience data not loaded (ID: {experience})</p>
+                                        </div>
+                                    );
+                                }
+
+                                const startYear = new Date(experience.startDate).getFullYear();
+                                const endYear = experience.currentlyWorking ? "Present" : new Date(experience.endDate).getFullYear();
+
+                                return (
+                                    <div key={i} className="relative group">
+                                        {/* Timeline Dot */}
+                                        <div className="absolute -left-[49px] top-2 w-6 h-6 bg-[#2EB2D3] rounded-full border-4 border-[#10131A] transition-transform duration-300 group-hover:scale-125 shadow-[0_0_10px_#2EB2D3]"></div>
+
+                                        {/* Experience Card */}
+                                        <div className="bg-[#161B22]/60 backdrop-blur-md border border-[#2EB2D3]/20 rounded-2xl p-7 transition-all duration-300 hover:shadow-[0_0_25px_#2EB2D3]/20 hover:-translate-y-2">
+
+                                            {/* Header: Role and Dates */}
+                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
+                                                <h4 className="text-2xl font-bold text-white group-hover:text-[#2EB2D3] transition-colors">
+                                                    {experience.role}
+                                                </h4>
+                                                <span className="text-sm font-medium px-4 py-1 rounded-full bg-[#2EB2D3]/10 text-[#2EB2D3] border border-[#2EB2D3]/20">
+                                                    {startYear} — {endYear}
+                                                </span>
+                                            </div>
+
+                                            {/* Company & Type */}
+                                            <div className="flex flex-wrap items-center gap-3 mb-4">
+                                                <p className="text-[#EFF0F2] font-medium text-lg">
+                                                    {experience.companyName}
+                                                </p>
+                                                <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">
+                                                    {experience.employmentType}
+                                                </span>
+                                                {experience.location && (
+                                                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                        • {experience.location}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Description */}
+                                            {experience.description && (
+                                                <div className="text-gray-400 text-sm leading-relaxed border-t border-white/5 pt-4">
+                                                    <p className="whitespace-pre-line">
+                                                        {experience.description}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className="text-gray-500 italic py-4">
+                                No work experience found.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
             {/* Latest article */}
             < section id='blogs' className="bg-gradient-to-b from-[#0E1117] to-[#10131A] py-28 px-6 text-[#EFF0F2]" >
                 <div className="max-w-7xl mx-auto">
@@ -521,19 +588,6 @@ const TemplateThree = ({ data }) => {
                                 className="group bg-[#161B22]/80 backdrop-blur-md border border-[#2EB2D3]/10 rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-3 hover:border-[#2EB2D3]/40"
                             >
 
-                                {/* Image with Overlay */}
-                                <div className="relative overflow-hidden">
-                                    <img
-                                        src={
-                                            blog.image && blog.image.trim() !== ""
-                                                ? blog.image
-                                                : "https://via.placeholder.com/600x400/10131A/2EB2D3?text=Article+Preview"
-                                        }
-                                        alt={blog.title}
-                                        className="w-full h-56 object-cover transition duration-700 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#10131A] via-transparent opacity-70"></div>
-                                </div>
 
                                 {/* Content */}
                                 <div className="p-6 flex flex-col justify-between h-[220px]">
