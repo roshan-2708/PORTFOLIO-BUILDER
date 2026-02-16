@@ -3,6 +3,7 @@ import LoginModal from '../component/LoginModal';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { features } from '../Data/features';
 import FeatureCard from '../component/FeatureCard';
+import landingVideo from './../assets/landingPage.mp4';
 
 const Landing = ({ onLoginClick, onSignupClick, }) => {
 
@@ -70,15 +71,19 @@ const Landing = ({ onLoginClick, onSignupClick, }) => {
                     {/* RIGHT PREVIEW */}
                     <div className="hidden md:block">
                         <div className="relative bg-slate-800 rounded-2xl p-4 shadow-xl border border-white/10">
-                            <div className="h-64 rounded-lg bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-gray-400">
-                                Portfolio Preview
-                            </div>
 
-                            {/* fake browser dots */}
-                            <div className="absolute top-3 left-4 flex gap-2">
-                                <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                                <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                            {/* VIDEO CONTAINER */}
+                            <div className="h-64 rounded-lg overflow-hidden relative">
+                                <video
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    className="w-full h-full object-cover"
+                                >
+                                    <source src={landingVideo} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
                             </div>
                         </div>
                     </div>
