@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 // =======================
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: true,
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -55,7 +55,7 @@ const { connectDB } = require("./config/mongodbConnection");
 
 const startServer = async () => {
     try {
-        await connectDB();           // 🔑 DB first
+        await connectDB();
 
         app.listen(PORT, () => {
             console.log(`server running on port ${PORT}`);
