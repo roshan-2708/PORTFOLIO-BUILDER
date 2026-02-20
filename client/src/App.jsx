@@ -26,13 +26,13 @@ const App = () => {
               <Route path='/dashboard' element={<Dashboard />} />
               <Route path='/my-portfolios' element={<UsersPortfolio />} />
               <Route path='/create-portfolio' element={<BuildingPortfolio />} />
-              <Route path="/portfolio/:id" element={<ViewPortfolio />} />
             </>
           )
         }
 
       </Routes>
       <Footer />
+      <Route path="/portfolio/:id" element={<ViewPortfolio />} />
     </div>
   )
 }
