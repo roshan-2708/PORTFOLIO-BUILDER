@@ -22,8 +22,14 @@ router.put(
 
 router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
-router.get('/:id', authMiddleware, getSinglePortfolio)
+// router.get('/:id', authMiddleware, getSinglePortfolio)
+// router.get("/:slug", getPortfolioBySlug);
+
+// 1. Slug wala route upar rakhein (ispe authMiddleware nahi hai)
 router.get("/:slug", getPortfolioBySlug);
+
+// 2. ID wala route niche rakhein (ispe authMiddleware hai)
+router.get('/:id', authMiddleware, getSinglePortfolio);
 
 
 module.exports = router;
