@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { fetchMyPortfolio } from '../services/operation/portfolioAPI'
 
 const UsersPortfolio = () => {
@@ -7,41 +7,20 @@ const UsersPortfolio = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [portfolio, setPortfolio] = useState([])
-    const { id, slug } = useParams();
 
-    // useEffect(() => {
-    //     const loadPortfolio = async () => {
-    //         try {
-    //             const data = await fetchMyPortfolio()
-    //             setPortfolio(data || [])
-    //         } catch (err) {
-    //             setError("Failed to load portfolio")
-    //         } finally {
-    //             setLoading(false)
-    //         }
-    //     }
-    //     loadPortfolio()
-    // }, [])
     useEffect(() => {
         const loadPortfolio = async () => {
             try {
-                let res;
-                if (id) {
-                    // Agar ID hai (Dashboard se aaya hai)
-                    res = await fetchSinglePortfolioById(id);
-                } else {
-                    // Agar Slug hai (Public link hai)
-                    res = await fetchSinglePortfolioBySlug(slug);
-                }
-                setPortfolio(res);
-            } catch (error) {
-                console.log("Failed to load portfolio.");
+                const data = await fetchMyPortfolio()
+                setPortfolio(data || [])
+            } catch (err) {
+                setError("Failed to load portfolio")
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
-        loadPortfolio();
-    }, [id, slug]);
+        }
+        loadPortfolio()
+    }, [])
 
     if (loading) {
         return (
@@ -98,8 +77,7 @@ const UsersPortfolio = () => {
                     {portfolio.map((item) => (
                         <div
                             key={item._id}
-                            // onClick={() => navigate(`/portfolio/${item._id}`)}
-                            onClick={() => navigate(`/portfolio/me/${item._id}`)}
+                            onClick={() => navigate(`/portfolio/${item._id}`)}
                             className="
                                 group cursor-pointer
                                 rounded-2xl border border-gray-800
