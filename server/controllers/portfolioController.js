@@ -202,7 +202,7 @@ exports.publishPortfolio = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Portfolio published successfully",
-            deployUrl: `${baseUrl}/portfolio/${slug}`,
+            deployUrl: `${baseUrl}/myPortfolio/${slug}`,
         });
 
 
