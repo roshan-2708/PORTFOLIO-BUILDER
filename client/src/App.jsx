@@ -27,6 +27,7 @@ const App = () => {
               <Route path='/my-portfolios' element={<UsersPortfolio />} />
               <Route path='/create-portfolio' element={<BuildingPortfolio />} />
               <Route path="/portfolio/:id" element={<ViewPortfolio />} />
+              
             </>
           )
         }
