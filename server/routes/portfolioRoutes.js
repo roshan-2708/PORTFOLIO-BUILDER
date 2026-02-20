@@ -22,12 +22,8 @@ router.put(
 
 router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
-// router.get("/:slug", getPortfolioBySlug);
-// router.get('/:id', authMiddleware, getSinglePortfolio);
+router.get("/:slug", getPortfolioBySlug);
+router.get('/:id', authMiddleware, getSinglePortfolio);
 
-// Private: Dashboard se view karne ke liye (Needs Login)
-router.get('/get/:id', authMiddleware, getSinglePortfolio);
 
-// Public: Duniya ko dikhane ke liye (No Login)
-router.get("/view/:slug", getPortfolioBySlug);
 module.exports = router;
