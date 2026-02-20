@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from './component/Navbar'
 import Landing from './pages/Landing'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Footer from './component/Footer'
 import VerifyEmail from './component/VerifyEmail'
 import Dashboard from './pages/Dashboard'
@@ -12,6 +12,8 @@ import ViewPortfolio from './Portfolio/ViewPortfolio'
 
 const App = () => {
   const token = localStorage.getItem('token');
+  const location = useLocation();
+  const isPortfolioPage = location.pathname.startsWith('/portfolio/');
   return (
     <div className='min-h-screen'>
       <Navbar />
@@ -27,13 +29,13 @@ const App = () => {
               <Route path='/my-portfolios' element={<UsersPortfolio />} />
               <Route path='/create-portfolio' element={<BuildingPortfolio />} />
               <Route path="/portfolio/:id" element={<ViewPortfolio />} />
-              
+
             </>
           )
         }
 
       </Routes>
-      <Footer />
+      {!isPortfolioPage && <Footer />}
     </div>
   )
 }
