@@ -22,8 +22,8 @@ router.put(
 
 router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
-router.get('/id/:id', authMiddleware, getSinglePortfolio)
-router.get("/view/:slug", getPortfolioBySlug);
+router.get('/:id', authMiddleware, getSinglePortfolio)
+router.get("/:slug", getPortfolioBySlug);
 
 
 module.exports = router;
