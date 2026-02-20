@@ -22,7 +22,7 @@ router.put(
 
 router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
-router.get('/:id', getSinglePortfolio)
+router.get('/:id', authMiddleware, getSinglePortfolio)
 router.get("/:slug", getPortfolioBySlug);
 
 
