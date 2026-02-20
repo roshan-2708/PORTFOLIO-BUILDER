@@ -73,7 +73,27 @@ export const fetchSinglePortfolio = async (id) => {
     return res.data.portfolio;
 };
 
+exports.getPortfolioBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        // findById nahi, findOne use karein slug ke liye
+        const portfolio = await Portfolio.findOne({ slug: slug }); 
 
+        if (!portfolio) {
+            return res.status(404).json({
+                success: false,
+                message: "Portfolio not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: portfolio,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 export const getPortfolioCount = async (token) => {
     const res = await apiConnector(
