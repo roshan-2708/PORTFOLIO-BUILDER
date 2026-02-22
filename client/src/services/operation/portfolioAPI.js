@@ -6,6 +6,8 @@ const {
     PUBLISH_PORTFOLIO,
     USERS_PORTFOLIO,
     COUNT_PORTFOLIO,
+    GET_BY_ID,
+    GET_BY_SLUG
 } = portfolioEndpoints;
 
 export const createPortfolio = async (formData, token) => {
@@ -58,63 +60,26 @@ export const fetchMyPortfolio = async (token) => {
     return res.data.portfolios;
 };
 
-// export const fetchSinglePortfolio = async (id) => {
-//     const token = localStorage.getItem('token');
-
-//     const res = await apiConnector(
-//         "GET",
-//         `/portfolio/${id}`,
-//         null,
-//         {
-//             Authorization: `Bearer ${token}`,
-//         }
-//     );
-
-//     return res.data.portfolio;
-// };
-
-
-
 export const fetchSinglePortfolio = async (id) => {
     const token = localStorage.getItem('token');
     const res = await apiConnector(
         "GET",
-        `/portfolio/i/${id}`, // Added /i/ to match the new route
+        `${GET_BY_ID}/${id}`, // Result: /portfolio/getThrough/i/12345
         null,
         { Authorization: `Bearer ${token}` }
     );
     return res.data.portfolio;
 };
-exports.getPortfolioBySlug = async (req, res) => {
-    try {
-        const { slug } = req.params;
-        // findById nahi, findOne use karein slug ke liye
-        const portfolio = await Portfolio.findOne({ slug: slug });
 
-        if (!portfolio) {
-            return res.status(404).json({
-                success: false,
-                message: "Portfolio not found",
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            data: portfolio,
-        });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
+export const fetchPortfolioBySlug = async (slug) => {
+    const res = await apiConnector(
+        "GET",
+        `${GET_BY_SLUG}/${slug}`, // Result: /portfolio/getThrough/s/my-slug
+        null
+    );
+    // Note: your controller returns 'portfolio', not 'data'
+    return res.data.portfolio;
 };
-// If you have a separate function for Slug, it should look like this:
-// export const fetchPortfolioBySlug = async (slug) => {
-//     const res = await apiConnector(
-//         "GET",
-//         `/portfolio/s/${slug}`, // Added /s/ to match the new route
-//         null
-//     );
-//     return res.data.data;
-// };
 
 export const getPortfolioCount = async (token) => {
     const res = await apiConnector(
