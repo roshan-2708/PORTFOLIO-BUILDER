@@ -7,6 +7,7 @@ export const authEndpoints = {
     LOGIN: '/auth/login',
     GET_USER_PROFILE: '/auth/me',
     CHANGE_PASSWORD: '/auth/change-password',
+
 }
 
 export const profileEndpoints = {
@@ -19,6 +20,8 @@ export const profileEndpoints = {
 export const portfolioEndpoints = {
     CREATE_PORTFOLIO: '/portfolio/create',
     PUBLISH_PORTFOLIO: '/portfolio/publish/:portfolioId',
-    USERS_PORTFOLIO : '/portfolio/my-portfolio',
-    COUNT_PORTFOLIO : '/portfolio/stats/me'
+    USERS_PORTFOLIO: '/portfolio/my-portfolio',
+    COUNT_PORTFOLIO: '/portfolio/stats/me',
+    GET_BY_SLUG: '/portfolio/s', // 's' for slug
+    GET_BY_ID: '/portfolio/i'    // 'i' for ID
 }
