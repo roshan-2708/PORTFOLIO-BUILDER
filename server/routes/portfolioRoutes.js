@@ -25,11 +25,9 @@ router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
 // router.get("/:slug", getPortfolioBySlug);
 // router.get('/:id', authMiddleware, getSinglePortfolio);
 
-// 1. Move the ID route above the SLUG route
-router.get('/:id', authMiddleware, getSinglePortfolio);
-
-// 2. The Slug route now acts as the fallback
-router.get("/:slug", getPortfolioBySlug);
+// Change the URL paths so they are unique
+router.get("/s/:slug", getPortfolioBySlug);          // Accessible at /portfolio/s/my-slug
+router.get('/i/:id', authMiddleware, getSinglePortfolio); // Accessible at /portfolio/i/69942f4...
 
 
 module.exports = router;
