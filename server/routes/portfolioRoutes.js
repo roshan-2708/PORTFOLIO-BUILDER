@@ -22,8 +22,14 @@ router.put(
 
 router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
-router.get("/:slug", getPortfolioBySlug);
+// router.get("/:slug", getPortfolioBySlug);
+// router.get('/:id', authMiddleware, getSinglePortfolio);
+
+// 1. Move the ID route above the SLUG route
 router.get('/:id', authMiddleware, getSinglePortfolio);
+
+// 2. The Slug route now acts as the fallback
+router.get("/:slug", getPortfolioBySlug);
 
 
 module.exports = router;
