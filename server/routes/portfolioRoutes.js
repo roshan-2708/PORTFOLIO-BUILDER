@@ -26,7 +26,7 @@ router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
 // router.get('/:id', authMiddleware, getSinglePortfolio);
 
 // Add /s/ and /i/ prefixes here
-router.get("/s/:slug", getPortfolioBySlug);
+router.get("/:slug", getPortfolioBySlug);
 router.get('/i/:id', authMiddleware, getSinglePortfolio);
 
 
