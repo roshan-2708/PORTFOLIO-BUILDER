@@ -105,7 +105,7 @@ const BuildingPortfolio = () => {
                 />
             )}
 
-            {step === 3 && (
+            {/* {step === 3 && (
                 <PublishModal
                     onPublish={async () => {
                         try {
@@ -134,6 +134,48 @@ const BuildingPortfolio = () => {
                         }
                     }}
 
+                    onDraft={() => {
+                        window.location.href = "/my-portfolios";
+                    }}
+
+                    onBack={prevStep}
+                />
+            )} */}
+            {step === 3 && (
+                <PublishModal
+                    onPublish={async () => {
+                        try {
+                            const token = localStorage.getItem("token");
+                            const portfolioId = portfolioData?.portfolio?._id;
+
+                            if (!portfolioId) {
+                                alert("Portfolio ID not found");
+                                return;
+                            }
+
+                            // 1. Publish the portfolio
+                            const result = await publishPortfolio(portfolioId, token);
+
+                            // 2. IMPORTANT: Update state with the newly published data
+                            // Result should contain the slug and the updated status
+                            if (result?.success) {
+                                setPortfolioData(prev => ({
+                                    ...prev,
+                                    status: "published",
+                                    // Use the slug/deployUrl from the server response
+                                    deployLink: result.portfolio.slug,
+                                    portfolio: result.portfolio // Refresh the whole object
+                                }));
+
+                                // Move to Step 4 ONLY after state is updated
+                                setStep(4);
+                            }
+                        } catch (error) {
+                            console.error("Publish Error:", error);
+                            alert("Failed to publish portfolio");
+                        }
+                    }}
+                    // ... rest of props
                     onDraft={() => {
                         window.location.href = "/my-portfolios";
                     }}
