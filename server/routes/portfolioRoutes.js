@@ -25,9 +25,9 @@ router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
 // router.get("/:slug", getPortfolioBySlug);
 // router.get('/:id', authMiddleware, getSinglePortfolio);
 
-// Change the URL paths so they are unique
-router.get("/s/:slug", getPortfolioBySlug);          // Accessible at /portfolio/s/my-slug
-router.get('/i/:id', authMiddleware, getSinglePortfolio); // Accessible at /portfolio/i/69942f4...
+// Add /s/ and /i/ prefixes here
+router.get("/s/:slug", getPortfolioBySlug);
+router.get('/i/:id', authMiddleware, getSinglePortfolio);
 
 
 module.exports = router;
