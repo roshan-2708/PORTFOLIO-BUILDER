@@ -22,6 +22,5 @@ export const portfolioEndpoints = {
     PUBLISH_PORTFOLIO: '/portfolio/publish/:portfolioId',
     USERS_PORTFOLIO: '/portfolio/my-portfolio',
     COUNT_PORTFOLIO: '/portfolio/stats/me',
-    GET_BY_SLUG: '/portfolio/s', // 's' for slug
     GET_BY_ID: '/portfolio/i'    // 'i' for ID
 }
