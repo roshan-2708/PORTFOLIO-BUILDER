@@ -135,38 +135,6 @@ exports.createPortfolio = async (req, res) => {
     }
 };
 
-// get portfolio
-exports.getPortfolioBySlug = async (req, res) => {
-    try {
-        const { slug } = req.params;
-
-        const portfolio = await Portfolio.findOne({ slug, isPublished: true }).populate("user").populate("services")
-            .populate("projects")
-            .populate("educations")
-            .populate("experience")
-            .populate("blogs")
-            .exec();
-
-        if (!portfolio) {
-            return res.status(404).json({
-                success: false,
-                message: "PORTFOLIO NOT FOUND",
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            portfolio,
-        });
-    } catch (error) {
-        console.error("Get Portfolio Error:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to fetch portfolio",
-        });
-    }
-}
-
 // publish portfolio
 exports.publishPortfolio = async (req, res) => {
     try {
@@ -279,6 +247,37 @@ exports.getUsersPortfolio = async (req, res) => {
     }
 };
 
+// get portfolio
+exports.getPortfolioBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+
+        const portfolio = await Portfolio.findOne({ slug, isPublished: true }).populate("user").populate("services")
+            .populate("projects")
+            .populate("educations")
+            .populate("experience")
+            .populate("blogs")
+            .exec();
+
+        if (!portfolio) {
+            return res.status(404).json({
+                success: false,
+                message: "PORTFOLIO NOT FOUND",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            portfolio,
+        });
+    } catch (error) {
+        console.error("Get Portfolio Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch portfolio",
+        });
+    }
+}
 // get single portfolio
 exports.getSinglePortfolio = async (req, res) => {
     try {
