@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import TemplateRenderer from './TemplateRenderer'
-import { fetchSinglePortfolio } from '../services/operation/portfolioAPI'
+import { fetchSinglePortfolio, fetchPortfolioBySlug } from '../services/operation/portfolioAPI'
 
 const ViewPortfolio = () => {
     const { id } = useParams()
@@ -10,19 +10,33 @@ const ViewPortfolio = () => {
 
     useEffect(() => {
         const loadPortfolio = async () => {
+            setLoading(true);
             try {
-                const res = await fetchSinglePortfolio(id)
+                let res;
+
+                // 🔍 CHECK: Is it a MongoDB ID (24 chars hex)?
+                const isMongoId = id.length === 24 && /^[0-9a-fA-F]+$/.test(id);
+
+                if (isMongoId) {
+                    console.log("Fetching by ID...");
+                    res = await fetchSinglePortfolio(id);
+                } else {
+                    console.log("Fetching by SLUG...");
+                    res = await fetchPortfolioBySlug(id);
+                }
+
                 console.log("Fetched portfolio:", res);
                 setPortfolio(res);
             } catch (error) {
-                console.log("Failed to load portfolio.")
+                console.error("Failed to load portfolio:", error);
+                setPortfolio(null);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         }
-        loadPortfolio()
+        if (id) loadPortfolio()
     }, [id])
-    
+
     if (loading) {
         return <div className="text-center mt-20 text-white">Loading...</div>
     }
