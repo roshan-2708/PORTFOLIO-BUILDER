@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { signup } from "../services/operation/authAPI";
-import { MdOutlineCancel, MdEmail, MdPassword } from "react-icons/md";
+import { MdOutlineCancel, MdEmail, MdPassword, MdPerson, MdWork, MdAutoAwesome } from "react-icons/md";
 
 const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
-
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -26,16 +25,13 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (formData.password !== formData.confirmPassword) {
             return alert("Passwords do not match");
         }
-
         try {
             setLoading(true);
             await signup({ ...formData, email });
             alert("Account created successfully");
-
             localStorage.removeItem("verifiedEmail");
             onClose();
             onSignupSuccess();
@@ -49,81 +45,127 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-[#0f172a] p-6 rounded-2xl w-full max-w-md text-black relative shadow-2xl border border-white/10 animate-scaleIn">
+        <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 bg-black/60 p-4">
+            {/* Main Container */}
+            <div className="bg-[#0f172a] flex flex-col md:flex-row w-full max-w-4xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.3)] border border-white/10 animate-scaleIn relative">
 
-                <button onClick={onClose} className="absolute top-3 right-3">
-                    <MdOutlineCancel size={22} />
+                {/* Close Button - Mobile friendly position */}
+                <button onClick={onClose} className="absolute top-4 right-4 z-20 text-gray-400 hover:text-white transition-colors">
+                    <MdOutlineCancel size={28} />
                 </button>
 
-                <h2 className="text-2xl font-bold mb-1">Create your account 🚀</h2>
-                <p className="text-sm text-gray-700 mb-5">
-                    Start building your professional portfolio
-                </p>
+                {/* Left Side: Visual / Branding (Hidden on mobile) */}
+                <div className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-br from-blue-600/20 to-purple-600/20 p-10 border-r border-white/5 relative overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-10%] w-40 h-40 bg-yellow-500/10 rounded-full blur-3xl animate-pulse"></div>
+                    <div className="absolute bottom-[-10%] right-[-10%] w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
 
-                <form onSubmit={handleSubmit} className="space-y-3">
-                    <input
-                        type="text"
-                        name="firstName"
-                        placeholder="First Name"
-                        onChange={handleChange}
-                        required
-                        className="w-full p-2 rounded bg-gray-300"
-                    />
+                    <div className="relative z-10 text-center">
+                        <div className="bg-yellow-500/20 p-4 rounded-2xl inline-block mb-4 shadow-inner">
+                            <MdWork size={48} className="text-yellow-500" />
+                        </div>
+                        <h1 className="text-3xl font-bold text-white mb-4">Build Your Legacy</h1>
+                        <p className="text-gray-400 text-sm leading-relaxed">
+                            Join 5,000+ developers creating stunning portfolios with our AI-powered builder.
+                        </p>
 
-                    <input
-                        type="text"
-                        name="lastName"
-                        placeholder="Last Name"
-                        onChange={handleChange}
-                        required
-                        className="w-full p-2 rounded bg-gray-300"
-                    />
+                        <div className="mt-8 space-y-4 text-left">
+                            <div className="flex items-center gap-3 text-gray-300 text-sm bg-white/5 p-3 rounded-xl border border-white/5">
+                                <MdAutoAwesome className="text-yellow-500" />
+                                <span>1-Click Portfolio Generation</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-gray-300 text-sm bg-white/5 p-3 rounded-xl border border-white/5">
+                                <MdPerson className="text-blue-400" />
+                                <span>Custom Domains & SEO</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <div className="relative">
-                        <MdEmail className="absolute top-3 left-3 text-gray-700" />
-                        <input
-                            type="email"
-                            value={email}
-                            readOnly
-                            className="w-full pl-10 p-2 rounded-lg bg-gray-200 text-gray-300 cursor-not-allowed"
-                        />
+                {/* Right Side: Form */}
+                <div className="w-full md:w-1/2 p-8 md:p-12 bg-[#0f172a] text-white">
+                    <div className="mb-8">
+                        <h2 className="text-3xl font-bold">Sign Up 🚀</h2>
+                        <p className="text-gray-400 text-sm mt-1">Complete your profile to get started.</p>
                     </div>
 
-                    <div className="relative">
-                        <MdPassword className="absolute top-3 left-3 text-gray-700" />
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            className="w-full pl-10 p-2 rounded-lg bg-gray-300"
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="flex gap-4">
+                            <div className="relative flex-1">
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    placeholder="First"
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="relative flex-1">
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    placeholder="Last"
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
+                                />
+                            </div>
+                        </div>
 
-                    <div className="relative">
-                        <MdPassword className="absolute top-3 left-3 text-gray-700" />
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            placeholder="Confirm Password"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                            className="w-full pl-10 p-2 rounded-lg bg-gray-300"
-                        />
-                    </div>
+                        <div className="relative">
+                            <MdEmail className="absolute top-4 left-4 text-gray-500" />
+                            <input
+                                type="email"
+                                value={email}
+                                readOnly
+                                className="w-full pl-12 p-3 rounded-xl bg-white/5 border border-white/5 text-gray-500 cursor-not-allowed italic"
+                            />
+                        </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-gradient-to-r from-yellow-600 to-yellow-700 py-2.5 rounded-lg font-semibold hover:opacity-90 transition"
-                    >
-                        {loading ? "Creating account..." : "Create Account"}
-                    </button>
-                </form>
+                        <div className="relative">
+                            <MdPassword className="absolute top-4 left-4 text-gray-500" />
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                className="w-full pl-12 p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
+                            />
+                        </div>
+
+                        <div className="relative">
+                            <MdPassword className="absolute top-4 left-4 text-gray-500" />
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                placeholder="Confirm Password"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                                className="w-full pl-12 p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black font-bold py-3.5 rounded-xl transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-yellow-500/20 mt-4"
+                        >
+                            {loading ? (
+                                <div className="flex items-center justify-center gap-2">
+                                    <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                                    <span>Creating...</span>
+                                </div>
+                            ) : "Launch My Portfolio"}
+                        </button>
+                    </form>
+
+                    <p className="text-center text-[10px] text-gray-500 mt-6 uppercase tracking-widest">
+                        Secure 256-bit SSL Encryption
+                    </p>
+                </div>
             </div>
         </div>
     );
