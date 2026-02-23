@@ -4,8 +4,7 @@ console.log("Axios baseURL:", import.meta.env.VITE_BASE_URL);
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-    timeout: 30000,
-    withCredentials: false,
+    timeout: 60000,
 });
 
 // Auto attach token
