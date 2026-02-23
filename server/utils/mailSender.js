@@ -35,22 +35,26 @@
 
 // module.exports = mailSender;
 
-const { Resend } = require("resend");
+const { Resend } = require('resend');
 
+// Resend instance initialize karein
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const mailSender = async (email, title, body) => {
     try {
-        await resend.emails.send({
-            from: "Portfolio-Builder.io <onboarding@resend.dev>",
+        // Resend ka official method use karein
+        const data = await resend.emails.send({
+            from: 'onboarding@resend.dev', // Jab tak domain verify na ho, yahi rahega
             to: email,
             subject: title,
             html: body,
         });
-        await transporter.sendMail(mailOptions);
-        console.log("✅ Email sent via Resend to:", email);
+
+        console.log("✅ Email sent successfully via Resend:", data.id);
+        return data;
     } catch (error) {
-        console.error("❌ Resend Email Error:", error);
+        // Yahan ReferenceError ab nahi aayega kyunki humne 'transporter' hata diya hai
+        console.error("❌ Resend Email Error:", error.message);
         throw error;
     }
 };
