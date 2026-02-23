@@ -35,39 +35,22 @@
 
 // module.exports = mailSender;
 
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-// Create transporter using Brevo SMTP
-const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST, // smtp-relay.brevo.com
-    port: process.env.MAIL_PORT, // 587
-    secure: false, // false for 587
-    auth: {
-        user: process.env.MAIL_USER, // Brevo login email
-        pass: process.env.MAIL_PASS, // Brevo SMTP password
-    },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Verify SMTP connection
-transporter.verify((err, success) => {
-    if (err) console.error("❌ Brevo SMTP connection failed:", err);
-    else console.log("✅ Brevo SMTP connection successful");
-});
-
-// Mail sender function
 const mailSender = async (email, title, body) => {
     try {
-        const mailOptions = {
-            from: `"PORTFOLIO BUILDER 🧑‍💻🌐" <${process.env.MAIL_USER}>`,
+        await resend.emails.send({
+            from: "Portfolio-Builder.io <onboarding@resend.dev>",
             to: email,
             subject: title,
             html: body,
-        };
-
+        });
         await transporter.sendMail(mailOptions);
-        console.log("✅ Email sent to:", email);
+        console.log("✅ Email sent via Resend to:", email);
     } catch (error) {
-        console.error("❌ Brevo SMTP Mail Error:", error.message);
+        console.error("❌ Resend Email Error:", error);
         throw error;
     }
 };
