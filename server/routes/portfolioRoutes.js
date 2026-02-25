@@ -26,7 +26,7 @@ router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
 // router.get('/:id', authMiddleware, getSinglePortfolio);
 
 router.get("/getThrough/s/:slug", getPortfolioBySlug);
-router.get('/getThrough/i/:id', getSinglePortfolio);
+router.get('/getThrough/i/:id', authMiddleware, getSinglePortfolio);
 
 // router.get('/getThrough/i/:id', authMiddleware, getSinglePortfolio);
 
