@@ -25,10 +25,8 @@ router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
 // router.get("/:slug", getPortfolioBySlug);
 // router.get('/:id', authMiddleware, getSinglePortfolio);
 
-// PRIVATE/DETAIL route - Auth required, uses ID
-router.get('/getThrough/i/:id', authMiddleware, getSinglePortfolio);
-// PUBLIC route - No auth, uses Slug
 router.get("/getThrough/s/:slug", getPortfolioBySlug);
+router.get('/getThrough/i/:id', authMiddleware, getSinglePortfolio);
 
 
 
