@@ -60,13 +60,34 @@ export const fetchMyPortfolio = async (token) => {
     return res.data.portfolios;
 };
 
+// export const fetchSinglePortfolio = async (id) => {
+//     const token = localStorage.getItem('token');
+//     const res = await apiConnector(
+//         "GET",
+//         `${GET_BY_ID}/${id}`, // Result: /portfolio/getThrough/i/12345
+//         null,
+//         { Authorization: `Bearer ${token}` }
+//     );
+//     return res.data.portfolio;
+// };
+
+// export const fetchPortfolioBySlug = async (slug) => {
+//     const res = await apiConnector(
+//         "GET",
+//         `${GET_BY_SLUG}/${slug}`, // Result: /portfolio/getThrough/s/my-slug
+//         null
+//     );
+//     // Note: your controller returns 'portfolio', not 'data'
+//     return res.data.portfolio;
+// };
+
 export const fetchSinglePortfolio = async (id) => {
-    const token = localStorage.getItem('token');
+    // ❌ Token nikalne ki zaroorat nahi hai public view ke liye
     const res = await apiConnector(
         "GET",
-        `${GET_BY_ID}/${id}`, // Result: /portfolio/getThrough/i/12345
+        `${GET_BY_ID}/${id}`,
         null,
-        { Authorization: `Bearer ${token}` }
+        {} // ✅ Headers ko empty rakhein taaki login ki zarurat na pade
     );
     return res.data.portfolio;
 };
@@ -74,10 +95,10 @@ export const fetchSinglePortfolio = async (id) => {
 export const fetchPortfolioBySlug = async (slug) => {
     const res = await apiConnector(
         "GET",
-        `${GET_BY_SLUG}/${slug}`, // Result: /portfolio/getThrough/s/my-slug
-        null
+        `${GET_BY_SLUG}/${slug}`,
+        null,
+        {} // ✅ Yahan bhi empty headers
     );
-    // Note: your controller returns 'portfolio', not 'data'
     return res.data.portfolio;
 };
 

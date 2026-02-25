@@ -15,12 +15,35 @@ const App = () => {
   const location = useLocation();
   const isPortfolioPage = location.pathname.startsWith('/portfolio/');
   return (
+    // <div className='min-h-screen'>
+    //   <Navbar />
+    //   <Routes>
+    //     <Route path="/" element={<Landing />} />
+    //     <Route path="*" element={<h1 className="p-4">404 Not Found</h1>} />
+    //     <Route path='/verify-email' element={<VerifyEmail />} />
+
+    //     {
+    //       token && (
+    //         <>
+    //           <Route path='/dashboard' element={<Dashboard />} />
+    //           <Route path='/my-portfolios' element={<UsersPortfolio />} />
+    //           <Route path='/create-portfolio' element={<BuildingPortfolio />} />
+    //           <Route path="/portfolio/:id" element={<ViewPortfolio />} />
+    //           <Route path='/preview/portfolio' element={<PortfolioPreview />}/>
+    //         </>
+    //       )
+    //     }
+
+    //   </Routes>
+    //   {!isPortfolioPage && <Footer />}
+    // </div>
     <div className='min-h-screen'>
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="*" element={<h1 className="p-4">404 Not Found</h1>} />
-        <Route path='/verify-email' element={<VerifyEmail />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
+        <Route path="/portfolio/:id" element={<ViewPortfolio />} />
 
         {
           token && (
@@ -28,12 +51,12 @@ const App = () => {
               <Route path='/dashboard' element={<Dashboard />} />
               <Route path='/my-portfolios' element={<UsersPortfolio />} />
               <Route path='/create-portfolio' element={<BuildingPortfolio />} />
-              <Route path="/portfolio/:id" element={<ViewPortfolio />} />
-              <Route path='/preview/portfolio' element={<PortfolioPreview />}/>
+              <Route path='/preview/portfolio' element={<PortfolioPreview />} />
             </>
           )
         }
 
+        <Route path="*" element={<h1 className="p-4">404 Not Found</h1>} />
       </Routes>
       {!isPortfolioPage && <Footer />}
     </div>
