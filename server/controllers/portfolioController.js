@@ -307,3 +307,163 @@ exports.getSinglePortfolio = async (req, res) => {
         });
     }
 }
+
+// update portfolio
+exports.updatePortfolio = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { portfolioId } = req.params;
+
+        const portfolio = await Portfolio.findOne({
+            _id: portfolioId,
+            user: userId,
+        });
+
+        if (!portfolio) {
+            return res.status(404).json({
+                success: false,
+                message: "Portfolio not found",
+            });
+        }
+
+        // profile image
+        let profileImageUrl = portfolio.profileImage;
+        if (req.files?.profileImage?.[0]) {
+            profileImageUrl = await uploadToCloudinary(
+                req.files.portfolioImage[0].buffer,
+                'portfolio/profile',
+            );
+        }
+
+        // parse fields
+        const skills = parseArray(req.body.skills);
+        const projects = parseArray(req.body.projects);
+        const languages = parseArray(req.body.languages);
+        const contact = parseObject(req.body.contact);
+        const experienceData = parseArray(req.body.experience);
+        const educationData = parseArray(req.body.education);
+        const serviceData = parseArray(req.body.services);
+        const blogData = parseArray(req.body.blogs);
+
+        // project image
+        const projectImages = req.files?.projectImages || [];
+        const projectsWithImages = [];
+
+        for (let i = 0; i < projects.length; i++) {
+            let project = projects[i];
+
+            if (projectImages[i]) {
+                const imageUrl = await uploadToCloudinary(
+                    projectImages[i].buffer,
+                    'portfolio/projects',
+                );
+                project.image = imageUrl;
+            } else if (portfolio.projects[i]?.image) {
+                project.image = portfolio.projects[i].image;
+            }
+            projectsWithImages.push(project);
+        }
+
+        // update main portfolio
+        portfolio.title = req.body.title || portfolio.title;
+        portfolio.about = req.body.about || portfolio.about;
+        portfolio.template = req.body.template || portfolio.template;
+        portfolio.profileImage = profileImageUrl;
+        portfolio.userImage = profileImageUrl;
+        portfolio.skills = skills;
+        portfolio.projects = projectsWithImages;
+        portfolio.languages = languages;
+        portfolio.contact = contact;
+
+        // replace child collection
+        await Experience.deleteMany({ user: userId });
+        await EducationInfo.deleteMany({ user: userId });
+        await Services.deleteMany({ user: userId });
+        await Blogs.deleteMany({ user: userId });
+
+        // insert new
+        if (experienceData.length > 0) {
+            const docs = await Experience.insertMany(
+                experienceData.map(d => ({ ...d, user: userId }))
+            );
+            portfolio.experience = docs.map(d => d._id);
+        }
+
+        if (educationData.length > 0) {
+            const docs = await EducationInfo.insertMany(
+                educationData.map(d => ({ ...d, user: userId }))
+            );
+            portfolio.educations = docs.map(d => d._id);
+        }
+
+        if (serviceData.length > 0) {
+            const docs = await Services.insertMany(
+                serviceData.map(d => ({ ...d, user: userId }))
+            );
+            portfolio.services = docs.map(d => d._id);
+        }
+
+        if (blogData.length > 0) {
+            const docs = await Blogs.insertMany(
+                blogData.map(d => ({ ...d, user: userId }))
+            );
+            portfolio.blogs = docs.map(d => d._id);
+        }
+
+        await portfolio.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'portfolio updated successfully',
+            portfolio,
+        });
+
+
+    } catch (error) {
+        console.error("Update Portfolio Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update portfolio",
+        });
+    }
+}
+
+// delete portfolio
+exports.deletePortfolio = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { portfolioId } = req.params;
+
+        const portfolio = await Portfolio.findOne({
+            _id: portfolioId,
+            user: userId,
+        });
+
+        if (!portfolio) {
+            return res.status(404).json({
+                success: false,
+                message: "Portfolio not found",
+            });
+        }
+
+        // delete child collection
+        await Experience.deleteMany({ _id: { $in: portfolio.experience } })
+        await EducationInfo.deleteMany({ _id: { $in: portfolio.educations } })
+        await Services.deleteMany({ _id: { $in: Portfolio.services } })
+        await Blogs.deleteMany({ _id: { $in: portfolio.blogs } })
+
+        // delete main portfolio
+        await Portfolio.findByIdAndDelete(portfolioId);
+
+        return res.status(200).JSON({
+            success: true,
+            message: "Portfolio deleted successfully",
+        });
+    } catch (error) {
+        console.error("Delete portfolio error", error);
+        return res.status(500).json({
+            success: false,
+            message: 'failed to delete portfolio',
+        });
+    }
+}
