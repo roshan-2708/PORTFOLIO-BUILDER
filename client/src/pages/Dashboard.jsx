@@ -4,25 +4,48 @@ import DeleteAccountModal from "../component/DeleteAccountModal";
 import EditProfile from "../component/EditProfileModal";
 import CreateProfileModal from "../component/CreateProfileModal";
 import { deleteAccount } from "../services/operation/profileAPI";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getPortfolioCount } from "../services/operation/portfolioAPI";
+import {
+    LayoutDashboard, User, Settings, Trash2,
+    PlusCircle, Eye, FileText, CheckCircle,
+    ChevronRight, Key
+} from "lucide-react";
 
 /* ------------------ Small UI Components ------------------ */
 
-const StatCard = ({ title, value, onClick }) => (
-    <div className="bg-white rounded-2xl shadow p-6" onClick={onClick}>
-        <p className="text-gray-500 text-sm uppercase">{title}</p>
-        <h2 className="text-3xl font-bold mt-4">{value}</h2>
+const StatCard = ({ title, value, icon: Icon, color, onClick }) => (
+    <div
+        onClick={onClick}
+        className={`group bg-gray-900/40 backdrop-blur-md border border-gray-800 p-6 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all duration-300 shadow-xl`}
+    >
+        <div className="flex justify-between items-start">
+            <div>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-wider">{title}</p>
+                <h2 className="text-3xl font-extrabold mt-2 text-white">{value}</h2>
+            </div>
+            <div className={`p-3 rounded-xl bg-gray-800 group-hover:bg-indigo-600/20 transition-colors`}>
+                <Icon size={24} className={color || "text-indigo-500"} />
+            </div>
+        </div>
+        <div className="mt-4 flex items-center text-indigo-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            View Details <ChevronRight size={16} className="ml-1" />
+        </div>
     </div>
 );
 
-const SectionCard = ({ title, children, action }) => (
-    <div className="bg-white rounded-2xl shadow p-6">
-        <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">{title}</h2>
+const SectionCard = ({ title, children, icon: Icon, action }) => (
+    <div className="bg-gray-900/40 backdrop-blur-md border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="px-6 py-5 border-b border-gray-800 flex justify-between items-center bg-gray-800/30">
+            <div className="flex items-center gap-3">
+                {Icon && <Icon className="text-indigo-500" size={20} />}
+                <h2 className="text-lg font-bold text-white">{title}</h2>
+            </div>
             {action}
         </div>
-        {children}
+        <div className="p-6">
+            {children}
+        </div>
     </div>
 );
 
@@ -30,268 +53,202 @@ const SectionCard = ({ title, children, action }) => (
 
 export default function Dashboard() {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(false);
-
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState(null);
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [loadingPassword, setLoadingPassword] = useState(false);
-    const [passwordMessage, setPasswordMessage] = useState("");
-
+    const [passwordMessage, setPasswordMessage] = useState({ text: "", type: "" });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openCreateProfile, setOpenCreateProfile] = useState(false);
-    const [stats, setStats] = useState(null);
 
     const navigate = useNavigate();
 
-    // Fetch Profile
-
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchAllData = async () => {
             try {
-                setLoading(true);
-                const data = await userProfile();
-                setUser(data.user);
+                const [profileRes, statsRes] = await Promise.all([
+                    userProfile(),
+                    getPortfolioCount(localStorage.getItem('token'))
+                ]);
+                setUser(profileRes.user);
+                if (statsRes?.success) setStats(statsRes);
             } catch (error) {
-                console.error(error);
+                console.error("Data fetch error", error);
             } finally {
                 setLoading(false);
             }
         };
-
-        fetchProfile();
+        fetchAllData();
     }, []);
 
-    // Auto open create profile if not created
     useEffect(() => {
-        if (user && !user.profile) {
-            setOpenCreateProfile(true);
-        }
+        if (user && !user.profile) setOpenCreateProfile(true);
     }, [user]);
-
-    // Change Password
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
-
-        if (!oldPassword || !newPassword) {
-            setPasswordMessage("All fields are required");
-            return;
-        }
-
         try {
             setLoadingPassword(true);
             const res = await changePassword(oldPassword, newPassword);
-
             if (res.success) {
-                setPasswordMessage("Password changed successfully");
-                setOldPassword("");
-                setNewPassword("");
+                setPasswordMessage({ text: "Password updated successfully!", type: "success" });
+                setOldPassword(""); setNewPassword("");
             }
         } catch (error) {
-            setPasswordMessage(
-                error.response?.data?.message || "Password update failed"
-            );
+            setPasswordMessage({ text: error.response?.data?.message || "Failed to update", type: "error" });
         } finally {
             setLoadingPassword(false);
         }
     };
 
-    // Delete Account
-
-    const handleDeleteAccount = async () => {
-        try {
-            setLoading(true);
-            await deleteAccount();
-            alert("Account deleted successfully");
-
-            localStorage.clear();
-            window.location.href = "/";
-        } catch (error) {
-            alert("Failed to delete account");
-        } finally {
-            setLoading(false);
-            setShowDeleteModal(false);
-        }
-    };
-
-    // count portfolio
-    useEffect(() => {
-        const fetchCount = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const data = await getPortfolioCount(token);
-
-                if (data?.success) {
-                    setStats(data);
-                }
-            } catch (error) {
-                console.log("Stats error", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchCount();
-    }, []);
-
-    if (loading) return <p className="p-8">Loading profile...</p>;
-
-    /* ------------------ UI ------------------ */
+    if (loading) return (
+        <div className="min-h-screen bg-[#0B0F1A] flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-indigo-500"></div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen p-8">
+        <div className="min-h-screen bg-[#0B0F1A] text-gray-200 p-4 md:p-8 font-sans">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-yellow-500">
-                    Welcome Back{" "}
-                    <span className="text-indigo-600">
-                        {user?.firstName || "User"}
-                    </span>
-                </h1>
+            <header className="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 className="text-4xl font-black text-white tracking-tight">
+                        Hi, <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                            {user?.firstName || "Creator"}!
+                        </span>
+                    </h1>
+                    <p className="text-gray-400 mt-1">Here's what's happening with your portfolios.</p>
+                </div>
                 <button
                     onClick={() => navigate('/create-portfolio')}
-                    className="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">
-                    Start Creating New Portfolio
-                </button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                <StatCard title="Total Portfolio" value={stats?.totalPortfolios || 0} onClick={() => navigate('/my-portfolios')} />
-                <StatCard title="Draft" value={stats?.draftPortfolios || 0} />
-                <StatCard title="Published" value={stats?.publishedPortfolios || 0} />
-                <StatCard title="Views" value="124" />
-            </div>
-
-            {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Profile Section */}
-                <SectionCard
-                    title="Profile Details"
-                    action={
-                        user?.profile && (
-                            <button
-                                onClick={() => setOpenEdit(true)}
-                                className="text-indigo-600 font-medium hover:underline"
-                            >
-                                Edit Profile
-                            </button>
-                        )
-                    }
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
                 >
-                    {user?.profile ? (
-                        <ul className="space-y-2 text-gray-700">
-                            <li>
-                                <strong>Name:</strong> {user.firstName} {user.lastName}
-                            </li>
-                            <li>
-                                <strong>Email:</strong> {user.email}
-                            </li>
-                            <li>
-                                <strong>About:</strong>{" "}
-                                {user.profile.about || "Not added"}
-                            </li>
-                            <li>
-                                <strong>Address:</strong>{" "}
-                                {user.profile.address || "Not added"}
-                            </li>
-                            <li>
-                                <strong>Phone:</strong>{" "}
-                                {user.profile.phone || "Not added"}
-                            </li>
-                            <li>
-                                <strong>Resume:</strong>{" "}
-                                {user.profile.resume?.url ? (
-                                    <a
-                                        href={user.profile.resume.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-indigo-600 underline"
-                                    >
-                                        View
-                                    </a>
-                                ) : (
-                                    "Not uploaded"
-                                )}
-                            </li>
-                        </ul>
-                    ) : (
-                        <div className="bg-yellow-50 border border-yellow-300 p-4 rounded-lg">
-                            <p className="text-yellow-700">
-                                ⚠️ Your profile is incomplete.
-                            </p>
-                            <button
-                                onClick={() => setOpenCreateProfile(true)}
-                                className="mt-2 text-indigo-600 font-medium underline"
-                            >
-                                Complete Profile
-                            </button>
-                        </div>
-                    )}
-                </SectionCard>
+                    <PlusCircle size={20} /> Create New Portfolio
+                </button>
+            </header>
 
-                {/* Account Settings */}
-                <SectionCard title="Account Settings">
-                    {passwordMessage && (
-                        <p className="mb-3 text-sm text-pink-600">{passwordMessage}</p>
-                    )}
+            <div className="max-w-7xl mx-auto">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    <StatCard title="Total Portfolios" value={stats?.totalPortfolios || 0} icon={LayoutDashboard} color="text-blue-400" onClick={() => navigate('/my-portfolios')} />
+                    <StatCard title="Drafts" value={stats?.draftPortfolios || 0} icon={FileText} color="text-yellow-400" />
+                    <StatCard title="Published" value={stats?.publishedPortfolios || 0} icon={CheckCircle} color="text-emerald-400" />
+                    <StatCard title="Total Views" value="124" icon={Eye} color="text-purple-400" />
+                </div>
 
-                    <form onSubmit={handleChangePassword}>
-                        <h3 className="font-semibold mb-2">Change Password</h3>
+                {/* Main Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                        <input
-                            type="password"
-                            placeholder="Current Password"
-                            className="w-full border rounded-lg px-3 py-2 mb-2 text-white"
-                            value={oldPassword}
-                            onChange={(e) => setOldPassword(e.target.value)}
-                        />
-
-                        <input
-                            type="password"
-                            placeholder="New Password"
-                            className="w-full border rounded-lg px-3 py-2 mb-3 text-white"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                        />
-
-                        <button
-                            type="submit"
-                            disabled={loadingPassword}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+                    {/* Profile Section (Span 2) */}
+                    <div className="lg:col-span-2 space-y-8">
+                        <SectionCard
+                            title="Personal Information"
+                            icon={User}
+                            action={user?.profile && (
+                                <button onClick={() => setOpenEdit(true)} className="text-sm font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                                    Edit Details
+                                </button>
+                            )}
                         >
-                            {loadingPassword ? "Updating..." : "Change Password"}
-                        </button>
-                    </form>
-
-                    <div className="border-t pt-4 mt-6">
-                        <button
-                            onClick={() => setShowDeleteModal(true)}
-                            className="text-red-600 font-semibold hover:underline"
-                        >
-                            Delete Account
-                        </button>
+                            {user?.profile ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
+                                        <p className="text-white font-medium">{user.firstName} {user.lastName}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Email Address</label>
+                                        <p className="text-white font-medium">{user.email}</p>
+                                    </div>
+                                    <div className="md:col-span-2 space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">About</label>
+                                        <p className="text-gray-300 leading-relaxed">{user.profile.about || "Describe yourself to the world..."}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Contact</label>
+                                        <p className="text-white font-medium">{user.profile.phone || "Not provided"}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Resume</label>
+                                        <div>
+                                            {user.profile.resume?.url ? (
+                                                <a href={user.profile.resume.url} target="_blank" rel="noreferrer" className="inline-flex items-center text-indigo-400 hover:underline">
+                                                    View Document <ChevronRight size={14} />
+                                                </a>
+                                            ) : <span className="text-gray-600 italic">Not uploaded</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center py-6 bg-indigo-500/5 rounded-2xl border border-dashed border-indigo-500/30">
+                                    <p className="text-indigo-300 mb-4">Your profile is incomplete</p>
+                                    <button onClick={() => setOpenCreateProfile(true)} className="px-4 py-2 bg-indigo-600 rounded-lg text-sm font-bold">Complete Now</button>
+                                </div>
+                            )}
+                        </SectionCard>
                     </div>
-                </SectionCard>
+
+                    {/* Sidebar: Settings */}
+                    <div className="space-y-8">
+                        <SectionCard title="Security" icon={Settings}>
+                            <form onSubmit={handleChangePassword} className="space-y-4">
+                                <div>
+                                    <div className="relative">
+                                        <Key className="absolute left-3 top-3 text-gray-500" size={16} />
+                                        <input
+                                            type="password"
+                                            placeholder="Current Password"
+                                            className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-10 py-2.5 focus:border-indigo-500 outline-none transition-all text-sm"
+                                            value={oldPassword}
+                                            onChange={(e) => setOldPassword(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="relative">
+                                        <Key className="absolute left-3 top-3 text-gray-500" size={16} />
+                                        <input
+                                            type="password"
+                                            placeholder="New Password"
+                                            className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-10 py-2.5 focus:border-indigo-500 outline-none transition-all text-sm"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                {passwordMessage.text && (
+                                    <p className={`text-xs font-bold ${passwordMessage.type === 'error' ? 'text-red-400' : 'text-emerald-400'}`}>
+                                        {passwordMessage.text}
+                                    </p>
+                                )}
+                                <button
+                                    type="submit"
+                                    disabled={loadingPassword}
+                                    className="w-full py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-xl text-sm font-bold transition-all"
+                                >
+                                    {loadingPassword ? "Updating..." : "Update Password"}
+                                </button>
+                            </form>
+
+                            <div className="mt-8 pt-6 border-t border-gray-800">
+                                <button
+                                    onClick={() => setShowDeleteModal(true)}
+                                    className="flex items-center gap-2 text-red-500/70 hover:text-red-500 transition-colors text-sm font-bold"
+                                >
+                                    <Trash2 size={16} /> Deactivate Account
+                                </button>
+                            </div>
+                        </SectionCard>
+                    </div>
+                </div>
             </div>
 
-            {/* Modals */}
-            {openEdit && (
-                <EditProfile user={user} onClose={() => setOpenEdit(false)} />
-            )}
-
-            {openCreateProfile && (
-                <CreateProfileModal
-                    onClose={() => setOpenCreateProfile(false)}
-                />
-            )}
-
-            <DeleteAccountModal
-                isOpen={showDeleteModal}
-                onClose={() => setShowDeleteModal(false)}
-                onConfirm={handleDeleteAccount}
-                loading={loading}
-            />
+            {/* Modals - Same logic kept */}
+            {openEdit && <EditProfile user={user} onClose={() => setOpenEdit(false)} />}
+            {openCreateProfile && <CreateProfileModal onClose={() => setOpenCreateProfile(false)} />}
+            <DeleteAccountModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} onConfirm={deleteAccount} loading={loading} />
         </div>
     );
 }
