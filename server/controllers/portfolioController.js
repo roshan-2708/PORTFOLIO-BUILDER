@@ -252,7 +252,7 @@ exports.getPortfolioBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
 
-        const portfolio = await Portfolio.findOne({ slug, isPublished: true }).populate("user").populate("services")
+        const portfolio = await Portfolio.findOne({ slug, isPublished: true }, { $inc: { views: 1 } }).populate("user").populate("services")
             .populate("projects")
             .populate("educations")
             .populate("experience")
@@ -489,3 +489,34 @@ exports.deletePortfolio = async (req, res) => {
         });
     }
 };
+
+// total views
+exports.getTotalViews = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        if (!userId) {
+            return res.status(404).json({
+                success: false,
+                message: "userid not found"
+            });
+        }
+        const portfolios = await Portfolio.find({ user: userId });
+        let totalView = 0;
+        portfolios.forEach((portfolio) => {
+            totalView += portfolio.views;
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "total view count ",
+            totalViews: totalView,
+        });
+
+    } catch (error) {
+        console.error("Failed in get total view count", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch total views"
+        });
+    }
+}
