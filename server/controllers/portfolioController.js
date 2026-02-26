@@ -446,24 +446,46 @@ exports.deletePortfolio = async (req, res) => {
             });
         }
 
-        // delete child collection
-        await Experience.deleteMany({ _id: { $in: portfolio.experience } })
-        await EducationInfo.deleteMany({ _id: { $in: portfolio.educations } })
-        await Services.deleteMany({ _id: { $in: Portfolio.services } })
-        await Blogs.deleteMany({ _id: { $in: portfolio.blogs } })
+        /* ========== SAFE CHILD DELETE ========== */
 
-        // delete main portfolio
+        if (portfolio.experience?.length > 0) {
+            await Experience.deleteMany({
+                _id: { $in: portfolio.experience }
+            });
+        }
+
+        if (portfolio.educations?.length > 0) {
+            await EducationInfo.deleteMany({
+                _id: { $in: portfolio.educations }
+            });
+        }
+
+        if (portfolio.services?.length > 0) {
+            await Services.deleteMany({
+                _id: { $in: portfolio.services }
+            });
+        }
+
+        if (portfolio.blogs?.length > 0) {
+            await Blogs.deleteMany({
+                _id: { $in: portfolio.blogs }
+            });
+        }
+
+        /* ========== DELETE MAIN PORTFOLIO ========== */
+
         await Portfolio.findByIdAndDelete(portfolioId);
 
-        return res.status(200).JSON({
+        return res.status(200).json({
             success: true,
             message: "Portfolio deleted successfully",
         });
+
     } catch (error) {
-        console.error("Delete portfolio error", error);
+        console.error("Delete Portfolio Error:", error);
         return res.status(500).json({
             success: false,
-            message: 'failed to delete portfolio',
+            message: error.message,
         });
     }
-}
+};
