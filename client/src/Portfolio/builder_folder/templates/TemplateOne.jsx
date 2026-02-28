@@ -4,20 +4,20 @@ import { userProfile } from "../../../services/operation/authAPI";
 
 const TemplateOne = ({ data }) => {
     if (!data) return null;
-    // const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // useEffect(() => {
-    //     const fetchUser = async () => {
-    //         try {
-    //             const res = await userProfile();
-    //             setUser(res.user);
-    //         } catch (error) {
-    //             console.log("failed to fetch user");
-    //         }
-    //     };
-    //     fetchUser();
-    // }, []);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await userProfile();
+                setUser(res.user);
+            } catch (error) {
+                console.log("failed to fetch user");
+            }
+        };
+        fetchUser();
+    }, []);
 
     const displayUser = data?.user || data;
     const resumeUrl = displayUser?.additionalDetails?.resume?.url || "#";
@@ -53,7 +53,7 @@ const TemplateOne = ({ data }) => {
             <nav className="fixed top-0 w-full z-50 border-b border-slate-800/50 bg-[#030712]/80 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                     <div className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                        {displayUser?.firstName || "Portfolio"}.
+                        {user?.firstName || "Portfolio"}.
                     </div>
 
                     {/* Desktop */}
