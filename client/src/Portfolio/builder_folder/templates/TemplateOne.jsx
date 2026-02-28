@@ -19,7 +19,7 @@ const TemplateOne = ({ data }) => {
         fetchUser();
     }, []);
 
-    const displayUser = data?.user || data;
+    const displayUser = data?.user || user || data;
     const resumeUrl = displayUser?.additionalDetails?.resume?.url || "#";
 
     const {
