@@ -4,20 +4,20 @@ import { userProfile } from "../../../services/operation/authAPI";
 
 const TemplateOne = ({ data }) => {
     if (!data) return null;
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await userProfile();
-                setUser(res.user);
-            } catch (error) {
-                console.log("failed to fetch user");
-            }
-        };
-        fetchUser();
-    }, []);
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         try {
+    //             const res = await userProfile();
+    //             setUser(res.user);
+    //         } catch (error) {
+    //             console.log("failed to fetch user");
+    //         }
+    //     };
+    //     fetchUser();
+    // }, []);
 
     const displayUser = data?.user || data;
     const resumeUrl = displayUser?.additionalDetails?.resume?.url || "#";
