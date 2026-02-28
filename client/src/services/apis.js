@@ -19,9 +19,12 @@ export const profileEndpoints = {
 
 export const portfolioEndpoints = {
     CREATE_PORTFOLIO: '/portfolio/create',
+    UPDATE_PORTFOLIO: (id) => `/portfolio/update/${id}`,
+    DELETE_PORTFOLIO: (id) => `/portfolio/delete/${id}`,
     PUBLISH_PORTFOLIO: '/portfolio/publish/:portfolioId',
     USERS_PORTFOLIO: '/portfolio/my-portfolio',
     COUNT_PORTFOLIO: '/portfolio/stats/me',
     GET_BY_ID: '/portfolio/getThrough/i',
-    GET_BY_SLUG: '/portfolio/getThrough/s'
+    GET_BY_SLUG: '/portfolio/getThrough/s',
+    TOTAL_VIEW_COUNT: '/dashboard/total-views'
 }

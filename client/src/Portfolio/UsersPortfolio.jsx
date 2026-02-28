@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchMyPortfolio } from '../services/operation/portfolioAPI';
+import { updatePortfolio, deletePortfolio } from '../services/operation/portfolioAPI';
+import DeleteModal from './DeleteModal';
 import {
     Plus,
     Layout,
@@ -16,6 +18,24 @@ const UsersPortfolio = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [portfolio, setPortfolio] = useState([]);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState(null);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        try {
+            setDeleting(true);
+            await deletePortfolio(selectedPortfolioId);
+            setPortfolio((prev) =>
+                prev.filter((item) => item._id !== selectedPortfolioId)
+            );
+            setShowDeleteModal(false);
+        } catch (error) {
+            console.error("Delete failed", error);
+        } finally {
+            setDeleting(false);
+        }
+    };
 
     useEffect(() => {
         const loadPortfolio = async () => {
@@ -143,6 +163,18 @@ const UsersPortfolio = () => {
 
                                         <div className="flex items-center gap-1.5 text-yellow-500 font-bold text-sm transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
                                             Manage <ArrowRight size={16} />
+
+                                            {/* delete modal */}
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedPortfolioId(item._id);
+                                                    setShowDeleteModal(true);
+                                                }}
+                                                className="px-3 py-1.5 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
+                                            >
+                                                Delete
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +183,14 @@ const UsersPortfolio = () => {
                     </div>
                 )}
             </div>
+            <DeleteModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+                deleting={deleting}
+            />
         </div>
+
     );
 };
 

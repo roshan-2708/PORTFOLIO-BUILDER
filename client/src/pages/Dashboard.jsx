@@ -5,7 +5,7 @@ import EditProfile from "../component/EditProfileModal";
 import CreateProfileModal from "../component/CreateProfileModal";
 import { deleteAccount } from "../services/operation/profileAPI";
 import { useNavigate } from "react-router-dom";
-import { getPortfolioCount } from "../services/operation/portfolioAPI";
+import { getPortfolioCount, viewsCount } from "../services/operation/portfolioAPI";
 import {
     LayoutDashboard, User, Settings, Trash2,
     PlusCircle, Eye, FileText, CheckCircle,
@@ -52,7 +52,8 @@ const SectionCard = ({ title, children, icon: Icon, action }) => (
 /* ------------------ Dashboard ------------------ */
 
 export default function Dashboard() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(0);
+    const [totalViews, setTotalViews] = useState(null);
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState(null);
     const [oldPassword, setOldPassword] = useState("");
@@ -86,6 +87,17 @@ export default function Dashboard() {
     useEffect(() => {
         if (user && !user.profile) setOpenCreateProfile(true);
     }, [user]);
+    const fetchViews = async () => {
+        try {
+            const res = await viewsCount();
+            setTotalViews(res.data.totalViews)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    useEffect(() => {
+        fetchViews();
+    }, []);
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -135,7 +147,7 @@ export default function Dashboard() {
                     <StatCard title="Total Portfolios" value={stats?.totalPortfolios || 0} icon={LayoutDashboard} color="text-blue-400" onClick={() => navigate('/my-portfolios')} />
                     <StatCard title="Drafts" value={stats?.draftPortfolios || 0} icon={FileText} color="text-yellow-400" />
                     <StatCard title="Published" value={stats?.publishedPortfolios || 0} icon={CheckCircle} color="text-emerald-400" />
-                    <StatCard title="Total Views" value="124" icon={Eye} color="text-purple-400" />
+                    <StatCard title="Total Views" value={totalViews} icon={Eye} color="text-purple-400" />
                 </div>
 
                 {/* Main Content Grid */}

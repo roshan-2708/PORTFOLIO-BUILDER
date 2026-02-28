@@ -4,10 +4,13 @@ import { portfolioEndpoints } from "../apis";
 const {
     CREATE_PORTFOLIO,
     PUBLISH_PORTFOLIO,
+    UPDATE_PORTFOLIO,
+    DELETE_PORTFOLIO,
     USERS_PORTFOLIO,
     COUNT_PORTFOLIO,
     GET_BY_ID,
-    GET_BY_SLUG
+    GET_BY_SLUG,
+    TOTAL_VIEW_COUNT
 } = portfolioEndpoints;
 
 export const createPortfolio = async (formData, token) => {
@@ -60,27 +63,6 @@ export const fetchMyPortfolio = async (token) => {
     return res.data.portfolios;
 };
 
-// export const fetchSinglePortfolio = async (id) => {
-//     const token = localStorage.getItem('token');
-//     const res = await apiConnector(
-//         "GET",
-//         `${GET_BY_ID}/${id}`, // Result: /portfolio/getThrough/i/12345
-//         null,
-//         { Authorization: `Bearer ${token}` }
-//     );
-//     return res.data.portfolio;
-// };
-
-// export const fetchPortfolioBySlug = async (slug) => {
-//     const res = await apiConnector(
-//         "GET",
-//         `${GET_BY_SLUG}/${slug}`, // Result: /portfolio/getThrough/s/my-slug
-//         null
-//     );
-//     // Note: your controller returns 'portfolio', not 'data'
-//     return res.data.portfolio;
-// };
-
 export const fetchSinglePortfolio = async (id) => {
     // ❌ Token nikalne ki zaroorat nahi hai public view ke liye
     const res = await apiConnector(
@@ -112,4 +94,56 @@ export const getPortfolioCount = async (token) => {
         }
     );
     return res.data;
+}
+
+export const updatePortfolio = async (portfolioId, formData, token) => {
+    try {
+        const response = await apiConnector(
+            "PUT",
+            portfolioEndpoints.UPDATE_PORTFOLIO(portfolioId),
+            formData,
+            {
+                Authorization: `Bearer ${token}`,
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error("update portfolio error", error);
+        throw error;
+    }
+};
+
+export const deletePortfolio = async (portfolioId, token) => {
+    try {
+        const response = await apiConnector(
+            "DELETE",
+            portfolioEndpoints.DELETE_PORTFOLIO(portfolioId),
+            null,
+            {
+                Authorization: `Bearer ${token}`,
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error("delete portfolio error", error);
+        throw error;
+    }
+};
+
+export const viewsCount = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await apiConnector(
+            'GET',
+            TOTAL_VIEW_COUNT,
+            null,
+            {
+                Authorization: `Bearer ${token}`
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error("Error fetching total views:", error);
+        throw error;
+    }
 }
