@@ -248,7 +248,6 @@ exports.getUsersPortfolio = async (req, res) => {
 };
 
 // get portfolio
-// controller.js
 exports.getPortfolioBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
@@ -270,6 +269,7 @@ exports.getPortfolioBySlug = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
 // get single portfolio
 exports.getSinglePortfolio = async (req, res) => {
     try {
@@ -486,29 +486,19 @@ exports.deletePortfolio = async (req, res) => {
 exports.getTotalViews = async (req, res) => {
     try {
         const userId = req.user.id;
-        if (!userId) {
-            return res.status(404).json({
-                success: false,
-                message: "userid not found"
-            });
-        }
         const portfolios = await Portfolio.find({ user: userId });
-        let totalView = 0;
-        portfolios.forEach((portfolio) => {
-            totalView += portfolio.views;
-        });
+
+        // Safe calculation using reduce
+        const totalView = portfolios.reduce((acc, portfolio) => acc + (portfolio.views || 0), 0);
 
         return res.status(200).json({
             success: true,
-            message: "total view count ",
             totalViews: totalView,
         });
-
     } catch (error) {
-        console.error("Failed in get total view count", error);
         return res.status(500).json({
             success: false,
-            message: "Failed to fetch total views"
+            message: "Server Error",
         });
     }
 }
