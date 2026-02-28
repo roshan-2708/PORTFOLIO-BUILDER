@@ -69,7 +69,7 @@ export const fetchSinglePortfolio = async (id) => {
         "GET",
         `${GET_BY_ID}/${id}`,
         null,
-        {} // ✅ Headers ko empty rakhein taaki login ki zarurat na pade
+        {}
     );
     return res.data.portfolio;
 };
@@ -79,7 +79,9 @@ export const fetchPortfolioBySlug = async (slug) => {
         "GET",
         `${GET_BY_SLUG}/${slug}`,
         null,
-        {} // ✅ Yahan bhi empty headers
+        {
+            
+        }
     );
     return res.data.portfolio;
 };
