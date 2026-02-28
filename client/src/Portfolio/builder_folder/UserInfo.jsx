@@ -127,7 +127,7 @@ const UserInfo = ({ data, setData, onNext }) => {
             ...prev,
             blogs: [
                 ...prev.blogs,
-                { title: "", description: "", link: "" },
+                { title: "", description: "", link: "", image: null },
             ],
         }));
     };
@@ -561,6 +561,13 @@ const UserInfo = ({ data, setData, onNext }) => {
                     <h3 className="text-lg font-semibold border-b border-slate-700 pb-2">Recent Blogs</h3>
                     {formData.blogs.map((blog, index) => (
                         <div key={index} className="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-3">
+                            <input
+                                type="file"
+                                className="text-sm text-slate-400"
+                                onChange={(e) =>
+                                    updateBlogs(index, "image", e.target.files[0])
+                                }
+                            />
                             <input className="input" placeholder="Blog Title" value={blog.title} onChange={(e) => updateBlogs(index, "title", e.target.value)} />
                             <input className="input" placeholder="Blog URL / Link" value={blog.link} onChange={(e) => updateBlogs(index, "link", e.target.value)} />
                             <textarea className="input text-sm" placeholder="Short Summary..." value={blog.description} onChange={(e) => updateBlogs(index, "description", e.target.value)} />

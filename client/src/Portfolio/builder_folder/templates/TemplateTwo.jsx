@@ -18,7 +18,8 @@ const TemplateTwo = ({ data }) => {
         };
         fetchUser();
     }, []);
-
+    const displayUser = data?.user || user || data;
+    const resumeUrl = displayUser?.additionalDetails?.resume?.url || "#";
     const {
         title,
         about,
@@ -49,7 +50,7 @@ const TemplateTwo = ({ data }) => {
             <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
                 <div className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
                     <span className="text-xl font-bold tracking-tight text-indigo-600">
-                        {user?.firstName?.toUpperCase() || "PORTFOLIO"}
+                        {displayUser?.firstName?.toUpperCase() || "PORTFOLIO"}
                     </span>
 
                     <ul className="hidden md:flex items-center gap-10">
@@ -77,14 +78,14 @@ const TemplateTwo = ({ data }) => {
                     <div className="mb-8 flex justify-center">
                         <div className="relative p-1 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-500">
                             <img
-                                src={profileImage || user?.image || "https://via.placeholder.com/150"}
+                                src={profileImage || displayUser?.image || "https://via.placeholder.com/150"}
                                 alt="Profile"
                                 className="w-32 h-32 rounded-full border-4 border-white object-cover"
                             />
                         </div>
                     </div>
                     <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6">
-                        Hey, I'm {user?.firstName || "there"} 👋
+                        Hey, I'm {displayUser?.firstName || "there"} 👋
                     </h1>
                     <p className="text-2xl font-medium text-indigo-600 mb-8">{title}</p>
                     <p className="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto mb-10">
@@ -318,7 +319,7 @@ const TemplateTwo = ({ data }) => {
 
             {/* --- Footer --- */}
             <footer className="py-12 text-center text-slate-500 text-sm">
-                <p>© {new Date().getFullYear()} {user?.firstName} {user?.lastName}. Made with ❤️ and React.</p>
+                <p>© {new Date().getFullYear()} {displayUser?.firstName} {displayUser?.lastName}. Made with ❤️ and React.</p>
             </footer>
         </div>
     );

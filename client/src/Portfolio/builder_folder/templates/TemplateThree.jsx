@@ -17,7 +17,8 @@ const TemplateThree = ({ data }) => {
         }
         fetchUser();
     }, []);
-
+    const displayUser = data?.user || user || data;
+    const resumeUrl = displayUser?.additionalDetails?.resume?.url || "#";
     const {
         title,
         about,
@@ -118,9 +119,9 @@ const TemplateThree = ({ data }) => {
 
                             {/* Name */}
                             <h1 className="text-4xl md:text-6xl font-extrabold mt-5 leading-tight tracking-wide">
-                                {user?.firstName}{" "}
+                                {displayUser?.firstName}{" "}
                                 <span className="text-[#2EB2D3]">
-                                    {user?.lastName}
+                                    {displayUser?.lastName}
                                 </span>
                             </h1>
 
@@ -744,7 +745,7 @@ const TemplateThree = ({ data }) => {
 
                     {/* Left Side */}
                     <p className="text-sm text-gray-400 text-center md:text-left">
-                        © {new Date().getFullYear()} <span className="text-white font-medium">Your Name</span>.
+                        © {new Date().getFullYear()} <span className="text-white font-medium">{displayUser?.firstName}</span>.
                         All Rights Reserved.
                     </p>
 
