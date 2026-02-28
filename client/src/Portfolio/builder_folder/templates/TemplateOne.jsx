@@ -53,7 +53,7 @@ const TemplateOne = ({ data }) => {
             <nav className="fixed top-0 w-full z-50 border-b border-slate-800/50 bg-[#030712]/80 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                     <div className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                        {user?.firstName || "Portfolio"}.
+                        {displayUser?.firstName || "Portfolio"}.
                     </div>
 
                     {/* Desktop */}
