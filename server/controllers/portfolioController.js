@@ -219,7 +219,9 @@ exports.getUsersPortfolio = async (req, res) => {
         const userId = req.user.id;
         console.log("JWT USER ID:", userId);
 
-        const portfolios = await Portfolio.find({ user: userId }).populate("services")
+        const portfolios = await Portfolio.find({ user: userId })
+            .populate('user')
+            .populate("services")
             .populate("projects")
             .populate("educations")
             .populate("experience")
@@ -274,7 +276,9 @@ exports.getPortfolioBySlug = async (req, res) => {
 exports.getSinglePortfolio = async (req, res) => {
     try {
         const { id } = req.params;
-        const portfolio = await Portfolio.findById(id).populate("services")
+        const portfolio = await Portfolio.findById(id)
+            .populate('user')
+            .populate("services")
             .populate("projects")
             .populate("educations")
             .populate("experience")
