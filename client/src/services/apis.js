@@ -26,5 +26,5 @@ export const portfolioEndpoints = {
     COUNT_PORTFOLIO: '/portfolio/stats/me',
     GET_BY_ID: '/portfolio/getThrough/i',
     GET_BY_SLUG: '/portfolio/getThrough/s',
-    TOTAL_VIEW_COUNT: '/dashboard/total-views'
+    TOTAL_VIEW_COUNT: '/portfolio/total-views'
 }
