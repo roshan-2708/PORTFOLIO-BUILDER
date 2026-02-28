@@ -37,8 +37,10 @@ router.delete(
 
 router.get("/stats/me", authMiddleware, getUserPortfolioCount);
 router.get('/my-portfolio', authMiddleware, getUsersPortfolio);
+// router.get("/getThrough/s/:slug", getPortfolioBySlug);
+// router.get('/getThrough/i/:id', authMiddleware, getSinglePortfolio);
+router.get('/getThrough/i/:id', getSinglePortfolio); 
 router.get("/getThrough/s/:slug", getPortfolioBySlug);
-router.get('/getThrough/i/:id', authMiddleware, getSinglePortfolio);
 router.get("/dashboard/total-views", authMiddleware, getTotalViews);
 
 

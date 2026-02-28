@@ -248,34 +248,26 @@ exports.getUsersPortfolio = async (req, res) => {
 };
 
 // get portfolio
+// controller.js
 exports.getPortfolioBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
 
-        const portfolio = await Portfolio.findOne({ slug, isPublished: true }, { $inc: { views: 1 } }).populate("user").populate("services")
-            .populate("projects")
-            .populate("educations")
-            .populate("experience")
-            .populate("blogs")
-            .exec();
+        // Query fix: views badhane ke liye findOneAndUpdate best hai
+        const portfolio = await Portfolio.findOneAndUpdate(
+            { slug, isPublished: true },
+            { $inc: { views: 1 } },
+            { new: true }
+        ).populate("user").populate("services").populate("projects")
+            .populate("educations").populate("experience").populate("blogs").exec();
 
         if (!portfolio) {
-            return res.status(404).json({
-                success: false,
-                message: "PORTFOLIO NOT FOUND",
-            });
+            return res.status(404).json({ success: false, message: "PORTFOLIO NOT FOUND" });
         }
 
-        return res.status(200).json({
-            success: true,
-            portfolio,
-        });
+        return res.status(200).json({ success: true, portfolio });
     } catch (error) {
-        console.error("Get Portfolio Error:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to fetch portfolio",
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 }
 // get single portfolio
