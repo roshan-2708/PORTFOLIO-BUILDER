@@ -8,7 +8,33 @@ const {
     DELETE_ACCOUNT,
 } = profileEndpoints;
 
-// create account
+// // create account
+// export const createAccount = async (formData) => {
+//     const response = await apiConnector(
+//         "POST",
+//         CREATE_ACCOUNT,
+//         formData,
+//         {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//             "Content-Type": "multipart/form-data",
+//         }
+//     );
+//     return response.data;
+// }
+
+// // update account
+// export const updateAccount = async (formData) => {
+//     const response = await apiConnector(
+//         "PUT",
+//         UPDATE_ACCOUNT,
+//         formData,
+//         {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         }
+//     );
+//     return response.data;
+// };
+
 export const createAccount = async (formData) => {
     const response = await apiConnector(
         "POST",
@@ -16,13 +42,11 @@ export const createAccount = async (formData) => {
         formData,
         {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
         }
     );
     return response.data;
-}
+};
 
-// update account
 export const updateAccount = async (formData) => {
     const response = await apiConnector(
         "PUT",

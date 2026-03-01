@@ -20,7 +20,6 @@ const TemplateOne = ({ data }) => {
     }, []);
 
     const displayUser = data?.user || user || data;
-    const resumeUrl = displayUser?.additionalDetails?.resume?.url || "#";
 
     const {
         title,
@@ -114,12 +113,18 @@ const TemplateOne = ({ data }) => {
                             <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20">
                                 Get In Touch
                             </button>
-                            <button
-                                onClick={() => resumeUrl !== "#" ? window.open(resumeUrl, "_blank") : alert("Resume not uploaded yet")}
-                                className="px-8 py-4 bg-slate-800/50 hover:bg-slate-800 border border-slate-700 text-white rounded-xl font-bold transition-all"
-                            >
-                                View Resume
-                            </button>
+                            {displayUser?.profile?.resume?.url ? (
+                                <button
+                                    onClick={() =>
+                                        window.open(displayUser.profile.resume.url, "_blank", "noopener,noreferrer")
+                                    }
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded"
+                                >
+                                    View Resume
+                                </button>
+                            ) : (
+                                <p className="italic text-gray-500">Resume not uploaded</p>
+                            )}
                         </div>
                     </div>
 
@@ -141,10 +146,10 @@ const TemplateOne = ({ data }) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- SKILLS SECTION --- */}
-            <section id="skills" className="py-24 px-6 bg-slate-900/30">
+            < section id="skills" className="py-24 px-6 bg-slate-900/30" >
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-16">
                         <h2 className="text-3xl font-bold text-white mb-4">Core Expertise</h2>
@@ -162,10 +167,10 @@ const TemplateOne = ({ data }) => {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- PROJECTS SECTION --- */}
-            <section id="projects" className="py-24 px-6 relative">
+            < section id="projects" className="py-24 px-6 relative" >
                 <div className="max-w-7xl mx-auto">
                     {/* Section Heading */}
                     <div className="mb-16">
@@ -238,10 +243,10 @@ const TemplateOne = ({ data }) => {
                         )}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- EXPERIENCE SECTION --- */}
-            <section id="experience" className="py-24 px-6 bg-slate-900/20">
+            < section id="experience" className="py-24 px-6 bg-slate-900/20" >
                 <div className="max-w-7xl mx-auto">
                     {/* Section Heading */}
                     <div className="mb-16">
@@ -325,10 +330,10 @@ const TemplateOne = ({ data }) => {
                         )}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- EDUCATION SECTION --- */}
-            <section id="education" className="py-24 px-6">
+            < section id="education" className="py-24 px-6" >
                 <div className="max-w-7xl mx-auto">
                     {/* Section Heading */}
                     <div className="mb-16">
@@ -405,10 +410,10 @@ const TemplateOne = ({ data }) => {
                         )}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- BLOG SECTION --- */}
-            <section id="blog" className="py-24 px-6 bg-slate-900/30">
+            < section id="blog" className="py-24 px-6 bg-slate-900/30" >
                 <div className="max-w-7xl mx-auto">
                     {/* Section Heading */}
                     <div className="mb-16">
@@ -475,10 +480,10 @@ const TemplateOne = ({ data }) => {
                         )}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- SERVICES SECTION --- */}
-            <section id="services" className="py-24 px-6">
+            < section id="services" className="py-24 px-6" >
                 <div className="max-w-7xl mx-auto">
                     {/* Section Heading */}
                     <div className="mb-16">
@@ -535,10 +540,10 @@ const TemplateOne = ({ data }) => {
                         )}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- LANGUAGES & CONTACT --- */}
-            <section id="contact" className="py-24 px-6 border-t border-slate-800/50 bg-[#020617]">
+            < section id="contact" className="py-24 px-6 border-t border-slate-800/50 bg-[#020617]" >
                 <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20">
 
                     {/* Languages */}
@@ -593,13 +598,13 @@ const TemplateOne = ({ data }) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* --- FOOTER --- */}
-            <footer className="py-10 px-6 text-center text-slate-500 text-sm border-t border-slate-800/50">
+            < footer className="py-10 px-6 text-center text-slate-500 text-sm border-t border-slate-800/50" >
                 <p>© {new Date().getFullYear()} {displayUser?.firstName} {displayUser?.lastName}. Built with React & Tailwind.</p>
-            </footer>
-        </div>
+            </footer >
+        </div >
     );
 };
 

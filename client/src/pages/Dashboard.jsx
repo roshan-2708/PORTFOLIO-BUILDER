@@ -186,10 +186,19 @@ export default function Dashboard() {
                                         <label className="text-xs font-bold text-gray-500 uppercase">Resume</label>
                                         <div>
                                             {user.profile.resume?.url ? (
-                                                <a href={user.profile.resume.url} target="_blank" rel="noreferrer" className="inline-flex items-center text-indigo-400 hover:underline">
-                                                    View Document <ChevronRight size={14} />
+                                                <a
+                                                    href={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                                                        user.profile.resume.url
+                                                    )}&embedded=true`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-indigo-400"
+                                                >
+                                                    View Document
                                                 </a>
-                                            ) : <span className="text-gray-600 italic">Not uploaded</span>}
+                                            ) : (
+                                                <span className="text-gray-600 italic">Not uploaded</span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

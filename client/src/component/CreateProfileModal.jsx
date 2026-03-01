@@ -166,7 +166,7 @@ const CreateProfileModal = ({ onClose }) => {
                                     type="file"
                                     className="hidden"
                                     accept=".pdf"
-                                    onChange={(e) => setResume(e.target.files[0])}
+                                    onChange={(e) => setResume(e.target.files[0])} // File state update
                                 />
                             </label>
                         </div>
