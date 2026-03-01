@@ -278,7 +278,6 @@ exports.getSinglePortfolio = async (req, res) => {
         const { id } = req.params;
         const portfolio = await Portfolio.findById(id)
             .populate('user')
-            .populate('profile')
             .populate("services")
             .populate("projects")
             .populate("educations")
