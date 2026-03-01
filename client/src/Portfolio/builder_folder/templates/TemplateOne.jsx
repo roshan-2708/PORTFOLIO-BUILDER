@@ -19,7 +19,7 @@ const TemplateOne = ({ data }) => {
         fetchUser();
     }, []);
 
-    const displayUser = data?.user || user || data;
+    const displayUser = data?.user || user;
 
     const {
         title,
@@ -113,11 +113,11 @@ const TemplateOne = ({ data }) => {
                             <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20">
                                 Get In Touch
                             </button>
-                            {user?.profile?.resume?.url ? (
+                            {displayUser?.profile?.resume?.url ? (
                                 <button
                                     onClick={() => {
                                         const url = `https://docs.google.com/viewer?url=${encodeURIComponent(
-                                            user.profile.resume.url
+                                            displayUser.profile.resume.url
                                         )}&embedded=true`;
 
                                         window.open(url, "_blank", "noopener,noreferrer");
