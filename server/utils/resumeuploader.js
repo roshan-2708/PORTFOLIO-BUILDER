@@ -5,7 +5,8 @@ exports.uploadPdf = async (fileBuffer) => {
         cloudinary.uploader.upload_stream(
             {
                 folder: "resumes",
-                resource_type: "raw", // IMPORTANT for PDF
+                resource_type: "raw",
+                type: "upload"
             },
             (error, result) => {
                 if (error) return reject(error);

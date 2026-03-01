@@ -33,6 +33,12 @@ exports.createProfile = async (req, res) => {
                 message: "Resume PDF is required",
             });
         }
+        if (req.file.mimetype !== 'application/pdf') {
+            return res.status(400).json({
+                success: false,
+                message: "Only PDF format is allowed"
+            });
+        }
 
         const uploadResume = await uploadPdf(req.file.buffer);
 
