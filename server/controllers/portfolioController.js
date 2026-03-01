@@ -220,14 +220,19 @@ exports.getUsersPortfolio = async (req, res) => {
         console.log("JWT USER ID:", userId);
 
         const portfolios = await Portfolio.find({ user: userId })
-            .populate('user')
+            .populate({
+                path: "user",
+                populate: {
+                    path: "profile"
+                }
+            })
             .populate("services")
             .populate("projects")
             .populate("educations")
             .populate("experience")
             .populate("blogs")
             .populate('profile')
-            .exec();;
+            .exec();
 
         if (portfolios.length === 0) {
             return res.status(404).json({
@@ -260,13 +265,16 @@ exports.getPortfolioBySlug = async (req, res) => {
             { slug, isPublished: true },
             { $inc: { views: 1 } },
             { new: true }
-        ).populate("user")
-            .populate("services")
+        ).populate({
+            path: "user",
+            populate: {
+                path: "profile"
+            }
+        }).populate("services")
             .populate("projects")
             .populate("educations")
             .populate("experience")
             .populate("blogs")
-            .populate('profile')
             .exec();
 
         if (!portfolio) {
@@ -284,7 +292,12 @@ exports.getSinglePortfolio = async (req, res) => {
     try {
         const { id } = req.params;
         const portfolio = await Portfolio.findById(id)
-            .populate('user')
+            .populate({
+                path: "user",
+                populate: {
+                    path: "profile"
+                }
+            })
             .populate("services")
             .populate("projects")
             .populate("educations")
