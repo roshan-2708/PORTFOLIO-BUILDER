@@ -113,12 +113,16 @@ const TemplateOne = ({ data }) => {
                             <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20">
                                 Get In Touch
                             </button>
-                            {displayUser?.profile?.resume?.url ? (
+                            {user?.profile?.resume?.url ? (
                                 <button
-                                    onClick={() =>
-                                        window.open(displayUser.profile.resume.url, "_blank", "noopener,noreferrer")
-                                    }
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded"
+                                    onClick={() => {
+                                        const url = `https://docs.google.com/viewer?url=${encodeURIComponent(
+                                            user.profile.resume.url
+                                        )}&embedded=true`;
+
+                                        window.open(url, "_blank", "noopener,noreferrer");
+                                    }}
+                                    className="px-8 py-4 bg-slate-800/50 hover:bg-slate-800 border border-slate-700 text-white rounded-xl font-bold transition-all"
                                 >
                                     View Resume
                                 </button>
