@@ -84,6 +84,10 @@ const portfolioSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        profile: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Profile",
+        },
     },
     { timestamps: true }
 );

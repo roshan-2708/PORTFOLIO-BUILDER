@@ -226,6 +226,7 @@ exports.getUsersPortfolio = async (req, res) => {
             .populate("educations")
             .populate("experience")
             .populate("blogs")
+            .populate('profile')
             .exec();;
 
         if (portfolios.length === 0) {
@@ -259,8 +260,14 @@ exports.getPortfolioBySlug = async (req, res) => {
             { slug, isPublished: true },
             { $inc: { views: 1 } },
             { new: true }
-        ).populate("user").populate("services").populate("projects")
-            .populate("educations").populate("experience").populate("blogs").exec();
+        ).populate("user")
+            .populate("services")
+            .populate("projects")
+            .populate("educations")
+            .populate("experience")
+            .populate("blogs")
+            .populate('profile')
+            .exec();
 
         if (!portfolio) {
             return res.status(404).json({ success: false, message: "PORTFOLIO NOT FOUND" });
@@ -283,7 +290,8 @@ exports.getSinglePortfolio = async (req, res) => {
             .populate("educations")
             .populate("experience")
             .populate("blogs")
-            .exec();;
+            .populate('profile')
+            .exec();
         if (!portfolio) {
             return res.status(404).json({
                 success: false,
