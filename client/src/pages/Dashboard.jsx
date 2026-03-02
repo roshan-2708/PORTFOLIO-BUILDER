@@ -145,8 +145,8 @@ export default function Dashboard() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                     <StatCard title="Total Portfolios" value={stats?.totalPortfolios || 0} icon={LayoutDashboard} color="text-blue-400" onClick={() => navigate('/my-portfolios')} />
-                    <StatCard title="Drafts" value={stats?.draftPortfolios || 0} icon={FileText} color="text-yellow-400" />
-                    <StatCard title="Published" value={stats?.publishedPortfolios || 0} icon={CheckCircle} color="text-emerald-400" />
+                    <StatCard title="Drafts" value={stats?.draftPortfolios || 0} icon={FileText} color="text-yellow-400" onClick={() => navigate('/my-portfolios')} />
+                    <StatCard title="Published" value={stats?.publishedPortfolios || 0} icon={CheckCircle} color="text-emerald-400 onClick={() => navigate('/my-portfolios')}" />
                     <StatCard title="Total Views" value={totalViews} icon={Eye} color="text-purple-400" />
                 </div>
 
@@ -181,6 +181,10 @@ export default function Dashboard() {
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-gray-500 uppercase">Contact</label>
                                         <p className="text-white font-medium">{user.profile.phone || "Not provided"}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Contact</label>
+                                        <p className="text-white font-medium">{user.profile.address || "Not provided"}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-gray-500 uppercase">Resume</label>

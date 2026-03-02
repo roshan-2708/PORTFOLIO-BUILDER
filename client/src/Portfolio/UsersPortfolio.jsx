@@ -161,20 +161,26 @@ const UsersPortfolio = () => {
                                             })}
                                         </div>
 
+                                        {/* delete modal */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedPortfolioId(item._id);
+                                                setShowDeleteModal(true);
+                                            }}
+                                            className="px-3 py-1.5 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
+                                        >
+                                            Delete
+                                        </button>
+
+                                        <button className="px-3 py-1.5 text-xs font-semibold bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-all"
+                                        >
+                                            Update
+                                        </button>
+
                                         <div className="flex items-center gap-1.5 text-yellow-500 font-bold text-sm transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
                                             Manage <ArrowRight size={16} />
 
-                                            {/* delete modal */}
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedPortfolioId(item._id);
-                                                    setShowDeleteModal(true);
-                                                }}
-                                                className="px-3 py-1.5 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
-                                            >
-                                                Delete
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
