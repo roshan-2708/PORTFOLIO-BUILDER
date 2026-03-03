@@ -19,7 +19,7 @@ export const profileEndpoints = {
 
 export const portfolioEndpoints = {
     CREATE_PORTFOLIO: '/portfolio/create',
-    UPDATE_PORTFOLIO: (id) => `/portfolio/update/${id}`,
+    UPDATE_PORTFOLIO: (id) => `/portfolio/updatePortfolio/${id}`,
     DELETE_PORTFOLIO: (id) => `/portfolio/delete/${id}`,
     PUBLISH_PORTFOLIO: '/portfolio/publish/:portfolioId',
     USERS_PORTFOLIO: '/portfolio/my-portfolio',
