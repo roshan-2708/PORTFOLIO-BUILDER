@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import UserInfo from "./UserInfo";
+
+import UserInfo from "../builder_folder/UserInfo";
+import TemplateChoose from "../builder_folder/TemplateChoose";
+import PublishModal from "../builder_folder/PublishModal";
+import DeployLink from "../builder_folder/DeployLink";
+
 import {
     fetchSinglePortfolio,
     updatePortfolio,
@@ -11,8 +16,8 @@ const UpdatePortfolio = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(true);
+    const [step, setStep] = useState(1);
 
-    // ✅ parent master state
     const [portfolioData, setPortfolioData] = useState({
         title: "",
         profileImage: null,
@@ -29,19 +34,23 @@ const UpdatePortfolio = () => {
         education: [],
         services: [],
         blogs: [],
+        template: null,
+        status: "draft",
+        deployLink: "",
     });
 
-    /* ---------------- FETCH PORTFOLIO ---------------- */
+    const nextStep = () => setStep((prev) => prev + 1);
+    const prevStep = () => setStep((prev) => prev - 1);
+
+    /* ---------------- FETCH DATA ---------------- */
     useEffect(() => {
         const getPortfolio = async () => {
             try {
                 const token = localStorage.getItem("token");
-
                 const res = await fetchSinglePortfolio(id, token);
 
                 if (!res) return;
 
-                // 🔥 map backend → frontend structure
                 setPortfolioData({
                     title: res.title || "",
                     about: res.about || "",
@@ -50,17 +59,20 @@ const UpdatePortfolio = () => {
                     projects: res.projects || [],
                     languages: res.languages || [],
                     contacts: {
-                        email: res?.contacts?.email || "",
-                        github: res?.contacts?.github || "",
-                        linkedin: res?.contacts?.linkedin || "",
+                        email: res?.contact?.email || "",
+                        github: res?.contact?.github || "",
+                        linkedin: res?.contact?.linkedin || "",
                     },
                     experience: res.experience || [],
                     education: res.educations || [],
                     services: res.services || [],
                     blogs: res.blogs || [],
+                    template: res.template || null,
+                    status: res.status || "draft",
+                    deployLink: res.deployLink || "",
                 });
             } catch (err) {
-                console.error("Fetch portfolio error", err);
+                console.error(err);
                 alert("Failed to load portfolio");
             } finally {
                 setLoading(false);
@@ -70,27 +82,26 @@ const UpdatePortfolio = () => {
         getPortfolio();
     }, [id]);
 
-    /* ---------------- UPDATE HANDLER ---------------- */
-    const handleNext = async (finalData) => {
+    /* ---------------- FINAL UPDATE ---------------- */
+    const handleUpdate = async () => {
         try {
             const token = localStorage.getItem("token");
 
             const formData = new FormData();
+            formData.append("title", portfolioData.title);
+            formData.append("about", portfolioData.about);
+            formData.append("skills", JSON.stringify(portfolioData.skills));
+            formData.append("projects", JSON.stringify(portfolioData.projects));
+            formData.append("languages", JSON.stringify(portfolioData.languages));
+            formData.append("contact", JSON.stringify(portfolioData.contacts));
+            formData.append("experience", JSON.stringify(portfolioData.experience));
+            formData.append("education", JSON.stringify(portfolioData.education));
+            formData.append("services", JSON.stringify(portfolioData.services));
+            formData.append("blogs", JSON.stringify(portfolioData.blogs));
+            formData.append("template", portfolioData.template);
 
-            formData.append("title", finalData.title);
-            formData.append("about", finalData.about);
-            formData.append("skills", JSON.stringify(finalData.skills));
-            formData.append("projects", JSON.stringify(finalData.projects));
-            formData.append("languages", JSON.stringify(finalData.languages));
-            formData.append("contacts", JSON.stringify(finalData.contacts));
-            formData.append("experience", JSON.stringify(finalData.experience));
-            formData.append("education", JSON.stringify(finalData.education));
-            formData.append("services", JSON.stringify(finalData.services));
-            formData.append("blogs", JSON.stringify(finalData.blogs));
-
-            // image if changed
-            if (finalData.profileImage instanceof File) {
-                formData.append("profileImage", finalData.profileImage);
+            if (portfolioData.profileImage instanceof File) {
+                formData.append("profileImage", portfolioData.profileImage);
             }
 
             const response = await updatePortfolio(id, formData, token);
@@ -113,14 +124,46 @@ const UpdatePortfolio = () => {
         );
     }
 
-    /* ---------------- UI ---------------- */
     return (
-        <div className="bg-slate-900 min-h-screen">
-            <UserInfo
-                data={portfolioData}
-                setData={setPortfolioData}
-                onNext={handleNext}
-            />
+        <div className="min-h-screen bg-[#0B0F1A] text-white p-6">
+
+            {/* STEP 1 */}
+            {step === 1 && (
+                <UserInfo
+                    data={portfolioData}
+                    setData={setPortfolioData}
+                    onNext={nextStep}
+                />
+            )}
+
+            {/* STEP 2 */}
+            {step === 2 && (
+                <TemplateChoose
+                    selected={portfolioData.template}
+                    onSelect={(template) =>
+                        setPortfolioData((prev) => ({ ...prev, template }))
+                    }
+                    onNext={nextStep}
+                    onBack={prevStep}
+                />
+            )}
+
+            {/* STEP 3 */}
+            {step === 3 && (
+                <PublishModal
+                    onPublish={handleUpdate}
+                    onDraft={() => navigate("/my-portfolios")}
+                    onBack={prevStep}
+                />
+            )}
+
+            {/* STEP 4 */}
+            {step === 4 && (
+                <DeployLink
+                    portfolioData={portfolioData}
+                    onBack={prevStep}
+                />
+            )}
         </div>
     );
 };
