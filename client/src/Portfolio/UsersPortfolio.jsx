@@ -173,7 +173,12 @@ const UsersPortfolio = () => {
                                             Delete
                                         </button>
 
-                                        <button className="px-3 py-1.5 text-xs font-semibold bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-all"
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/portfolio/update/${item._id}`);
+                                            }}
+                                            className="px-3 py-1.5 text-xs cursor-pointer font-semibold bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-all"
                                         >
                                             Update
                                         </button>

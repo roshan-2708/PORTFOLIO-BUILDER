@@ -9,6 +9,7 @@ import UsersPortfolio from './Portfolio/UsersPortfolio'
 import BuildingPortfolio from './Portfolio/BuildingPortfolio'
 import PortfolioPreview from './Portfolio/PortfolioPreview'
 import ViewPortfolio from './Portfolio/ViewPortfolio'
+import UpdatePortfolio from './Portfolio/builder_folder/UpdatePortfolio'
 
 const App = () => {
   const token = localStorage.getItem('token');
@@ -52,6 +53,7 @@ const App = () => {
               <Route path='/my-portfolios' element={<UsersPortfolio />} />
               <Route path='/create-portfolio' element={<BuildingPortfolio />} />
               <Route path='/preview/portfolio' element={<PortfolioPreview />} />
+              <Route path='/portfolio/update/:id' element={<UpdatePortfolio />} />
             </>
           )
         }
