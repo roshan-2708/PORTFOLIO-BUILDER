@@ -461,7 +461,7 @@ exports.updatePortfolio = async (req, res) => {
             });
         }
 
-        // ---------- SAFE PARSE FUNCTIONS ----------
+        // ---------------- SAFE PARSE ----------------
         const parseArray = (data) => {
             try {
                 return data ? JSON.parse(data) : [];
@@ -478,7 +478,7 @@ exports.updatePortfolio = async (req, res) => {
             }
         };
 
-        // ---------- PROFILE IMAGE ----------
+        // ---------------- PROFILE IMAGE ----------------
         let profileImageUrl = portfolio.profileImage;
 
         if (req.files?.profileImage?.[0]) {
@@ -489,7 +489,7 @@ exports.updatePortfolio = async (req, res) => {
             profileImageUrl = uploaded;
         }
 
-        // ---------- PARSE BODY ----------
+        // ---------------- PARSE BODY ----------------
         const skills = parseArray(req.body.skills);
         const projects = parseArray(req.body.projects);
         const languages = parseArray(req.body.languages);
@@ -499,8 +499,8 @@ exports.updatePortfolio = async (req, res) => {
         const serviceData = parseArray(req.body.services);
         const blogData = parseArray(req.body.blogs);
 
-        // ---------- PROJECT IMAGES ----------
-        const projectImages = req.files?.projectUImages || []; // FIXED NAME
+        // ---------------- PROJECT IMAGES ----------------
+        const projectImages = req.files?.projectUImages || [];
         const projectsWithImages = [];
 
         for (let i = 0; i < projects.length; i++) {
@@ -519,7 +519,7 @@ exports.updatePortfolio = async (req, res) => {
             projectsWithImages.push(project);
         }
 
-        // ---------- UPDATE MAIN ----------
+        // ---------------- UPDATE MAIN FIELDS ----------------
         portfolio.title = req.body.title || portfolio.title;
         portfolio.about = req.body.about || portfolio.about;
         portfolio.template = req.body.template || portfolio.template;
@@ -530,41 +530,63 @@ exports.updatePortfolio = async (req, res) => {
         portfolio.languages = languages;
         portfolio.contact = contact;
 
-        // ---------- DELETE OLD CHILD DATA ----------
-        await Experience.deleteMany({ _id: { $in: portfolio.experience } });
-        await EducationInfo.deleteMany({ _id: { $in: portfolio.educations } });
-        await Services.deleteMany({ _id: { $in: portfolio.services } });
-        await Blogs.deleteMany({ _id: { $in: portfolio.blogs } });
+        // ---------------- DELETE OLD CHILD DOCS ----------------
+        await Experience.deleteMany({ _id: { $in: portfolio.experience || [] } });
+        await EducationInfo.deleteMany({ _id: { $in: portfolio.educations || [] } });
+        await Services.deleteMany({ _id: { $in: portfolio.services || [] } });
+        await Blogs.deleteMany({ _id: { $in: portfolio.blogs || [] } });
 
-        // ---------- INSERT NEW ----------
+        // ---------------- INSERT NEW CHILD DOCS ----------------
+
         if (experienceData.length) {
             const docs = await Experience.insertMany(
-                experienceData.map(d => ({ ...d, user: userId }))
+                experienceData.map(({ _id, ...rest }) => ({
+                    ...rest,
+                    user: userId
+                }))
             );
             portfolio.experience = docs.map(d => d._id);
+        } else {
+            portfolio.experience = [];
         }
 
         if (educationData.length) {
             const docs = await EducationInfo.insertMany(
-                educationData.map(d => ({ ...d, user: userId }))
+                educationData.map(({ _id, ...rest }) => ({
+                    ...rest,
+                    user: userId
+                }))
             );
             portfolio.educations = docs.map(d => d._id);
+        } else {
+            portfolio.educations = [];
         }
 
         if (serviceData.length) {
             const docs = await Services.insertMany(
-                serviceData.map(d => ({ ...d, user: userId }))
+                serviceData.map(({ _id, ...rest }) => ({
+                    ...rest,
+                    user: userId
+                }))
             );
             portfolio.services = docs.map(d => d._id);
+        } else {
+            portfolio.services = [];
         }
 
         if (blogData.length) {
             const docs = await Blogs.insertMany(
-                blogData.map(d => ({ ...d, user: userId }))
+                blogData.map(({ _id, ...rest }) => ({
+                    ...rest,
+                    user: userId
+                }))
             );
             portfolio.blogs = docs.map(d => d._id);
+        } else {
+            portfolio.blogs = [];
         }
 
+        // ---------------- SAVE ----------------
         await portfolio.save();
 
         return res.status(200).json({
