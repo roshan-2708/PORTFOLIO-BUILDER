@@ -255,6 +255,8 @@ const UpdatePortfolio = () => {
                         try {
                             const token = localStorage.getItem("token");
                             const response = await updatePortfolio(id, formData, token);
+                            alert('portfolio updated successfully');
+                            navigate("/my-portfolios");
 
                             if (response?.success) {
                                 alert("✅ Portfolio Updated Successfully");
