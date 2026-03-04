@@ -105,7 +105,12 @@ const UpdatePortfolio = () => {
             formData.append("education", JSON.stringify(userInfo.education));
             formData.append("services", JSON.stringify(userInfo.services));
             formData.append("blogs", JSON.stringify(userInfo.blogs));
-            formData.append("template", portfolioData.template);
+            formData.append(
+                "template",
+                typeof portfolioData.template === "object"
+                    ? portfolioData.template._id
+                    : portfolioData.template
+            );
 
             if (userInfo.profileImage instanceof File) {
                 formData.append("profileImage", userInfo.profileImage);
