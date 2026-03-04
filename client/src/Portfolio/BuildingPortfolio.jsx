@@ -102,11 +102,11 @@ const BuildingPortfolio = () => {
 
                                     formData.append("title", userInfo.title);
                                     formData.append("about", userInfo.about);
-                                    // formData.append("template", template.name);
-                                    formData.append(
-                                        "template",
-                                        typeof template === "object" ? template._id : template
-                                    );
+                                    formData.append("template", template.name);
+                                    // formData.append(
+                                    //     "template",
+                                    //     typeof template === "object" ? template._id : template
+                                    // );
 
                                     formData.append("skills", JSON.stringify(userInfo.skills));
                                     formData.append("languages", JSON.stringify(userInfo.languages));
