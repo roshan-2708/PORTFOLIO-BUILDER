@@ -17,6 +17,7 @@ const UpdatePortfolio = () => {
 
     const [loading, setLoading] = useState(true);
     const [step, setStep] = useState(1);
+    console.log("Update ID:", id)
 
     const [portfolioData, setPortfolioData] = useState({
         userInfo: {
@@ -49,8 +50,10 @@ const UpdatePortfolio = () => {
     useEffect(() => {
         const getPortfolio = async () => {
             try {
+
                 const token = localStorage.getItem("token");
                 const res = await fetchSinglePortfolio(id, token);
+                console.log("Calling update for:", id)
 
                 if (!res) return;
 
