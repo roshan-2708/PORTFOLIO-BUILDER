@@ -575,13 +575,26 @@ exports.updatePortfolio = async (req, res) => {
         }
 
         if (blogData.length) {
-            const docs = await Blogs.insertMany(
-                blogData.map(({ _id, ...rest }) => ({
+
+            const cleanedBlogs = blogData.map(({ _id, ...rest }) => {
+
+                let imageValue = rest.image;
+
+                // 🔥 Fix: Ensure image is string or null
+                if (typeof imageValue !== "string") {
+                    imageValue = null;
+                }
+
+                return {
                     ...rest,
+                    image: imageValue,
                     user: userId
-                }))
-            );
+                };
+            });
+
+            const docs = await Blogs.insertMany(cleanedBlogs);
             portfolio.blogs = docs.map(d => d._id);
+
         } else {
             portfolio.blogs = [];
         }
