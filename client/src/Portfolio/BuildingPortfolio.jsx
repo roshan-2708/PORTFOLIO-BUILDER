@@ -3,7 +3,7 @@ import UserInfo from './builder_folder/UserInfo';
 import TemplateChoose from './builder_folder/TemplateChoose';
 import PublishModal from './builder_folder/PublishModal';
 import DeployLink from './builder_folder/DeployLink';
-import { createPortfolio, publishPortfolio } from '../services/operation/portfolioAPI'
+import { publishPortfolio } from '../services/operation/portfolioAPI'
 import { Check, Rocket, Layout, User, Send, Link as LinkIcon } from 'lucide-react'; // Icons use karein
 
 const BuildingPortfolio = () => {
@@ -93,57 +93,7 @@ const BuildingPortfolio = () => {
                         <TemplateChoose
                             selected={portfolioData.template}
                             onSelect={(template) => setPortfolioData((prev) => ({ ...prev, template }))}
-                            // onNext={nextStep}
-                            onNext={async () => {
-                                try {
-                                    const token = localStorage.getItem("token");
-                                    const formData = new FormData();
-                                    const { userInfo, template } = portfolioData;
-
-                                    formData.append("title", userInfo.title);
-                                    formData.append("about", userInfo.about);
-                                    formData.append("template", template.name);
-                                    // formData.append(
-                                    //     "template",
-                                    //     typeof template === "object" ? template._id : template
-                                    // );
-
-                                    formData.append("skills", JSON.stringify(userInfo.skills));
-                                    formData.append("languages", JSON.stringify(userInfo.languages));
-                                    formData.append("contact", JSON.stringify(userInfo.contacts));
-                                    formData.append("experience", JSON.stringify(userInfo.experience));
-                                    formData.append("education", JSON.stringify(userInfo.education));
-                                    formData.append("services", JSON.stringify(userInfo.services));
-                                    formData.append("blogs", JSON.stringify(userInfo.blogs));
-
-                                    const projectsWithoutImages = userInfo.projects.map(
-                                        ({ image, ...rest }) => rest
-                                    );
-                                    formData.append("projects", JSON.stringify(projectsWithoutImages));
-
-                                    if (userInfo.profileImage instanceof File) {
-                                        formData.append("profileImage", userInfo.profileImage);
-                                    }
-
-                                    userInfo.projects.forEach((project) => {
-                                        if (project.image instanceof File) {
-                                            formData.append("projectImages", project.image);
-                                        }
-                                    });
-
-                                    const result = await createPortfolio(formData, token);
-
-                                    if (result?.portfolio) {
-                                        setPortfolioData(prev => ({
-                                            ...prev,
-                                            portfolio: result.portfolio
-                                        }));
-                                        nextStep();
-                                    }
-                                } catch (err) {
-                                    alert("Creation failed");
-                                }
-                            }}
+                            onNext={nextStep}
                             onBack={prevStep}
                             portfolioData={portfolioData}
                             setPortfolioData={setPortfolioData}

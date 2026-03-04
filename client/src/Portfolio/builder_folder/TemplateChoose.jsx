@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import { createPortfolio } from "../../services/operation/portfolioAPI";
+import { createPortfolio } from "../../services/operation/portfolioAPI";
 import PortfolioPreview from "../PortfolioPreview";
 
 const TemplateChoose = ({
@@ -18,78 +18,70 @@ const TemplateChoose = ({
         { id: 2, name: "Template 2" },
         { id: 3, name: "Template 3" },
     ];
-    const handleNext = () => {
+
+    const handleNext = async () => {
         if (!selected) {
             alert("Please select a template");
             return;
         }
 
-        onNext(); // Parent decide karega create ya update
+        setLoading(true);
+
+        try {
+            const formData = new FormData();
+            const { userInfo } = portfolioData;
+
+            // BASIC INFO
+            formData.append("title", userInfo.title);
+            formData.append("about", userInfo.about);
+            formData.append("template", selected.name);
+
+            // ARRAYS
+            formData.append("skills", JSON.stringify(userInfo.skills));
+            formData.append("languages", JSON.stringify(userInfo.languages));
+            formData.append("contact", JSON.stringify(userInfo.contacts));
+            formData.append("experience", JSON.stringify(userInfo.experience));
+            formData.append("education", JSON.stringify(userInfo.education));
+            formData.append("services", JSON.stringify(userInfo.services));
+            formData.append("blogs", JSON.stringify(userInfo.blogs));
+
+
+            // PROJECTS (without images)
+            const projectsWithoutImages = userInfo.projects.map(
+                ({ image, ...rest }) => rest
+            );
+            formData.append("projects", JSON.stringify(projectsWithoutImages));
+
+            // PROFILE IMAGE
+            if (userInfo.profileImage instanceof File) {
+                formData.append("profileImage", userInfo.profileImage);
+            }
+
+            // PROJECT IMAGES
+            userInfo.projects.forEach((project) => {
+                if (project.image instanceof File) {
+                    formData.append("projectImages", project.image);
+                }
+            });
+
+            const result = await createPortfolio(formData, token);
+
+            if (result?.portfolio) {
+                setPortfolioData((prev) => ({
+                    ...prev,
+                    portfolio: result.portfolio,
+                }));
+                onNext();
+            } else {
+                alert("Portfolio creation failed");
+            }
+        } catch (error) {
+            console.error("Create portfolio error:", error);
+            alert("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
     };
-
-    // const handleNext = async () => {
-    //     if (!selected) {
-    //         alert("Please select a template");
-    //         return;
-    //     }
-
-    //     setLoading(true);
-
-    //     try {
-    //         const formData = new FormData();
-    //         const { userInfo } = portfolioData;
-
-    //         // BASIC INFO
-    //         formData.append("title", userInfo.title);
-    //         formData.append("about", userInfo.about);
-    //         formData.append("template", selected.name);
-
-    //         // ARRAYS
-    //         formData.append("skills", JSON.stringify(userInfo.skills));
-    //         formData.append("languages", JSON.stringify(userInfo.languages));
-    //         formData.append("contact", JSON.stringify(userInfo.contacts));
-    //         formData.append("experience", JSON.stringify(userInfo.experience));
-    //         formData.append("education", JSON.stringify(userInfo.education));
-    //         formData.append("services", JSON.stringify(userInfo.services));
-    //         formData.append("blogs", JSON.stringify(userInfo.blogs));
-
-
-    //         // PROJECTS (without images)
-    //         const projectsWithoutImages = userInfo.projects.map(
-    //             ({ image, ...rest }) => rest
-    //         );
-    //         formData.append("projects", JSON.stringify(projectsWithoutImages));
-
-    //         // PROFILE IMAGE
-    //         if (userInfo.profileImage instanceof File) {
-    //             formData.append("profileImage", userInfo.profileImage);
-    //         }
-
-    //         // PROJECT IMAGES
-    //         userInfo.projects.forEach((project) => {
-    //             if (project.image instanceof File) {
-    //                 formData.append("projectImages", project.image);
-    //             }
-    //         });
-
-    //         const result = await createPortfolio(formData, token);
-
-    //         if (result?.portfolio) {
-    //             setPortfolioData((prev) => ({
-    //                 ...prev,
-    //                 portfolio: result.portfolio,
-    //             }));
-    //             onNext();
-    //         } else {
-    //             alert("Portfolio creation failed");
-    //         }
-    //     } catch (error) {
-    //         console.error("Create portfolio error:", error);
-    //         alert("Something went wrong");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     return (
         <div className="min-h-[80vh] text-white px-6 py-10">
