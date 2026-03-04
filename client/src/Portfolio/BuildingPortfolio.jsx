@@ -3,7 +3,7 @@ import UserInfo from './builder_folder/UserInfo';
 import TemplateChoose from './builder_folder/TemplateChoose';
 import PublishModal from './builder_folder/PublishModal';
 import DeployLink from './builder_folder/DeployLink';
-import { publishPortfolio } from '../services/operation/portfolioAPI'
+import { createPortfolio, publishPortfolio } from '../services/operation/portfolioAPI'
 import { Check, Rocket, Layout, User, Send, Link as LinkIcon } from 'lucide-react'; // Icons use karein
 
 const BuildingPortfolio = () => {
@@ -89,7 +89,7 @@ const BuildingPortfolio = () => {
                         />
                     )}
 
-                    {step === 2 && (
+                    {/* {step === 2 && (
                         <TemplateChoose
                             selected={portfolioData.template}
                             onSelect={(template) => setPortfolioData((prev) => ({ ...prev, template }))}
@@ -97,6 +97,33 @@ const BuildingPortfolio = () => {
                             onBack={prevStep}
                             portfolioData={portfolioData}
                             setPortfolioData={setPortfolioData}
+                        />
+                    )} */}
+
+                    {step === 2 && (
+                        <TemplateChoose
+                            selected={portfolioData.template}
+                            onSelect={(template) =>
+                                setPortfolioData((prev) => ({ ...prev, template }))
+                            }
+                            onNext={async (formData) => {
+                                try {
+                                    const token = localStorage.getItem("token");
+                                    const result = await createPortfolio(formData, token);
+
+                                    if (result?.portfolio) {
+                                        setPortfolioData(prev => ({
+                                            ...prev,
+                                            portfolio: result.portfolio,
+                                        }));
+                                        nextStep();
+                                    }
+                                } catch (err) {
+                                    alert("Create failed");
+                                }
+                            }}
+                            onBack={prevStep}
+                            portfolioData={portfolioData}
                         />
                     )}
 

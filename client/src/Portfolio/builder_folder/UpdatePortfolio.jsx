@@ -232,7 +232,7 @@ const UpdatePortfolio = () => {
                 />
             )}
 
-            {step === 2 && (
+            {/* {step === 2 && (
                 <TemplateChoose
                     selected={portfolioData.template}
                     onSelect={(template) =>
@@ -242,6 +242,30 @@ const UpdatePortfolio = () => {
                     onBack={prevStep}
                     portfolioData={portfolioData}
                     setPortfolioData={setPortfolioData}
+                />
+            )} */}
+
+            {step === 2 && (
+                <TemplateChoose
+                    selected={portfolioData.template}
+                    onSelect={(template) =>
+                        setPortfolioData(prev => ({ ...prev, template }))
+                    }
+                    onNext={async (formData) => {
+                        try {
+                            const token = localStorage.getItem("token");
+                            const response = await updatePortfolio(id, formData, token);
+
+                            if (response?.success) {
+                                alert("✅ Portfolio Updated Successfully");
+                                navigate("/my-portfolios");
+                            }
+                        } catch (error) {
+                            alert("Update failed");
+                        }
+                    }}
+                    onBack={prevStep}
+                    portfolioData={portfolioData}
                 />
             )}
         </div>
