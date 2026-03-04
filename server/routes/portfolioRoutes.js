@@ -8,8 +8,9 @@ router.post(
     "/create",
     authMiddleware,
     upload.fields([
-        { name: "profileImage", maxCount: 1 },   // for main profile
-        { name: "projectImages", maxCount: 10 }  // for projects
+        { name: "profileImage", maxCount: 1 },
+        { name: "projectImages", maxCount: 10 },
+        { name: "blogImages", maxCount: 10 }
     ]),
     createPortfolio
 );

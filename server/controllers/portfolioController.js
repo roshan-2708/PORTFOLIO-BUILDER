@@ -39,9 +39,10 @@ const uploadToCloudinary = (buffer, folder) => {
 exports.createPortfolio = async (req, res) => {
     try {
         const userId = req.user.id;
-
+        const blogImages = req.files?.blogImages || [];
         // ---------- Upload image ----------
         let profileImageUrl = "";
+        const blogsWithImages = [];
 
         if (req.files?.profileImage?.[0]) {
             profileImageUrl = await uploadToCloudinary(
@@ -78,6 +79,21 @@ exports.createPortfolio = async (req, res) => {
 
             projectsWithImages.push(project);
         }
+        for (let i = 0; i < blogData.length; i++) {
+            let blog = blogData[i];
+
+            if (blogImages[i]) {
+                const imageUrl = await uploadToCloudinary(
+                    blogImages[i].buffer,
+                    "portfolio/blogs"
+                );
+                blog.image = imageUrl;
+            } else {
+                blog.image = blog.image || ""; // important
+            }
+
+            blogsWithImages.push(blog);
+        }
         const slug =
             slugify(req.body.title || "portfolio", {
                 lower: true,
@@ -94,7 +110,7 @@ exports.createPortfolio = async (req, res) => {
             profileImage: profileImageUrl,
             userImage: profileImageUrl,
             skills,
-            projects,
+            projects: projectsWithImages,
             languages,
             contact,
             isPublished: false,
@@ -114,8 +130,14 @@ exports.createPortfolio = async (req, res) => {
             portfolio.services = docs.map(d => d._id);
         }
 
-        if (blogData.length > 0) {
-            const docs = await Blogs.insertMany(blogData.map(d => ({ ...d, user: userId })));
+        // if (blogData.length > 0) {
+        //     const docs = await Blogs.insertMany(blogData.map(d => ({ ...d, user: userId })));
+        //     portfolio.blogs = docs.map(d => d._id);
+        // }
+        if (blogsWithImages.length > 0) {
+            const docs = await Blogs.insertMany(
+                blogsWithImages.map(d => ({ ...d, user: userId }))
+            );
             portfolio.blogs = docs.map(d => d._id);
         }
 
