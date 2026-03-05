@@ -102,7 +102,7 @@ const TemplateChoose = ({
         formData.append("experience", JSON.stringify(userInfo.experience));
         formData.append("education", JSON.stringify(userInfo.education));
         formData.append("services", JSON.stringify(userInfo.services));
-        formData.append("blogs", JSON.stringify(userInfo.blogs));
+        // formData.append("blogs", JSON.stringify(userInfo.blogs));
 
         const projectsWithoutImages = userInfo.projects.map(
             ({ image, ...rest }) => rest
@@ -116,6 +116,17 @@ const TemplateChoose = ({
         userInfo.projects.forEach((project) => {
             if (project.image instanceof File) {
                 formData.append("projectImages", project.image);
+            }
+        });
+
+        // BLOGS WITHOUT IMAGES
+        const blogsWithoutImages = userInfo.blogs.map(({ image, ...rest }) => rest);
+        formData.append("blogs", JSON.stringify(blogsWithoutImages));
+
+        // BLOG IMAGES
+        userInfo.blogs.forEach((blog) => {
+            if (blog.image instanceof File) {
+                formData.append("blogImages", blog.image);
             }
         });
 
