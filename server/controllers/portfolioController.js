@@ -90,7 +90,9 @@ exports.createPortfolio = async (req, res) => {
                 );
                 blog.image = imageUrl;
             } else {
-                blog.image = blog.image || ""; // important
+                blog.image = blog.image && typeof blog.image === "string"
+                    ? blog.image
+                    : "";
             }
 
             blogsWithImages.push(blog);
@@ -555,7 +557,10 @@ exports.updatePortfolio = async (req, res) => {
                 );
                 blog.image = imageUrl;
             } else {
-                blog.image = blog.image || "";
+                blog.image =
+                    blog.image && typeof blog.image === "string"
+                        ? blog.image
+                        : portfolio.blogs[i]?.image || "";
             }
 
             blogsWithImages.push(blog);
