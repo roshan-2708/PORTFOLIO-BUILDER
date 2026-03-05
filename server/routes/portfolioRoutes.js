@@ -30,6 +30,7 @@ router.put(
     upload.fields([
         { name: 'profileImage', maxCount: 1 },
         { name: 'projectImages', maxCount: 10 },
+        { name: 'blogImages', maxCount: 10 }
     ]),
     updatePortfolio,
 );

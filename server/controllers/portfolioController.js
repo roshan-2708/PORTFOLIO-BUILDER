@@ -39,10 +39,8 @@ const uploadToCloudinary = (buffer, folder) => {
 exports.createPortfolio = async (req, res) => {
     try {
         const userId = req.user.id;
-        const blogImages = req.files?.blogImages || [];
         // ---------- Upload image ----------
         let profileImageUrl = "";
-        const blogsWithImages = [];
 
         if (req.files?.profileImage?.[0]) {
             profileImageUrl = await uploadToCloudinary(
@@ -63,7 +61,6 @@ exports.createPortfolio = async (req, res) => {
 
         /* ================= PROJECT IMAGES ================= */
         const projectImages = req.files?.projectImages || [];
-
         const projectsWithImages = [];
 
         for (let i = 0; i < projects.length; i++) {
@@ -79,6 +76,10 @@ exports.createPortfolio = async (req, res) => {
 
             projectsWithImages.push(project);
         }
+        /* ================= BLOG IMAGES ================= */
+        const blogImages = req.files?.blogImages || [];
+        const blogsWithImages = [];
+
         for (let i = 0; i < blogData.length; i++) {
             let blog = blogData[i];
 
@@ -522,7 +523,7 @@ exports.updatePortfolio = async (req, res) => {
         const blogData = parseArray(req.body.blogs);
 
         // ---------------- PROJECT IMAGES ----------------
-        const projectImages = req.files?.projectUImages || [];
+        const projectImages = req.files?.projectImages || [];
         const projectsWithImages = [];
 
         for (let i = 0; i < projects.length; i++) {
@@ -540,7 +541,25 @@ exports.updatePortfolio = async (req, res) => {
 
             projectsWithImages.push(project);
         }
+        /* ================= BLOG IMAGES ================= */
+        const blogImages = req.files?.blogImages || [];
+        const blogsWithImages = [];
 
+        for (let i = 0; i < blogData.length; i++) {
+            let blog = blogData[i];
+
+            if (blogImages[i]) {
+                const imageUrl = await uploadToCloudinary(
+                    blogImages[i].buffer,
+                    "portfolio/blogs"
+                );
+                blog.image = imageUrl;
+            } else {
+                blog.image = blog.image || "";
+            }
+
+            blogsWithImages.push(blog);
+        }
         // ---------------- UPDATE MAIN FIELDS ----------------
         portfolio.title = req.body.title || portfolio.title;
         portfolio.about = req.body.about || portfolio.about;
@@ -596,29 +615,11 @@ exports.updatePortfolio = async (req, res) => {
             portfolio.services = [];
         }
 
-        if (blogData.length) {
-
-            const cleanedBlogs = blogData.map(({ _id, ...rest }) => {
-
-                let imageValue = rest.image;
-
-                // 🔥 Fix: Ensure image is string or null
-                if (typeof imageValue !== "string") {
-                    imageValue = null;
-                }
-
-                return {
-                    ...rest,
-                    image: imageValue,
-                    user: userId
-                };
-            });
-
-            const docs = await Blogs.insertMany(cleanedBlogs);
+        if (blogsWithImages.length > 0) {
+            const docs = await Blogs.insertMany(
+                blogsWithImages.map(d => ({ ...d, user: userId }))
+            );
             portfolio.blogs = docs.map(d => d._id);
-
-        } else {
-            portfolio.blogs = [];
         }
 
         // ---------------- SAVE ----------------
