@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/operation/authAPI";
 import { MdOutlineCancel, MdEmail, MdLock, MdRocketLaunch, MdCheckCircle } from "react-icons/md";
-import SignUpModal from "./SignUpModal";
 
 const LoginModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
@@ -12,7 +11,6 @@ const LoginModal = ({ isOpen, onClose }) => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [isOpenSignUp, setOpenSignUp] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -138,11 +136,15 @@ const LoginModal = ({ isOpen, onClose }) => {
                         </button>
                     </form>
                     <p className="mt-8 text-center text-gray-500 text-sm">
-                        Don't have an account? <button onClick={() => setOpenSignUp(true)} className="text-yellow-500 font-semibold hover:underline">Sign up</button>
+                        Don't have an account?
+                        <button
+                            onClick={() => navigate('/verify-email')}
+                            className="text-yellow-500 font-semibold hover:underline">
+                            Sign up
+                        </button >
                     </p>
                 </div>
             </div>
-            <SignUpModal isOpen={isOpenSignUp} onClose={() => setOpenSignUp(false)} onSignupSuccess={() => { setOpenSignUp(false); setOpenLogin(true); }} />
         </div>
     );
 };
