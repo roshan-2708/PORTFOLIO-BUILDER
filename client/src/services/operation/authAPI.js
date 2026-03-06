@@ -9,6 +9,8 @@ const {
     LOGIN,
     GET_USER_PROFILE,
     CHANGE_PASSWORD,
+    RESET_PASSWORD,
+    RESET_PASSWORD_TOKEN,
 } = authEndpoints;
 
 // send-otp
@@ -32,8 +34,6 @@ export const verifyOtp = async (email, otp) => {
         throw error;
     }
 }
-
-
 
 // signup
 export const signup = async (userData) => {
@@ -94,5 +94,52 @@ export const changePassword = async (oldPassword, newPassword) => {
             error.response?.data || error.message
         );
         throw error;
+    }
+};
+
+// reset password link
+export const resetPasswordToken = async (email) => {
+    try {
+        const res = await apiConnector("POST", RESET_PASSWORD_TOKEN, {
+            email,
+        });
+
+        if (res.data.success) {
+            console.log("Reset link sent to your email");
+        }
+
+    } catch (error) {
+        console.error(
+            "reset password link error:",
+            error.response?.data || error.message
+        );
+        throw error;
+    }
+};
+
+// reset password
+export const resetPassword = async (password, confirmPassword, token, navigate) => {
+    try {
+
+        const res = await apiConnector(
+            "POST",
+            RESET_PASSWORD,
+            {
+                password,
+                confirmPassword,
+                token,
+            }
+        );
+
+        if (res.data.success) {
+            console.log("Password reset successfully");
+            navigate("/login");
+        }
+
+    } catch (error) {
+        console.error(
+            "reset password failed:",
+            error.response?.data || error.message
+        );
     }
 };

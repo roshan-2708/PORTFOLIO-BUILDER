@@ -7,7 +7,8 @@ export const authEndpoints = {
     LOGIN: '/auth/login',
     GET_USER_PROFILE: '/auth/me',
     CHANGE_PASSWORD: '/auth/change-password',
-
+    RESET_PASSWORD_TOKEN: '/auth/reset-password-token',
+    RESET_PASSWORD: '/auth/reset-password',
 }
 
 export const profileEndpoints = {
