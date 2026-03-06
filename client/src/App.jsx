@@ -11,6 +11,7 @@ import PortfolioPreview from './Portfolio/PortfolioPreview'
 import ViewPortfolio from './Portfolio/ViewPortfolio'
 import UpdatePortfolio from './Portfolio/builder_folder/UpdatePortfolio'
 import ForgotPassword from './component/ForgotPassword'
+import ResetPassword from './component/ResetPassword'
 
 const App = () => {
   const token = localStorage.getItem('token');
