@@ -116,8 +116,13 @@ const LoginModal = ({ isOpen, onClose }) => {
 
                         <div className="flex justify-end">
                             <button
-                                onClick={(e) => navigate('/forgot-password')}
-                                type="button" className="text-xs text-gray-400 hover:text-yellow-500 transition">
+                                onClick={() => {
+                                    onClose();
+                                    navigate('/forgot-password');
+                                }}
+                                type="button"
+                                className="text-xs text-gray-400 hover:text-yellow-500 transition"
+                            >
                                 Forgot Password?
                             </button>
                         </div>
@@ -138,10 +143,14 @@ const LoginModal = ({ isOpen, onClose }) => {
                     <p className="mt-8 text-center text-gray-500 text-sm">
                         Don't have an account?
                         <button
-                            onClick={() => navigate('/verify-email')}
-                            className="text-yellow-500 font-semibold hover:underline">
+                            onClick={() => {
+                                onClose();
+                                navigate('/verify-email');
+                            }}
+                            className="text-yellow-500 font-semibold hover:underline"
+                        >
                             Sign up
-                        </button >
+                        </button>
                     </p>
                 </div>
             </div>
