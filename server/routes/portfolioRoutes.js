@@ -15,15 +15,6 @@ router.post(
     createPortfolio
 );
 
-// router.put('/updatePortfolio/:portfolioId',
-//     authMiddleware,
-//     upload.fields([
-//         { name: 'profileImage', maxCount: 1 },
-//         { name: 'projectUImages', maxCount: 10 },
-//     ]),
-//     updatePortfolio,
-// );
-
 router.put(
     '/updatePortfolio/:portfolioId',
     authMiddleware,

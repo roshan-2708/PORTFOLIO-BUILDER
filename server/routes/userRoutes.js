@@ -10,10 +10,6 @@ const {
     getUserProfile,
     logout,
     changePassword,
-    sendVerificationLink,
-    verifyEmail,
-    register,
-
 } = require('../controllers/UserController');
 const {
     resetPassword,
@@ -48,13 +44,5 @@ router.put('/change-password', authMiddleware, changePassword);
 // forgot password
 router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
-
-// email verification link
-router.post("/send-verification", sendVerificationLink)
-// verify email
-router.get("/verify-email/:token", verifyEmail);
-
-router.post('/register', register);
-
 
 module.exports = router;
