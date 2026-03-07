@@ -414,7 +414,7 @@ exports.sendVerificationLink = async (req, res) => {
 
         const verifyLink = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
-        await sendMail(
+        await mailSender(
             email,
             "Verify your email",
             `Click this link to verify your email: ${verifyLink}`
