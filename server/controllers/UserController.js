@@ -406,7 +406,7 @@ exports.sendVerificationLink = async (req, res) => {
 
         const token = crypto.randomBytes(32).toString("hex");
 
-        await EmailVerification.create({
+        EmailVerification.create({
             email,
             token,
             expiresAt: Date.now() + 10 * 60 * 1000
