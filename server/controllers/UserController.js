@@ -7,6 +7,7 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 require('dotenv').config();
 const otpGenerator = require('otp-generator');
+const crypto = require('crypto');
 
 
 // send otp
@@ -386,3 +387,83 @@ exports.changePassword = async (req, res) => {
     }
 }
 
+exports.sendVerificationLink = async (req, res) => {
+    try {
+
+        const { email} = req.body;
+
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exists"
+            })
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+
+        const user = await User.create({
+            email,
+            emailToken: token,
+            emailTokenExpires: Date.now() + 10 * 60 * 1000
+        })
+
+        const verifyLink = `${process.env.FRONTEND_URL}/verify-email/${token}`
+
+        await sendMail(
+            email,
+            "Verify your email",
+            `Click this link to verify your email: ${verifyLink}`
+        )
+
+        res.status(200).json({
+            success: true,
+            message: "Verification link sent to email"
+        })
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+// verify email
+
+exports.verifyEmail = async (req, res) => {
+    try {
+
+        const { token } = req.params;
+
+        const user = await User.findOne({
+            emailToken: token,
+            emailTokenExpires: { $gt: Date.now() }
+        })
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid or expired token"
+            })
+        }
+
+        user.isVerified = true
+        user.emailToken = null
+        user.emailTokenExpires = null
+
+        await user.save()
+
+        res.status(200).json({
+            success: true,
+            message: "Email verified successfully"
+        })
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
