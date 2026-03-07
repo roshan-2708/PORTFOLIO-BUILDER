@@ -7,9 +7,6 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 require('dotenv').config();
 const otpGenerator = require('otp-generator');
-const EmailVerification = require("../database/EmailVerification");
-const crypto = require('crypto');
-const sendMail = require('../utils/sendMail');
 
 
 // send otp
