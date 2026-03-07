@@ -1,8 +1,15 @@
+require('dotenv').config();
 const { createClient } = require("@supabase/supabase-js");
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY
-);
+const supabaseUrl = process.env.SUPABASE_URL;
+// Use Service Role Key for Backend Admin Actions
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; 
+
+if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error("Missing Supabase Environment Variables!");
+}
+
+// Client with Admin Privileges
+const supabase = createClient(supabaseUrl, supabaseServiceKey); 
 
 module.exports = supabase;

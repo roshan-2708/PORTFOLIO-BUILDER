@@ -10,6 +10,8 @@ const {
     getUserProfile,
     logout,
     changePassword,
+    sendVerificationLink,
+    signUpComplete
 } = require('../controllers/UserController');
 const {
     resetPassword,
@@ -44,5 +46,11 @@ router.put('/change-password', authMiddleware, changePassword);
 // forgot password
 router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
+
+// Phase 1: Email verify karne ke liye link bhejna
+router.post('/send-verification', sendVerificationLink);
+
+// Phase 2: Link click hone ke baad registration complete karna
+router.post('/signup-complete', signUpComplete);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 require('dotenv').config();
 const otpGenerator = require('otp-generator');
+const supabase = require('../config/supaBase');
 
 
 // send otp
@@ -386,3 +387,89 @@ exports.changePassword = async (req, res) => {
     }
 }
 
+// 1. Send Verification Link
+exports.sendVerificationLink = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        // Check if user already exists in your MongoDB
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ success: false, message: "User already registered" });
+        }
+
+        // Supabase se magic link/signup link generate karna
+        const { data, error } = await supabase.auth.admin.generateLink({
+            type: 'signup',
+            email: email,
+            options: {
+                // Vercel project link jo tumne bataya
+                redirectTo: 'https://portfolio-builder-3h77.vercel.app/complete-signup'
+            }
+        });
+
+        if (error) throw error;
+
+        // User ko manual email bhejna (Supabase ki jagah apna template use karne ke liye)
+        await mailSender(
+            email,
+            "Verify your Email - Portfolio Builder",
+            `<h3>Welcome!</h3>
+             <p>Please click the link below to verify your email and set up your account:</p>
+             <a href="${data.properties.action_link}">Verify Email & Register</a>`
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Verification link sent successfully!"
+        });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 2. Complete Signup (Setting Password & Saving to MongoDB)
+exports.signUpComplete = async (req, res) => {
+    try {
+        const { email, password, firstName, lastName } = req.body;
+
+        if (!email || !password || !firstName) {
+            return res.status(400).json({ success: false, message: "All fields are required" });
+        }
+
+        // 1. Pehle Supabase me user ko email se dhundo
+        const { data: { users }, error: findError } = await supabase.auth.admin.listUsers();
+        const targetUser = users.find(u => u.email === email);
+
+        if (findError || !targetUser) {
+            return res.status(404).json({ success: false, message: "User not found or link expired" });
+        }
+
+        // 2. Password update karo admin privileges se
+        const { error: authError } = await supabase.auth.admin.updateUserById(
+            targetUser.id,
+            { password: password, email_confirm: true }
+        );
+
+        if (authError) return res.status(400).json({ success: false, message: authError.message });
+
+        // 3. MongoDB Entry
+        const newUser = await User.create({
+            firstName,
+            lastName,
+            email,
+            image: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName} ${lastName}`,
+            isVerified: true
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: "Account created successfully!",
+            user: newUser
+        });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Registration failed" });
+    }
+};
