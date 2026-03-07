@@ -7,6 +7,7 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 require('dotenv').config();
 const otpGenerator = require('otp-generator');
+const EmailVerification = require("../database/EmailVerification");
 const crypto = require('crypto');
 
 
@@ -218,10 +219,10 @@ exports.login = async (req, res) => {
         }
 
         // find user exit or not
-        const existuser = await User.findOne({ email }).populate("profile");
+        const existUser = await User.findOne({ email }).populate("profile");
 
         // not found user
-        if (!existuser) {
+        if (!existUser) {
             return res.status(404).json({
                 success: false,
                 message: "user is not exist , Please sign up first",
@@ -229,7 +230,7 @@ exports.login = async (req, res) => {
         }
 
         // compare password
-        const isPasswordValid = await bcrypt.compare(password, existuser.password);
+        const isPasswordValid = await bcrypt.compare(password, existUser.password);
 
         // if not success
         if (!isPasswordValid) {
@@ -240,22 +241,22 @@ exports.login = async (req, res) => {
         }
 
         const payload = {
-            id: existuser.id,
-            email: existuser.email,
+            id: existUser.id,
+            email: existUser.email,
         };
 
         const token = jwtToken.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "12h",
+            expiresIn: "7d",
         });
 
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "development",
-            sameSite: "None",       // REQUIRED for cross-domain
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None",
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         };
 
-        existuser.password = undefined;
+        existUser.password = undefined;
 
         return res
             .cookie("token", token, cookieOptions)
@@ -264,7 +265,7 @@ exports.login = async (req, res) => {
                 success: true,
                 message: "Login successful",
                 token,
-                existuser,
+                existUser,
             });
 
     } catch (error) {
@@ -387,10 +388,11 @@ exports.changePassword = async (req, res) => {
     }
 }
 
+// send verification link
 exports.sendVerificationLink = async (req, res) => {
     try {
 
-        const { email} = req.body;
+        const { email } = req.body;
 
         const existingUser = await User.findOne({ email });
 
@@ -398,72 +400,109 @@ exports.sendVerificationLink = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "User already exists"
-            })
+            });
         }
 
         const token = crypto.randomBytes(32).toString("hex");
 
-        const user = await User.create({
+        await EmailVerification.create({
             email,
-            emailToken: token,
-            emailTokenExpires: Date.now() + 10 * 60 * 1000
-        })
+            token,
+            expiresAt: Date.now() + 10 * 60 * 1000
+        });
 
-        const verifyLink = `${process.env.FRONTEND_URL}/verify-email/${token}`
+        const verifyLink = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
         await sendMail(
             email,
             "Verify your email",
             `Click this link to verify your email: ${verifyLink}`
-        )
+        );
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Verification link sent to email"
-        })
+        });
 
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: err.message
-        })
+        });
     }
-}
+};
 
 // verify email
-
 exports.verifyEmail = async (req, res) => {
     try {
 
         const { token } = req.params;
 
-        const user = await User.findOne({
-            emailToken: token,
-            emailTokenExpires: { $gt: Date.now() }
-        })
+        const record = await EmailVerification.findOne({
+            token,
+            expiresAt: { $gt: Date.now() }
+        });
 
-        if (!user) {
+        if (!record) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid or expired token"
-            })
+            });
         }
 
-        user.isVerified = true
-        user.emailToken = null
-        user.emailTokenExpires = null
-
-        await user.save()
-
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
+            email: record.email,
             message: "Email verified successfully"
-        })
+        });
 
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: err.message
-        })
+        });
     }
-}
+};
+
+// register
+exports.register = async (req, res) => {
+    try {
+
+        const { firstName, lastName, email, password, } = req.body;
+
+        const verifiedEmail = await EmailVerification.findOne({
+            email,
+            expiresAt: { $gt: Date.now() }
+        });
+
+        if (!verifiedEmail) {
+            return res.status(400).json({
+                success: false,
+                message: "Please verify your email first"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await User.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            isVerified: true
+        });
+
+        await EmailVerification.deleteOne({ email });
+
+        return res.status(200).json({
+            success: true,
+            message: "User registered successfully"
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+};
