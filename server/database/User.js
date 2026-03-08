@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
     {
+        supabaseId: {
+            type: String,
+            required: true,
+            unique: true
+        },
         firstName: {
             type: String,
             required: true,
@@ -40,12 +45,6 @@ const userSchema = new mongoose.Schema(
         },
         resetPasswordExpires: {
             type: Date,
-        },
-        emailToken: {
-            type: String,
-        },
-        emailTokenExpires: {
-            type: Date
         },
     },
     { timestamps: true }

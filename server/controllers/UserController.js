@@ -7,6 +7,7 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 require('dotenv').config();
 const otpGenerator = require('otp-generator');
+const supabase = require('../config/supaBase');
 
 
 // send otp
@@ -128,10 +129,11 @@ exports.signUp = async (req, res) => {
             email,
             password,
             confirmPassword,
+            supabaseId,
         } = req.body;
 
         // validation
-        if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        if (!firstName || !lastName || !email || !password || !confirmPassword || !supabaseId) {
             return res.status(400).json({
                 success: false,
                 message: "All field are required",
@@ -159,18 +161,11 @@ exports.signUp = async (req, res) => {
         }
 
         // check email verificayion
-        const verifyEmail = await Otp.findOne({
-            email,
-            isVerified: true,
-        });
+        // const verifyEmail = await Otp.findOne({
+        //     email,
+        //     isVerified: true,
+        // });
 
-        // verified or not
-        if (!verifyEmail) {
-            return res.status(400).json({
-                success: false,
-                message: "Email is not verified",
-            });
-        }
 
         // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -184,10 +179,11 @@ exports.signUp = async (req, res) => {
             profile: null,
             image: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName} ${lastName}`,
             isVerified: true,
+            supabaseId,
         });
 
         // clean up otp 
-        await Otp.deleteMany({ email });
+        // await Otp.deleteMany({ email });
 
         return res.status(201).json({
             success: true,
@@ -196,10 +192,12 @@ exports.signUp = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("Signup Error:", error);
+
         return res.status(500).json({
             success: false,
-            message: "Failed to signup"
-        })
+            message: "Failed to signup",
+        });
     }
 }
 
@@ -385,3 +383,35 @@ exports.changePassword = async (req, res) => {
         });
     }
 }
+
+// send verification link
+exports.sendVerificationEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const { data, error } = await supabase.auth.signInWithOtp({
+            email,
+            options: {
+                emailRedirectTo: "https://portfolio-builder-3h77.vercel.app/register"
+            }
+        });
+
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Verification link sent to email"
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
