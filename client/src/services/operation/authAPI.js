@@ -1,6 +1,6 @@
 import { apiConnector } from "../axios";
 import { authEndpoints } from "../apis";
-
+const BASE_URL = "https://your-backend-domain.com/api/v1";
 
 const {
     SIGNUP,
