@@ -11,6 +11,7 @@ const {
     CHANGE_PASSWORD,
     RESET_PASSWORD,
     RESET_PASSWORD_TOKEN,
+    SEND_VERIFICATION_LINK,
 } = authEndpoints;
 
 // send-otp
@@ -143,3 +144,18 @@ export const resetPassword = async (password, confirmPassword, token, navigate) 
         );
     }
 };
+
+// send verification link
+export const sendVerificationEmail = async (email) => {
+    try {
+        const response = await apiConnector(
+            "POST",
+            SEND_VERIFICATION_LINK,
+            { email },
+        );
+        console.log("Verification Email Response : ", response);
+        return response;
+    } catch (error) {
+        console.error("Send verification email error", error);
+    }
+}

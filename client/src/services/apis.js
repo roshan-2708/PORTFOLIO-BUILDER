@@ -9,6 +9,7 @@ export const authEndpoints = {
     CHANGE_PASSWORD: '/auth/change-password',
     RESET_PASSWORD_TOKEN: '/auth/reset-password-token',
     RESET_PASSWORD: '/auth/reset-password',
+    SEND_VERIFICATION_LINK : '/auth/send-verification'
 }
 
 export const profileEndpoints = {

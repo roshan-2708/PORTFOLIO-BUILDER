@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { sendOtp, verifyOtp } from "../services/operation/authAPI";
+import { sendOtp, verifyOtp, sendVerificationEmail } from "../services/operation/authAPI";
 import SignUpModal from "./SignUpModal";
 import LoginModal from "./LoginModal";
 import { Mail, ShieldCheck, ArrowLeft, CheckCircle2, Rocket, Sparkles } from "lucide-react";
@@ -15,13 +15,13 @@ const VerifyEmail = () => {
     const inputsRef = useRef([]);
 
     // --- Logic functions same rahegi jo aapne pehle di thi ---
-    const handleSendOtp = async () => {
+    const handleSendLink = async () => {
         if (!email) return alert("Please enter email");
         try {
             setLoading(true);
-            const res = await sendOtp(email);
-            if (res?.success) setOtpSent(true);
-        } catch (error) { alert("Error sending OTP"); }
+            const res = await sendVerificationEmail(email);
+            if (res?.success) sendVerificationEmail(true);
+        } catch (error) { alert("Error sending verification link"); }
         finally { setLoading(false); }
     };
 
@@ -115,7 +115,7 @@ const VerifyEmail = () => {
                                     />
                                 </div>
                                 <button
-                                    onClick={handleSendOtp}
+                                    onClick={handleSendLink}
                                     disabled={loading}
                                     className="w-full bg-yellow-600 hover:bg-yellow-500 py-4 rounded-xl font-bold transition-all shadow-lg shadow-yellow-600/10"
                                 >
