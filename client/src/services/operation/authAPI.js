@@ -151,11 +151,11 @@ export const sendVerificationEmail = async (email) => {
         const response = await apiConnector(
             "POST",
             SEND_VERIFICATION_LINK,
-            { email },
+            { email }
         );
-        console.log("Verification Email Response : ", response);
-        return response;
+        return response.data; // Response ka data return karein
     } catch (error) {
         console.error("Send verification email error", error);
+        return error.response?.data; // Error response return karein
     }
 }

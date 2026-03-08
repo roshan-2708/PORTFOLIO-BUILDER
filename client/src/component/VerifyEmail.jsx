@@ -51,38 +51,24 @@ const VerifyEmail = () => {
         try {
             setLoading(true);
             const res = await sendVerificationEmail(email);
-            if (res?.success) sendVerificationEmail(true);
-        } catch (error) { alert("Error sending verification link"); }
-        finally { setLoading(false); }
+
+            // Check karein ki response data ke andar success hai ya direct res mein
+            if (res?.data?.success || res?.success) {
+                SetLinkSent(true); // State update karein, function call nahi
+            } else {
+                alert(res?.message || "Something went wrong");
+            }
+        } catch (error) {
+            alert("Error sending verification link");
+        } finally {
+            setLoading(false);
+        }
     };
 
     // resend email
     const handleResend = async () => {
         if (countDown !== 0 || loading) return;
         await handleSendLink();
-    };
-
-    const handleVerifyOtp = async () => {
-        const finalOtp = otp.join("");
-        if (finalOtp.length !== 6) return;
-        try {
-            setLoading(true);
-            const res = await verifyOtp(email, finalOtp);
-            if (res?.success) {
-                localStorage.setItem("verifiedEmail", email);
-                setOpenSignUp(true);
-            }
-        } catch (error) { alert("Invalid OTP"); }
-        finally { setLoading(false); }
-    };
-
-    const handleOtpChange = (e, index) => {
-        const value = e.target.value;
-        if (!/^[0-9]?$/.test(value)) return;
-        const newOtp = [...otp];
-        newOtp[index] = value;
-        setOtp(newOtp);
-        if (value && index < 5) inputsRef.current[index + 1].focus();
     };
 
     return (
