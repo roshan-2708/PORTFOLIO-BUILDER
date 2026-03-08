@@ -1,15 +1,14 @@
 const BASE_URL = import.meta.env.VITE_API_URL
 
 export const authEndpoints = {
-    SEND_OTP: '/auth/send-otp',
-    VERIFY_OTP: '/auth/verify-otp',
     SIGNUP: '/auth/signup',
     LOGIN: '/auth/login',
     GET_USER_PROFILE: '/auth/me',
     CHANGE_PASSWORD: '/auth/change-password',
     RESET_PASSWORD_TOKEN: '/auth/reset-password-token',
     RESET_PASSWORD: '/auth/reset-password',
-    SEND_VERIFICATION_LINK : '/auth/send-verification'
+    SEND_VERIFICATION_LINK: '/auth/send-verification',
+    VERIFICATION_LINK : '/auth/verify-token',
 }
 
 export const profileEndpoints = {

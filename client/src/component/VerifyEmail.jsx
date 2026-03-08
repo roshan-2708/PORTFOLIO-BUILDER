@@ -1,33 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { sendOtp, verifyOtp, sendVerificationEmail } from "../services/operation/authAPI";
+import { sendVerificationEmail, verifyToken } from "../services/operation/authAPI";
 import SignUpModal from "./SignUpModal";
 import LoginModal from "./LoginModal";
 import { Mail, ShieldCheck, ArrowLeft, CheckCircle2, Rocket, Sparkles } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
 
 const VerifyEmail = () => {
-    const [searchParams] = useSearchParams();
     const [email, setEmail] = useState("");
-    const [supabaseId, setSupabaseId] = useState("");
     const [linkSent, SetLinkSent] = useState(false);
     const [countDown, setCountDown] = useState(60);
     const [loading, setLoading] = useState(false);
     const [isOpenSignUp, setOpenSignUp] = useState(false);
     const [isOpenLogin, setOpenLogin] = useState(false);
 
-    // detect verification redirect
-    useEffect(() => {
-        const token = searchParams.get("token");
-        const verifiedEmail = searchParams.get("email");
-
-        if (verifiedEmail) {
-            setEmail(verifiedEmail);
-        }
-
-        if (token) {
-            setOpenSignUp(true);
-        }
-    }, [searchParams]);
+    
 
     useEffect(() => {
         if (!linkSent) return;
@@ -44,6 +29,34 @@ const VerifyEmail = () => {
 
         return () => clearInterval(timer);
     }, [linkSent]);
+
+
+    useEffect(() => {
+        const hash = window.location.hash;
+
+        if (!hash) return;
+
+        const params = new URLSearchParams(hash.replace("#", ""));
+        const accessToken = params.get("access_token");
+
+        if (accessToken) {
+            handleVerify(accessToken);
+        }
+    }, []);
+
+    const handleVerify = async (token) => {
+        const res = await verifyToken(token);
+
+        if (res.success) {
+            localStorage.setItem("verifiedEmail", res.email);
+            localStorage.setItem("supabaseId", res.supabaseId);
+
+            setOpenSignUp(true);
+
+            // remove token from URL
+            window.history.replaceState({}, document.title, "/register");
+        }
+    };
 
 
     // --- Logic functions same rahegi jo aapne pehle di thi ---

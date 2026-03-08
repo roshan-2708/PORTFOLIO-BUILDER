@@ -3,6 +3,7 @@ import { signup } from "../services/operation/authAPI";
 import { MdOutlineCancel, MdEmail, MdPassword, MdPerson, MdWork, MdAutoAwesome } from "react-icons/md";
 
 const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
+
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -19,20 +20,24 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
         }
     }, [isOpen]);
 
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
+        const supabaseId = localStorage.getItem("supabaseId");
         if (formData.password !== formData.confirmPassword) {
             return alert("Passwords do not match");
         }
         try {
             setLoading(true);
-            await signup({ ...formData, email });
+            await signup({ ...formData, email, supabaseId });
             alert("Account created successfully");
             localStorage.removeItem("verifiedEmail");
+            localStorage.removeItem("supabaseId");
             onClose();
             onSignupSuccess();
         } catch (error) {

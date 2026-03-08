@@ -3,8 +3,6 @@ import { authEndpoints } from "../apis";
 
 
 const {
-    SEND_OTP,
-    VERIFY_OTP,
     SIGNUP,
     LOGIN,
     GET_USER_PROFILE,
@@ -12,29 +10,9 @@ const {
     RESET_PASSWORD,
     RESET_PASSWORD_TOKEN,
     SEND_VERIFICATION_LINK,
+    VERIFICATION_LINK,
 } = authEndpoints;
 
-// send-otp
-export const sendOtp = async (email) => {
-    try {
-        const response = await apiConnector("POST", SEND_OTP, { email });
-        return response.data;
-    } catch (error) {
-        console.error('send otp error :', error.response?.data || error.message);
-        throw error;
-    }
-}
-
-// verify-otp
-export const verifyOtp = async (email, otp) => {
-    try {
-        const response = await apiConnector("POST", VERIFY_OTP, { email, otp });
-        return response.data;
-    } catch (error) {
-        console.error('verify otp error :', error.response?.data || error.message);
-        throw error;
-    }
-}
 
 // signup
 export const signup = async (userData) => {
@@ -159,3 +137,15 @@ export const sendVerificationEmail = async (email) => {
         return error.response?.data; // Error response return karein
     }
 }
+
+export const verifyToken = async (token) => {
+    const res = await fetch(`${BASE_URL}${authEndpoints.VERIFICATION_LINK}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+    });
+
+    return await res.json();
+};
