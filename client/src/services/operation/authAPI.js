@@ -139,13 +139,26 @@ export const sendVerificationEmail = async (email) => {
 }
 
 export const verifyToken = async (token) => {
-    const res = await fetch(`${BASE_URL}${authEndpoints.VERIFICATION_LINK}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-    });
+    try {
+        const response = await fetch(`${BASE_URL}${authEndpoints.VERIFICATION_LINK}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+        });
 
-    return await res.json();
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("Verification API error:", data);
+            return { success: false, message: data.message };
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("Verify token request failed:", error);
+        return { success: false };
+    }
 };
