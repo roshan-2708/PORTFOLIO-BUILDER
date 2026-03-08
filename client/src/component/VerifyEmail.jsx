@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 const VerifyEmail = () => {
     const [searchParams] = useSearchParams();
     const [email, setEmail] = useState("");
+    const [supabaseId, setSupabaseId] = useState("");
     const [linkSent, SetLinkSent] = useState(false);
     const [countDown, setCountDown] = useState(60);
     const [loading, setLoading] = useState(false);
@@ -203,12 +204,12 @@ const VerifyEmail = () => {
 
                             <button
                                 onClick={handleResend}
-                                disabled={countdown !== 0 || loading}
+                                disabled={countDown !== 0 || loading}
                                 className="text-yellow-500 font-medium"
                             >
-                                {countdown === 0
+                                {countDown === 0
                                     ? "Resend verification email"
-                                    : `Resend in ${countdown} s`}
+                                    : `Resend in ${countDown} s`}
                             </button>
 
                             <button
