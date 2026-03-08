@@ -12,7 +12,7 @@ const VerifyEmail = () => {
     const [isOpenSignUp, setOpenSignUp] = useState(false);
     const [isOpenLogin, setOpenLogin] = useState(false);
 
-    
+
 
     useEffect(() => {
         if (!linkSent) return;
@@ -32,20 +32,36 @@ const VerifyEmail = () => {
 
 
     useEffect(() => {
+
+        // check hash token
         const hash = window.location.hash;
 
-        if (!hash) return;
+        if (hash) {
+            const params = new URLSearchParams(hash.replace("#", ""));
+            const accessToken = params.get("access_token");
 
-        const params = new URLSearchParams(hash.replace("#", ""));
-        const accessToken = params.get("access_token");
-
-        if (accessToken) {
-            handleVerify(accessToken);
+            if (accessToken) {
+                handleVerify(accessToken);
+                return;
+            }
         }
+
+        // check query token (new Supabase format)
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+
+        if (code) {
+            handleVerify(code);
+        }
+
     }, []);
 
     const handleVerify = async (token) => {
+        console.log("Verifying token:", token);
+
         const res = await verifyToken(token);
+
+        console.log("Verify response:", res);
 
         if (res.success) {
             localStorage.setItem("verifiedEmail", res.email);
@@ -53,7 +69,6 @@ const VerifyEmail = () => {
 
             setOpenSignUp(true);
 
-            // remove token from URL
             window.history.replaceState({}, document.title, "/register");
         }
     };
