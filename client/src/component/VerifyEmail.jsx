@@ -1,23 +1,20 @@
-
-import React, { useState, useEffect } from "react";
-import { sendVerificationEmail } from "../services/operation/authAPI";
+import React, { useEffect, useRef, useState } from "react";
+import { sendOtp, verifyOtp, sendVerificationEmail } from "../services/operation/authAPI";
 import SignUpModal from "./SignUpModal";
 import LoginModal from "./LoginModal";
-import { Mail, ArrowLeft, CheckCircle2, Rocket, Sparkles, ShieldCheck } from "lucide-react";
+import { Mail, ShieldCheck, ArrowLeft, CheckCircle2, Rocket, Sparkles } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 const VerifyEmail = () => {
-
     const [searchParams] = useSearchParams();
-
     const [email, setEmail] = useState("");
+    const [linkSent, SetLinkSent] = useState(false);
+    const [countDown, setCountDown] = useState(60);
     const [loading, setLoading] = useState(false);
-    const [linkSent, setLinkSent] = useState(false);
-    const [countdown, setCountdown] = useState(60);
     const [isOpenSignUp, setOpenSignUp] = useState(false);
     const [isOpenLogin, setOpenLogin] = useState(false);
 
-    // Detect verification redirect
+    // detect verification redirect
     useEffect(() => {
         const token = searchParams.get("token");
         const verifiedEmail = searchParams.get("email");
@@ -31,12 +28,11 @@ const VerifyEmail = () => {
         }
     }, [searchParams]);
 
-    // countdown timer for resend
     useEffect(() => {
         if (!linkSent) return;
 
         const timer = setInterval(() => {
-            setCountdown((prev) => {
+            setCountDown((prev) => {
                 if (prev <= 1) {
                     clearInterval(timer);
                     return 0;
@@ -48,45 +44,48 @@ const VerifyEmail = () => {
         return () => clearInterval(timer);
     }, [linkSent]);
 
-    // send verification email
+
+    // --- Logic functions same rahegi jo aapne pehle di thi ---
     const handleSendLink = async () => {
-
-        if (!email) {
-            alert("Please enter email");
-            return;
-        }
-
+        if (!email) return alert("Please enter email");
         try {
-
             setLoading(true);
-
             const res = await sendVerificationEmail(email);
-
-            if (res?.success) {
-                setLinkSent(true);
-                setCountdown(60);
-            } else {
-                alert(res?.message || "Failed to send verification email");
-            }
-
-        } catch (error) {
-
-            console.error(error);
-            alert("Something went wrong");
-
-        } finally {
-            setLoading(false);
-        }
+            if (res?.success) sendVerificationEmail(true);
+        } catch (error) { alert("Error sending verification link"); }
+        finally { setLoading(false); }
     };
 
     // resend email
     const handleResend = async () => {
-        if (countdown !== 0 || loading) return;
+        if (countDown !== 0 || loading) return;
         await handleSendLink();
     };
 
-    return (
+    const handleVerifyOtp = async () => {
+        const finalOtp = otp.join("");
+        if (finalOtp.length !== 6) return;
+        try {
+            setLoading(true);
+            const res = await verifyOtp(email, finalOtp);
+            if (res?.success) {
+                localStorage.setItem("verifiedEmail", email);
+                setOpenSignUp(true);
+            }
+        } catch (error) { alert("Invalid OTP"); }
+        finally { setLoading(false); }
+    };
 
+    const handleOtpChange = (e, index) => {
+        const value = e.target.value;
+        if (!/^[0-9]?$/.test(value)) return;
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+        if (value && index < 5) inputsRef.current[index + 1].focus();
+    };
+
+    return (
         <div className="min-h-screen flex flex-col md:flex-row bg-[#0B0F1A] text-white">
 
             {/* LEFT SIDE */}
@@ -269,5 +268,4 @@ const VerifyEmail = () => {
 
     );
 };
-
 export default VerifyEmail;
