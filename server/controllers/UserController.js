@@ -1,123 +1,13 @@
 const User = require('../database/User');
-const Otp = require('../database/Otp');
 const AdditionalInfo = require('../database/AdditionalInfo');
 const profileInfo = require('../database/PortfolioInfo');
 const bcrypt = require('bcryptjs');
 const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 require('dotenv').config();
-const otpGenerator = require('otp-generator');
 const supabase = require('../config/supaBase');
 
 
-// send otp
-exports.sendOtp = async (req, res) => {
-    try {
-        // get email
-        const { email } = req.body;
-
-        // check user email in db 
-        const userExits = await User.findOne({
-            email: email,
-        });
-
-        if (userExits) {
-            return res.status(400).json({
-                sucess: false,
-                message: "User already found",
-            });
-        }
-
-        // generate otp
-        let otpCode = otpGenerator.generate(6, {
-            upperCaseAlphabets: false,
-            lowerCaseAlphabets: false,
-            specialChars: false,
-        });
-
-        // ensure otp is unique
-        let exists = await Otp.findOne({
-            otp: otpCode,
-        });
-
-        // if otp not exits continuosly generate otp until unique
-        while (exists) {
-            otpCode = otpGenerator.generate(6, {
-                upperCaseAlphabets: false,
-                lowerCaseAlphabets: false,
-                specialChars: false,
-            });
-            exists = await Otp.findOne({ otp: otpCode });
-        }
-
-        // save otp in db
-        await Otp.create({
-            email: email,
-            otp: otpCode,
-            createdAt: Date.now(),
-        });
-
-        // send mail 
-        await mailSender(
-            email,
-            "Your OTP Code",
-            `<p>Your OTP code is : <b>${otpCode}</b></p>
-   <p>Your otp is valid for 5 minutes</p>`
-        );
-
-
-        // return success response
-        return res.status(200).json({
-            success: true,
-            message: "otp sent successfully",
-        });
-
-    } catch (error) {
-        console.error("SEND OTP ERROR 👉", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "failed to send otp",
-        });
-    }
-}
-
-// verify otp
-exports.verifyOtp = async (req, res) => {
-    try {
-        // fecth email and otp from request bodys
-        const { email, otp } = req.body;
-
-        // check otp in db
-        const otpRecord = await Otp.findOne({
-            email: email,
-            otp: otp,
-        });
-
-        // check otp record
-        if (!otpRecord) {
-            return res.status(400).json({
-                sucess: false,
-                message: "Invalid otp",
-            });
-        }
-        // verify
-        otpRecord.isVerified = true;
-        // save in db
-        await otpRecord.save();
-
-        return res.status(200).json({
-            success: true,
-            message: "Email verified is successfully"
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "otp verification failed",
-        });
-    }
-}
 
 // signup
 exports.signUp = async (req, res) => {
@@ -412,6 +302,34 @@ exports.sendVerificationEmail = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Server error"
+        });
+    }
+};
+
+// verify token
+exports.verifySupabaseToken = async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        const { data, error } = await supabase.auth.getUser(token);
+
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message,
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            supabaseId: data.user.id,
+            email: data.user.email,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Verification failed",
         });
     }
 };

@@ -3,14 +3,13 @@ const router = express.Router();
 
 // controllers
 const {
-    sendOtp,
-    verifyOtp,
     signUp,
     login,
     getUserProfile,
     logout,
     changePassword,
-    sendVerificationEmail
+    sendVerificationEmail,
+    verifySupabaseToken
 } = require('../controllers/UserController');
 const {
     resetPassword,
@@ -20,13 +19,6 @@ const {
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // auth routes
-
-// send otp
-router.post("/send-otp", sendOtp);
-
-// verify otp
-router.post("/verify-otp", verifyOtp);
-
 // signup
 router.post("/signup", signUp);
 
@@ -48,5 +40,8 @@ router.post('/reset-password', resetPassword);
 
 // send verification link
 router.post("/send-verification", sendVerificationEmail);
+
+// verification link
+router.post("/verify-token", verifySupabaseToken);
 
 module.exports = router;
