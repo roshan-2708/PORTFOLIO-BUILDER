@@ -8,8 +8,9 @@ const {
     getUserProfile,
     logout,
     changePassword,
-    sendVerificationEmail,
-    verifySupabaseToken
+    // sendVerificationEmail,
+    // verifySupabaseToken
+    registerUser
 } = require('../controllers/UserController');
 const {
     resetPassword,
@@ -39,9 +40,11 @@ router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
 
 // send verification link
-router.post("/send-verification", sendVerificationEmail);
+// router.post("/send-verification", sendVerificationEmail);
 
 // verification link
-router.post("/verify-token", verifySupabaseToken);
+// router.post("/verify-token", verifySupabaseToken);
+
+router.post('/register', registerUser);
 
 module.exports = router;

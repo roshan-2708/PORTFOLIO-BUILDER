@@ -275,61 +275,128 @@ exports.changePassword = async (req, res) => {
 }
 
 // send verification link
-exports.sendVerificationEmail = async (req, res) => {
-    try {
-        const { email } = req.body;
+// exports.sendVerificationEmail = async (req, res) => {
+//     try {
+//         const { email } = req.body;
 
-        const { data, error } = await supabase.auth.signInWithOtp({
+//         const { data, error } = await supabase.auth.signInWithOtp({
+//             email,
+//             options: {
+//                 emailRedirectTo: "https://portfolio-builder-3h77.vercel.app/"
+//             }
+//         });
+
+//         if (error) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: error.message
+//             });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Verification link sent to email"
+//         });
+
+//     } catch (err) {
+//         res.status(500).json({
+//             success: false,
+//             message: "Server error"
+//         });
+//     }
+// };
+
+// verify token
+// exports.verifySupabaseToken = async (req, res) => {
+//     try {
+//         const { token } = req.body;
+
+//         const { data, error } = await supabase.auth.getUser(token);
+
+//         if (error) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: error.message,
+//             });
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             supabaseId: data.user.id,
+//             email: data.user.email,
+//         });
+
+//     } catch (error) {
+//         return res.status(500).json({
+//             success: false,
+//             message: "Verification failed",
+//         });
+//     }
+// };
+
+const supabase = require("../config/supabaseClient");
+
+const registerUser = async (req, res) => {
+    try {
+        const { email, password, firstName, lastName } = req.body;
+
+        // 1. Basic Validation
+        if (!email || !password) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Email and password are required." 
+            });
+        }
+
+        // 2. Supabase Sign Up Call
+        // Is call ke sath hi Supabase email verification bhej deta hai
+        const { data, error } = await supabase.auth.signUp({
             email,
+            password,
             options: {
-                emailRedirectTo: "https://portfolio-builder-3h77.vercel.app/register"
+                // Verification ke baad user kahan land karega (Frontend URL)
+                emailRedirectTo: 'https://portfolio-builder-3h77.vercel.app/auth/callback',
+                // User ke extra attributes jo 'auth.users' metadata mein save honge
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    full_name: `${firstName} ${lastName}`
+                }
             }
         });
 
+        // 3. Check for Supabase Errors
         if (error) {
-            return res.status(400).json({
-                success: false,
-                message: error.message
+            return res.status(400).json({ 
+                success: false, 
+                message: error.message 
             });
         }
 
-        res.status(200).json({
+        // 4. Response handle karna
+        // Agar user register ho gaya par email verify hona baaki hai
+        if (data.user && data.session === null) {
+            return res.status(201).json({
+                success: true,
+                message: "Registration successful! Please check your email to verify your account.",
+                user: data.user
+            });
+        }
+
+        // Agar email verification disabled hai (direct login)
+        return res.status(200).json({
             success: true,
-            message: "Verification link sent to email"
+            message: "User registered and logged in successfully.",
+            session: data.session
         });
 
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Server error"
+        console.error("SERVER ERROR:", err);
+        res.status(500).json({ 
+            success: false, 
+            message: "Internal Server Error" 
         });
     }
 };
 
-// verify token
-exports.verifySupabaseToken = async (req, res) => {
-    try {
-        const { token } = req.body;
-
-        const { data, error } = await supabase.auth.getUser(token);
-
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                message: error.message,
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            supabaseId: data.user.id,
-            email: data.user.email,
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Verification failed",
-        });
-    }
-};
+module.exports = { registerUser };
