@@ -335,7 +335,7 @@ exports.changePassword = async (req, res) => {
 // };
 
 
-const registerUser = async (req, res) => {
+exports.registerUser = async (req, res) => {
     try {
         const { email, password, firstName, lastName } = req.body;
 
@@ -397,5 +397,3 @@ const registerUser = async (req, res) => {
         });
     }
 };
-
-module.exports = { registerUser };
