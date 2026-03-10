@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 const transporter = require("../utils/mailSender");
+const sendEmail = require("../utils/sendEmail");
 require('dotenv').config();
 
 
@@ -74,14 +75,19 @@ exports.signUp = async (req, res) => {
             maxAge: 7 * 24 * 60 * 1000,
         });
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Welcome to FolioFlow",
-            text: `Welcome to portfolio builder website. Your account has been created with email id : ${email}`
-        };
+        // const mailOptions = {
+        //     from: process.env.EMAIL_USER,
+        //     to: email,
+        //     subject: "Welcome to FolioFlow",
+        //     text: `Welcome to portfolio builder website. Your account has been created with email id : ${email}`
+        // };
 
-        await transporter.sendMail(mailOptions);
+        // await transporter.sendMail(mailOptions);
+        await sendEmail(
+            email,
+            "Welcome to FolioFlow",
+            `Welcome to portfolio builder website. Your account has been created with email id: ${email}`
+        );
 
         return res.status(201).json({
             success: true,
