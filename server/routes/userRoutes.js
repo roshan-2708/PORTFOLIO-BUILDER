@@ -7,10 +7,7 @@ const {
     login,
     getUserProfile,
     logout,
-    changePassword,
-    // sendVerificationEmail,
-    // verifySupabaseToken
-    registerUser
+    changePassword
 } = require('../controllers/UserController');
 const {
     resetPassword,
@@ -21,7 +18,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 // auth routes
 // signup
-router.post("/signup", signUp);
+router.post("/register", signUp);
 
 // login
 router.post("/login", login);
@@ -39,12 +36,5 @@ router.put('/change-password', authMiddleware, changePassword);
 router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
 
-// send verification link
-// router.post("/send-verification", sendVerificationEmail);
-
-// verification link
-// router.post("/verify-token", verifySupabaseToken);
-
-router.post('/register', registerUser);
 
 module.exports = router;
