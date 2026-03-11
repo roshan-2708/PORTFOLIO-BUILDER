@@ -6,7 +6,7 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 const transporter = require("../utils/mailSender");
 const sendEmail = require("../utils/sendEmail");
-import { supabase } from '../config/supaBase';
+const supabase = require('../config/supaBase');
 require('dotenv').config();
 
 
