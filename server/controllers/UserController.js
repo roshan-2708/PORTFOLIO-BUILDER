@@ -7,6 +7,7 @@ const mailSender = require('../utils/mailSender');
 const transporter = require("../utils/mailSender");
 const sendEmail = require("../utils/sendEmail");
 const supabase = require('../config/supaBase');
+
 require('dotenv').config();
 
 
