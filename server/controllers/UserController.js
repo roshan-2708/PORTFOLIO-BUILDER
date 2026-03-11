@@ -6,6 +6,7 @@ const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 const transporter = require("../utils/mailSender");
 const sendEmail = require("../utils/sendEmail");
+import { supabase } from '../config/supaBase';
 require('dotenv').config();
 
 
@@ -288,3 +289,41 @@ exports.changePassword = async (req, res) => {
     }
 }
 
+// supabase register
+exports.registerUser = async (req, res) => {
+    const { email, password, fullName } = req.body;
+
+    // Basic validation
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Bhai, email aur password dono zaroori hain!' });
+    }
+
+    try {
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName,
+                },
+                // IMPORTANT: Verification link click karne ke baad user frontend pe aana chahiye
+                emailRedirectTo: process.env.CLIENT_URL,
+            },
+        });
+
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        // Success response
+        return res.status(201).json({
+            success: true,
+            message: 'User registered successfully! Email verification link bhej diya gaya hai.',
+            user: data.user,
+        });
+
+    } catch (err) {
+        console.error('Registration Error:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

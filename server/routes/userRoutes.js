@@ -7,7 +7,8 @@ const {
     login,
     getUserProfile,
     logout,
-    changePassword
+    changePassword,
+    registerUser,
 } = require('../controllers/UserController');
 const {
     resetPassword,
@@ -36,5 +37,6 @@ router.put('/change-password', authMiddleware, changePassword);
 router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
 
+router.post('/registerUser', registerUser);
 
 module.exports = router;
