@@ -9,7 +9,7 @@ const {
     logout,
     changePassword,
     registerUser,
-    getUserProfile
+    // getUserProfile
 } =  require('../controllers/usersController')
 const {
     resetPassword,
@@ -25,7 +25,7 @@ const {
 router.post("/login", login);
 
 // getUserProfile
-router.get('/me', authMiddleware, getUserProfile);
+// router.get('/me', authMiddleware, getUserProfile);
 
 // logout
 router.post('/logout', logout);
