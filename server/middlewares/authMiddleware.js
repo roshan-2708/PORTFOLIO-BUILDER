@@ -26,7 +26,7 @@
 // }
 // module.exports = authMiddleware;
 
-import supabase from '../config/supaBase';
+import supabase from "../config/supaBase.js"
 
 const supabaseClient = supabase.default || supabase;
 
