@@ -372,6 +372,14 @@ exports.registerUser = async (req, res) => {
             },
         });
 
+        const newUser = await User.create({
+            email,
+            password,
+            profile: null,
+            image: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName} ${lastName}`,
+            isVerified: false,
+        })
+
         if (error) {
             return res.status(400).json({ error: error.message });
         }
@@ -380,7 +388,7 @@ exports.registerUser = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: 'User registered successfully! Email verification link bhej diya gaya hai.',
-            user: data.user,
+            user: data.user && newUser,
         });
 
     } catch (err) {
