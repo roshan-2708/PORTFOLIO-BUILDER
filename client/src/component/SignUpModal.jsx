@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { signup } from "../services/operation/authAPI";
+import { registerUser } from "../services/operation/authAPI";
 import { MdOutlineCancel, MdEmail, MdPassword, MdPerson, MdWork, MdAutoAwesome } from "react-icons/md";
 
 const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
-
-    const [email, setEmail] = useState("");
+    
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
+        fullName: "",
+        email: "",
         password: "",
-        confirmPassword: "",
     });
-
-    useEffect(() => {
-        if (isOpen) {
-            const savedEmail = localStorage.getItem("verifiedEmail");
-            setEmail(savedEmail || "");
-        }
-    }, [isOpen]);
-
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,16 +18,10 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        const supabaseId = localStorage.getItem("supabaseId");
-        if (formData.password !== formData.confirmPassword) {
-            return alert("Passwords do not match");
-        }
         try {
             setLoading(true);
-            await signup({ ...formData, email, supabaseId });
+            await registerUser({ ...formData });
             alert("Account created successfully");
-            localStorage.removeItem("verifiedEmail");
-            localStorage.removeItem("supabaseId");
             onClose();
             onSignupSuccess();
         } catch (error) {
@@ -98,18 +82,8 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
                             <div className="relative flex-1">
                                 <input
                                     type="text"
-                                    name="firstName"
-                                    placeholder="First"
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
-                                />
-                            </div>
-                            <div className="relative flex-1">
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    placeholder="Last"
+                                    name="fullName"
+                                    placeholder="Enter Your Full Name"
                                     onChange={handleChange}
                                     required
                                     className="w-full p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
@@ -121,9 +95,12 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
                             <MdEmail className="absolute top-4 left-4 text-gray-500" />
                             <input
                                 type="email"
-                                value={email}
-                                readOnly
-                                className="w-full pl-12 p-3 rounded-xl bg-white/5 border border-white/5 text-gray-500 cursor-not-allowed italic"
+                                name="email"
+                                placeholder="Enter Your Email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                className="w-full pl-12 p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
                             />
                         </div>
 
@@ -140,18 +117,6 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
                             />
                         </div>
 
-                        <div className="relative">
-                            <MdPassword className="absolute top-4 left-4 text-gray-500" />
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="Confirm Password"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                required
-                                className="w-full pl-12 p-3 rounded-xl bg-white/5 border border-white/10 focus:border-yellow-500 outline-none transition-all"
-                            />
-                        </div>
 
                         <button
                             type="submit"

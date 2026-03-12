@@ -7,6 +7,7 @@ const Navbar = () => {
     const location = useLocation();
     const [isOpenLogin, setOpenLogin] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [isOpenSignUp, setOpenSignUp] = useState(false);
 
     const token = localStorage.getItem("token");
 
@@ -57,12 +58,18 @@ const Navbar = () => {
                                     >
                                         Login
                                     </button>
-                                    <Link
+                                    {/* <Link
                                         to='/verify-email'
                                         className='bg-yellow-600 hover:bg-yellow-500 text-white px-5 py-2 rounded-full font-semibold transition-all shadow-md'
                                     >
                                         Get Started
-                                    </Link>
+                                    </Link> */}
+                                    <button
+                                        onClick={() => setOpenSignUp(true)}
+                                        className='text-gray-300 hover:text-white font-medium transition-all'
+                                    >
+                                        SignUp
+                                    </button>
                                 </>
                             )}
                         </>
@@ -90,6 +97,14 @@ const Navbar = () => {
             <LoginModal
                 isOpen={isOpenLogin}
                 onClose={() => setOpenLogin(false)}
+            />
+            <SignUpModal
+                isOpen={isOpenSignUp}
+                onClose={() => setOpenSignUp(false)}
+                onSignupSuccess={() => {
+                    setOpenSignUp(false);
+                    setOpenLogin(true);
+                }}
             />
         </>
     );

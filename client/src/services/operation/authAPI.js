@@ -9,8 +9,7 @@ const {
     CHANGE_PASSWORD,
     RESET_PASSWORD,
     RESET_PASSWORD_TOKEN,
-    SEND_VERIFICATION_LINK,
-    VERIFICATION_LINK,
+    REGISTER_USER,
 } = authEndpoints;
 
 
@@ -124,41 +123,25 @@ export const resetPassword = async (password, confirmPassword, token, navigate) 
 };
 
 // send verification link
-export const sendVerificationEmail = async (email) => {
+export const registerUser = async (email, password, userName) => {
     try {
         const response = await apiConnector(
             "POST",
-            SEND_VERIFICATION_LINK,
-            { email }
-        );
-        return response.data; // Response ka data return karein
-    } catch (error) {
-        console.error("Send verification email error", error);
-        return error.response?.data; // Error response return karein
-    }
-}
-
-export const verifyToken = async (token) => {
-    try {
-        const response = await fetch(`${BASE_URL}${authEndpoints.VERIFICATION_LINK}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+            REGISTER_USER,
+            {
+                email,
+                password,
+                userName,
             },
-            body: JSON.stringify({ token }),
-        });
+        );
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            console.error("Verification API error:", data);
-            return { success: false, message: data.message };
+        if (res.data.success) {
+            console.log("register successful");
         }
-
-        return data;
-
     } catch (error) {
-        console.error("Verify token request failed:", error);
-        return { success: false };
+        console.error(
+            "registration failed:",
+            error.response?.data || error.message
+        );
     }
-};
+}   
