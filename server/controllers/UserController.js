@@ -334,3 +334,19 @@ exports.registerUser = async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+// Ek dummy controller testing ke liye
+exports.createPortfolioController = async (req, res) => {
+    try {
+        // req.user humein verifyToken middleware se mil raha hai
+        console.log("Authenticated User:", req.user);
+        
+        res.status(200).json({
+            success: true,
+            message: "Bhai, middleware ekdum mast kaam kar raha hai! User authenticated hai.",
+            user: req.user
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

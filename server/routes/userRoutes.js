@@ -9,6 +9,7 @@ const {
     logout,
     changePassword,
     registerUser,
+    createPortfolioController
 } = require('../controllers/UserController');
 const {
     resetPassword,
