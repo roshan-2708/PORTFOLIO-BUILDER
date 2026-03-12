@@ -135,7 +135,7 @@ export const registerUser = async (email, password, fullName) => {
             },
         );
 
-        if (res?.data?.success) {
+        if (response?.data?.success) {
             console.log("register successful");
             return response.data;
         }
