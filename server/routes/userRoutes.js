@@ -9,7 +9,7 @@ const {
     changePassword,
     registerUser,
     getUserProfile
-} = require('../controllers/userController');
+} = require('../controllers/usersController');
 const {
     resetPassword,
     resetPasswordToken
@@ -22,6 +22,9 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 // login
 router.post("/login", login);
+
+// register
+router.post('/registerUser', registerUser);
 
 // getUserProfile
 router.get('/me', authMiddleware, getUserProfile);
@@ -36,6 +39,6 @@ router.put('/change-password', authMiddleware, changePassword);
 router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
 
-router.post('/registerUser', registerUser);
+
 
 module.exports = router;
