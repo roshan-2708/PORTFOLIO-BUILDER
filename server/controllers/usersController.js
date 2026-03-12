@@ -233,36 +233,36 @@ exports.login = async (req, res) => {
     }
 };
 
-// getUserWithProfile
-exports.getUserProfile = async (req, res) => {
-    try {
-        const userId = req.user.id;
+// // getUserWithProfile
+// exports.getUserProfile = async (req, res) => {
+//     try {
+//         const userId = req.user.id;
 
-        const user = await User.findById(userId).select('-password').populate('profile');
-
-
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "User not found",
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Successfully get data - ",
-            user
-        });
+//         const user = await User.findById(userId).select('-password').populate('profile');
 
 
-    } catch (error) {
-        console.log("Get profile error", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to fetch profile."
-        })
-    }
-}
+//         if (!user) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "User not found",
+//             });
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             message: "Successfully get data - ",
+//             user
+//         });
+
+
+//     } catch (error) {
+//         console.log("Get profile error", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Failed to fetch profile."
+//         })
+//     }
+// }
 
 // logout
 exports.logout = async () => {
