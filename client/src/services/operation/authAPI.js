@@ -123,7 +123,7 @@ export const resetPassword = async (password, confirmPassword, token, navigate) 
 };
 
 // send verification link
-export const registerUser = async (email, password, userName) => {
+export const registerUser = async (email, password, fullName) => {
     try {
         const response = await apiConnector(
             "POST",
@@ -131,17 +131,19 @@ export const registerUser = async (email, password, userName) => {
             {
                 email,
                 password,
-                userName,
+                fullName,
             },
         );
 
-        if (res.data.success) {
+        if (res?.data?.success) {
             console.log("register successful");
+            return response.data;
         }
     } catch (error) {
         console.error(
             "registration failed:",
             error.response?.data || error.message
         );
+        throw error;
     }
 }   

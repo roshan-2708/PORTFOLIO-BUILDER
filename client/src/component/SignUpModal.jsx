@@ -3,7 +3,7 @@ import { registerUser } from "../services/operation/authAPI";
 import { MdOutlineCancel, MdEmail, MdPassword, MdPerson, MdWork, MdAutoAwesome } from "react-icons/md";
 
 const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
-    
+
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         fullName: "",
@@ -15,17 +15,36 @@ const SignUpModal = ({ isOpen, onClose, onSignupSuccess }) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    // const handleSubmit = async (e) => {
 
+    //     e.preventDefault();
+    //     try {
+    //         setLoading(true);
+    //         await registerUser({ ...formData });
+    //         alert("Account created successfully");
+    //         onClose();
+    //         onSignupSuccess();
+    //     } catch (error) {
+    //         alert(error?.message || "Signup failed");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
-            await registerUser({ ...formData });
-            alert("Account created successfully");
+            // Destructure karke alag alag bhejo ya authAPI ko ek object lene wala banao
+            const { email, password, fullName } = formData;
+            await registerUser(email, password, fullName);
+
+            alert("Account created successfully! Bhai email check karo verification ke liye.");
             onClose();
             onSignupSuccess();
         } catch (error) {
-            alert(error?.message || "Signup failed");
+            // Backend se aaya exact error dikhao
+            alert(error.response?.data?.error || "Signup failed");
         } finally {
             setLoading(false);
         }
