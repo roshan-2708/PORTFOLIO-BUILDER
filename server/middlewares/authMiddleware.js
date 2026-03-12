@@ -26,9 +26,9 @@
 // }
 // module.exports = authMiddleware;
 
-import supabase from "../config/supaBase.js"
+const supaBase = require('../config/supaBase.js')
 
-const supabaseClient = supabase.default || supabase;
+const supabaseClient = supaBase.default || supaBase;
 
 const authMiddleware = async (req, res, next) => {
     try {

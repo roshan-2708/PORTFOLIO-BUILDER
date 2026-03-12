@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const authMiddleware = require('../middlewares/authMiddleware');
 // controllers
 const {
     // signUp,
@@ -9,14 +8,14 @@ const {
     logout,
     changePassword,
     registerUser,
-    // getUserProfile
-} =  require('../controllers/usersController')
+    getUserProfile
+} = require('../controllers/userController');
 const {
     resetPassword,
     resetPasswordToken
 } = require('../controllers/resetPassword');
 
-
+const authMiddleware = require('../middlewares/authMiddleware');
 // auth routes
 // signup
 // router.post("/register", signUp);
@@ -25,7 +24,7 @@ const {
 router.post("/login", login);
 
 // getUserProfile
-// router.get('/me', authMiddleware, getUserProfile);
+router.get('/me', authMiddleware, getUserProfile);
 
 // logout
 router.post('/logout', logout);
