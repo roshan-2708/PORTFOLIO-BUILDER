@@ -7,7 +7,7 @@ const mailSender = require('../utils/mailSender');
 const transporter = require("../utils/mailSender");
 const sendEmail = require("../utils/sendEmail");
 const supabase = require('../config/supaBase');
-
+const supabaseClient = supabase.default || supabase;
 require('dotenv').config();
 
 
@@ -306,7 +306,7 @@ exports.registerUser = async (req, res) => {
 
         // ... baaki ka code
         try {
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await supabaseClient.auth.signUp({
                 email,
                 password,
                 options: {
