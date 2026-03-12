@@ -3,7 +3,6 @@ import Navbar from './component/Navbar'
 import Landing from './pages/Landing'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Footer from './component/Footer'
-import VerifyEmail from './component/VerifyEmail'
 import Dashboard from './pages/Dashboard'
 import UsersPortfolio from './Portfolio/UsersPortfolio'
 import BuildingPortfolio from './Portfolio/BuildingPortfolio'
@@ -22,7 +21,6 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
 
         <Route path="/portfolio/:id" element={<ViewPortfolio />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

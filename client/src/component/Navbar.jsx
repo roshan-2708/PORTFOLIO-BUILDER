@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from './LoginModal';
+import SignUpModal from './SignUpModal'
 
 const Navbar = () => {
     const navigate = useNavigate();
