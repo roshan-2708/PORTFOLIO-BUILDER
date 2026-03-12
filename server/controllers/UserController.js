@@ -39,7 +39,7 @@ require('dotenv').config();
 //             });
 //         }
 
-//         // check user is exit or not 
+//         // check user is exit or not
 //         const exitsUser = await User.findOne({
 //             email,
 //         });
@@ -107,77 +107,131 @@ require('dotenv').config();
 //     }
 // }
 
-// login
+// // login
+// exports.login = async (req, res) => {
+//     try {
+//         // fetch data
+//         const { email, password } = req.body;
+//         // validation
+//         if (!email || !password) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Email and password requried",
+//             });
+//         }
+
+//         // find user exit or not
+//         const existUser = await User.findOne({ email }).populate("profile");
+
+//         // not found user
+//         if (!existUser) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "user is not exist , Please sign up first",
+//             });
+//         }
+
+//         // compare password
+//         const isPasswordValid = await bcrypt.compare(password, existUser.password);
+
+//         // if not success
+//         if (!isPasswordValid) {
+//             return res.status(401).json({
+//                 success: false,
+//                 message: "Incorrect password , try again",
+//             });
+//         }
+
+//         const payload = {
+//             id: existUser.id,
+//             email: existUser.email,
+//         };
+
+//         const token = jwtToken.sign(payload, process.env.JWT_SECRET, {
+//             expiresIn: "7d",
+//         });
+
+//         const cookieOptions = {
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "production",
+//             sameSite: "None",
+//             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+//         };
+
+//         existUser.password = undefined;
+
+//         return res
+//             .cookie("token", token, cookieOptions)
+//             .status(200)
+//             .json({
+//                 success: true,
+//                 message: "Login successful",
+//                 token,
+//                 existUser,
+//             });
+
+//     } catch (error) {
+//         console.error("login error", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "login failed",
+//         })
+//     }
+// }
+
 exports.login = async (req, res) => {
     try {
-        // fetch data
         const { email, password } = req.body;
-        // validation
+
+        // Validation
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Email and password requried",
+                message: "Email and password required bhai!",
             });
         }
 
-        // find user exit or not
-        const existUser = await User.findOne({ email }).populate("profile");
+        // Supabase se Login karna
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-        // not found user
-        if (!existUser) {
-            return res.status(404).json({
-                success: false,
-                message: "user is not exist , Please sign up first",
-            });
-        }
-
-        // compare password
-        const isPasswordValid = await bcrypt.compare(password, existUser.password);
-
-        // if not success
-        if (!isPasswordValid) {
+        // Agar user nahi mila ya password galat hai
+        if (error) {
             return res.status(401).json({
                 success: false,
-                message: "Incorrect password , try again",
+                message: error.message || "Incorrect email or password",
             });
         }
 
-        const payload = {
-            id: existUser.id,
-            email: existUser.email,
-        };
-
-        const token = jwtToken.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "7d",
-        });
+        const token = data.session.access_token;
 
         const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "None",
-            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
         };
-
-        existUser.password = undefined;
 
         return res
             .cookie("token", token, cookieOptions)
             .status(200)
             .json({
                 success: true,
-                message: "Login successful",
+                message: "Login successful bhai!",
                 token,
-                existUser,
+                user: data.user,
             });
 
     } catch (error) {
-        console.error("login error", error);
+        console.error("Login error:", error);
         return res.status(500).json({
             success: false,
-            message: "login failed",
-        })
+            message: "Login failed",
+        });
     }
-}
+};
 
 // getUserWithProfile
 exports.getUserProfile = async (req, res) => {
