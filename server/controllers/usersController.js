@@ -233,22 +233,71 @@ exports.login = async (req, res) => {
     }
 };
 
-// supabase register
+// // supabase register
+// exports.registerUser = async (req, res) => {
+//     const { email, password, fullName } = req.body;
+//     console.log("Request Body:", req.body);
+//     // Basic validation
+//     if (!email || !password) {
+//         return res.status(400).json({ error: 'Bhai, email aur password dono zaroori hain!' });
+//     }
+//     // UserController.js ke andar (signUp se theek pehle)
+
+//     console.log("🚀 Supabase Object Check:", supabase);
+//     console.log("🔑 Env Check URL:", process.env.SUPABASE_URL ? "Mil gaya" : "Nahi mila!");
+//     console.log("🔑 Env Check Key:", process.env.SUPABASE_ANON_KEY ? "Mil gaya" : "Nahi mila!");
+
+//     // ... baaki ka code
+//     try {
+//         const { data, error } = await supabaseClient.auth.signUp({
+//             email,
+//             password,
+//             options: {
+//                 data: {
+//                     full_name: fullName,
+//                 },
+//                 // IMPORTANT: Verification link click karne ke baad user frontend pe aana chahiye
+//                 emailRedirectTo: process.env.CLIENT_URL,
+//             },
+//         });
+
+//         const newUser = await User.create({
+//             email,
+//             password,
+//             profile: null,
+//             image: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName} ${lastName}`,
+//             isVerified: false,
+//         })
+
+//         if (error) {
+//             return res.status(400).json({ error: error.message });
+//         }
+
+//         // Success response
+//         return res.status(201).json({
+//             success: true,
+//             message: 'User registered successfully! Email verification link bhej diya gaya hai.',
+//             user: data.user && newUser,
+//         });
+
+//     } catch (err) {
+//         console.error('Registration Error:', err);
+//         return res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
 exports.registerUser = async (req, res) => {
     const { email, password, fullName } = req.body;
-    console.log("Request Body:", req.body);
-    // Basic validation
+
     if (!email || !password) {
-        return res.status(400).json({ error: 'Bhai, email aur password dono zaroori hain!' });
+        return res.status(400).json({
+            success: false,
+            message: "Email aur password required hai bhai",
+        });
     }
-    // UserController.js ke andar (signUp se theek pehle)
 
-    console.log("🚀 Supabase Object Check:", supabase);
-    console.log("🔑 Env Check URL:", process.env.SUPABASE_URL ? "Mil gaya" : "Nahi mila!");
-    console.log("🔑 Env Check Key:", process.env.SUPABASE_ANON_KEY ? "Mil gaya" : "Nahi mila!");
-
-    // ... baaki ka code
     try {
+
+        // 1️⃣ Supabase signup
         const { data, error } = await supabaseClient.auth.signUp({
             email,
             password,
@@ -256,36 +305,44 @@ exports.registerUser = async (req, res) => {
                 data: {
                     full_name: fullName,
                 },
-                // IMPORTANT: Verification link click karne ke baad user frontend pe aana chahiye
                 emailRedirectTo: process.env.CLIENT_URL,
             },
         });
 
-        const newUser = await User.create({
-            email,
-            password,
-            profile: null,
-            image: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName} ${lastName}`,
-            isVerified: false,
-        })
-
         if (error) {
-            return res.status(400).json({ error: error.message });
+            return res.status(400).json({
+                success: false,
+                message: error.message,
+            });
         }
 
-        // Success response
+        const supabaseUser = data.user;
+
+        // 2️⃣ MongoDB me user store
+        const newUser = await User.create({
+            supabaseId: supabaseUser.id,
+            email: supabaseUser.email,
+            fullName: fullName,
+            profile: null,
+            image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`,
+            isVerified: false,
+        });
+
         return res.status(201).json({
             success: true,
-            message: 'User registered successfully! Email verification link bhej diya gaya hai.',
-            user: data.user && newUser,
+            message: "User register ho gaya. Email verify karo.",
+            user: newUser,
         });
 
     } catch (err) {
-        console.error('Registration Error:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Registration Error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
     }
 };
-
 // getUserWithProfile
 exports.getUserProfile = async (req, res) => {
     try {
