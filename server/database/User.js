@@ -2,52 +2,63 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
     {
+        supabaseId: {
+            type: String,
+            required: true,
+            unique: true
+        },
+
         firstName: {
             type: String,
-            required: true,
-            trim: true,
+            trim: true
         },
+
         lastName: {
             type: String,
-            required: true,
-            trim: true,
+            trim: true
         },
+
         email: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
-            trim: true,
+            trim: true
         },
-        password: {
-            type: String,
-            required: true,
-        },
+
         profile: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Profile",
+            ref: "Profile"
         },
+
         image: {
             type: String,
-            default: "",
+            default: ""
         },
+
         isVerified: {
             type: Boolean,
-            default: false,
+            default: false
         },
+
         token: {
-            type: String,
+            type: String
         },
+
         resetPasswordExpires: {
-            type: Date,
+            type: Date
         },
+
         verifyOtp: {
-            type: String, default: ""
+            type: String,
+            default: ""
         },
+
         verifyOtpExpireAt: {
             type: Number,
-            default: 0,
+            default: 0
         }
+
     },
     { timestamps: true }
 );

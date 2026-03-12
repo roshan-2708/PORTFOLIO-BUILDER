@@ -318,14 +318,21 @@ exports.registerUser = async (req, res) => {
 
         const supabaseUser = data.user;
 
-        // 2️⃣ MongoDB me user store
+        // // 2️⃣ MongoDB me user store
+        // const newUser = await User.create({
+        //     supabaseId: supabaseUser.id,
+        //     email: supabaseUser.email,
+        //     fullName: fullName,
+        //     profile: null,
+        //     image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`,
+        //     isVerified: false,
+        // });
         const newUser = await User.create({
             supabaseId: supabaseUser.id,
             email: supabaseUser.email,
-            fullName: fullName,
-            profile: null,
-            image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`,
-            isVerified: false,
+            firstName: fullName.split(" ")[0],
+            lastName: fullName.split(" ")[1] || "",
+            image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`
         });
 
         return res.status(201).json({
