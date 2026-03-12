@@ -293,7 +293,7 @@ exports.changePassword = async (req, res) => {
 // supabase register
 exports.registerUser = async (req, res) => {
     const { email, password, fullName } = req.body;
-
+    console.log("Request Body:", req.body);
     // Basic validation
     if (!email || !password) {
         return res.status(400).json({ error: 'Bhai, email aur password dono zaroori hain!' });
