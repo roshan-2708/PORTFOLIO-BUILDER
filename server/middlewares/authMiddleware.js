@@ -26,7 +26,7 @@ const authMiddleware = (req, res, next) => {
 }
 module.exports = authMiddleware;
 
-const supaBase = require('../config/supaBase')
+const supabase = require('../config/supaBase');
 const supabaseClient = supabase.default || supabase;
 
 export const verifyToken = async (req, res, next) => {
