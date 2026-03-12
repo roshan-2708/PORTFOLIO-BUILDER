@@ -69,12 +69,11 @@ const VerifyEmail = () => {
 
             setOpenSignUp(true);
 
-            window.history.replaceState({}, document.title, "/register");
+            window.history.replaceState({}, document.title, "/");
         }
     };
 
 
-    // --- Logic functions same rahegi jo aapne pehle di thi ---
     const handleSendLink = async () => {
         if (!email) return alert("Please enter email");
         try {
