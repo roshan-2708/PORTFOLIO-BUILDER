@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const authMiddleware = require('../middlewares/authMiddleware');
 // controllers
 const {
     // signUp,
@@ -15,7 +16,6 @@ const {
     resetPasswordToken
 } = require('../controllers/resetPassword');
 
-const authMiddleware = require('../middlewares/authMiddleware');
 
 // auth routes
 // signup
