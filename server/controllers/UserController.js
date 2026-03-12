@@ -304,33 +304,33 @@ exports.registerUser = async (req, res) => {
     console.log("🔑 Env Check URL:", process.env.SUPABASE_URL ? "Mil gaya" : "Nahi mila!");
     console.log("🔑 Env Check Key:", process.env.SUPABASE_ANON_KEY ? "Mil gaya" : "Nahi mila!");
 
-        // ... baaki ka code
-        try {
-            const { data, error } = await supabaseClient.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                    },
-                    // IMPORTANT: Verification link click karne ke baad user frontend pe aana chahiye
-                    emailRedirectTo: process.env.CLIENT_URL,
+    // ... baaki ka code
+    try {
+        const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName,
                 },
-            });
+                // IMPORTANT: Verification link click karne ke baad user frontend pe aana chahiye
+                emailRedirectTo: process.env.CLIENT_URL,
+            },
+        });
 
-            if(error) {
-                return res.status(400).json({ error: error.message });
-            }
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
 
         // Success response
         return res.status(201).json({
-                success: true,
-                message: 'User registered successfully! Email verification link bhej diya gaya hai.',
-                user: data.user,
-            });
+            success: true,
+            message: 'User registered successfully! Email verification link bhej diya gaya hai.',
+            user: data.user,
+        });
 
-        } catch(err) {
-            console.error('Registration Error:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-    };
+    } catch (err) {
+        console.error('Registration Error:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

@@ -16,7 +16,7 @@ const {
 } = require('../controllers/resetPassword');
 
 const authMiddleware = require('../middlewares/authMiddleware');
-
+import { verifyToken } from '../middlewares/authMiddleware';
 // auth routes
 // signup
 // router.post("/register", signUp);
@@ -38,5 +38,6 @@ router.post('/reset-password-token', resetPasswordToken);
 router.post('/reset-password', resetPassword);
 
 router.post('/registerUser', registerUser);
+app.post('/api/portfolio/create', verifyToken, createPortfolioController);
 
 module.exports = router;
