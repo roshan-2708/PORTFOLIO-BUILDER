@@ -6,11 +6,12 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const {
     // signUp,
     login,
-    getUserProfile,
+    // getUserProfile,
     logout,
     changePassword,
     registerUser,
 } = require('../controllers/UserController');
+const { getUserProfile } = require('../controllers/UserController');
 const {
     resetPassword,
     resetPasswordToken
