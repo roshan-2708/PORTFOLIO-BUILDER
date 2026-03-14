@@ -132,16 +132,21 @@ exports.registerUser = async (req, res) => {
     }
 
 }
-// getUserWithProfile
+
+// get user profile details
 // exports.getUserProfile = async (req, res) => {
 //     try {
-//         const userId = req.user.id;
 
-//         const user = await User.findById(userId).select('-password').populate('profile');
+//         // Supabase user id
+//         const supabaseId = req.user.id;
 
+//         // MongoDB user find
+//         const user = await User.findOne({ supabaseId })
+//             .select('-password')
+//             .populate('profile');
 
 //         if (!user) {
-//             return res.status(400).json({
+//             return res.status(404).json({
 //                 success: false,
 //                 message: "User not found",
 //             });
@@ -149,42 +154,67 @@ exports.registerUser = async (req, res) => {
 
 //         return res.status(200).json({
 //             success: true,
-//             message: "Successfully get data - ",
+//             message: "User profile fetched successfully",
 //             user
 //         });
 
-
 //     } catch (error) {
-//         console.log("Get profile error", error);
+
+//         console.log("Get profile error:", error);
+
 //         return res.status(500).json({
 //             success: false,
 //             message: "Failed to fetch profile."
-//         })
+//         });
 //     }
-// }
+// };
+
+// logout
 
 exports.getUserProfile = async (req, res) => {
     try {
 
-        // Supabase user id
+        // Supabase user id from middleware
         const supabaseId = req.user.id;
 
-        // MongoDB user find
-        const user = await User.findOne({ supabaseId })
-            .select('-password')
-            .populate('profile');
+        // 1️⃣ MongoDB user
+        const mongoUser = await User.findOne({ supabaseId })
+            .select("-password")
+            .populate("profile");
 
-        if (!user) {
+        if (!mongoUser) {
             return res.status(404).json({
                 success: false,
-                message: "User not found",
+                message: "MongoDB user not found",
             });
         }
 
+        // 2️⃣ Supabase user
+        const { data, error } = await supabaseClient.auth.getUser(
+            req.headers.authorization?.replace("Bearer ", "")
+        );
+
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: "Supabase user fetch failed",
+            });
+        }
+
+        const supabaseUser = data.user;
+
+        // 3️⃣ Send combined response
         return res.status(200).json({
             success: true,
             message: "User profile fetched successfully",
-            user
+            user: {
+                supabase: {
+                    id: supabaseUser.id,
+                    email: supabaseUser.email,
+                    email_verified: supabaseUser.email_confirmed_at
+                },
+                mongodb: mongoUser
+            }
         });
 
     } catch (error) {
@@ -198,7 +228,6 @@ exports.getUserProfile = async (req, res) => {
     }
 };
 
-// logout
 exports.logout = async () => {
     try {
         res.clearCookie('token', {
