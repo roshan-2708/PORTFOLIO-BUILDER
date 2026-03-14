@@ -67,81 +67,34 @@ exports.login = async (req, res) => {
 };
 
 // supabase register
-// exports.registerUser = async (req, res) => {
-
-//     const { email, password, fullName } = req.body;
-
-//     if (!email || !password || !fullName) {
-//         return res.status(400).json({
-//             success: false,
-//             message: "All fields required"
-//         });
-//     }
-
-//     try {
-
-//         const existingUser = await User.findOne({ email });
-
-//         if (existingUser) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "User already exists"
-//             })
-//         }
-
-//         const { data, error } = await supabaseClient.auth.signUp({
-//             email,
-//             password,
-//             options: {
-//                 data: { full_name: fullName },
-//                 emailRedirectTo: process.env.CLIENT_URL
-//             }
-//         });
-
-//         if (error) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: error.message
-//             })
-//         }
-
-//         const supabaseUser = data.user;
-
-//         const newUser = await User.create({
-//             supabaseId: supabaseUser.id,
-//             email: supabaseUser.email,
-//             fullName,
-//             image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`
-//         });
-
-//         res.status(201).json({
-//             success: true,
-//             message: "User register ho gaya",
-//             user: newUser
-//         });
-
-//     } catch (error) {
-
-//         console.log("Registration Error:", error);
-
-//         res.status(500).json({
-//             success: false,
-//             message: "Internal server error"
-//         });
-
-//     }
-
-// }
 exports.registerUser = async (req, res) => {
+
     const { email, password, fullName } = req.body;
 
+    if (!email || !password || !fullName) {
+        return res.status(400).json({
+            success: false,
+            message: "All fields required"
+        });
+    }
+
     try {
+
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exists"
+            })
+        }
 
         const { data, error } = await supabaseClient.auth.signUp({
             email,
             password,
             options: {
-                data: { full_name: fullName }
+                data: { full_name: fullName },
+                emailRedirectTo: process.env.CLIENT_URL
             }
         });
 
@@ -149,8 +102,10 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: error.message
-            });
+            })
         }
+
+        const supabaseUser = data.user;
 
         if (!data.user) {
             return res.status(400).json({
@@ -162,27 +117,30 @@ exports.registerUser = async (req, res) => {
         console.log("Supabase user:", data.user);
 
         const newUser = await User.create({
-            supabaseId: data.user.id,
-            email: data.user.email,
-            fullName
+            supabaseId: supabaseUser.id,
+            email: supabaseUser.email,
+            fullName,
+            image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`
         });
-
         console.log("MongoDB user created:", newUser);
-
         res.status(201).json({
             success: true,
+            message: "User register ho gaya",
             user: newUser
         });
 
     } catch (error) {
-        console.log("Registration error:", error);
+
+        console.log("Registration Error:", error);
 
         res.status(500).json({
             success: false,
-            message: "Server error"
+            message: "Internal server error"
         });
+
     }
-};
+
+}
 
 // get user profile details
 // exports.getUserProfile = async (req, res) => {
