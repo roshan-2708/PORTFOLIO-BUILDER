@@ -59,6 +59,37 @@ exports.sendOtp = async (req, res) => {
         });
     }
 }
+
+// verify otp
+exports.verifyOtp = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        const otpRecord = await Otp.findOne({ email, otp });
+
+        if (!otpRecord) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP",
+            });
+        }
+
+        otpRecord.isVerified = true;
+        await otpRecord.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Email verified successfully",
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "OTP verification failed",
+        });
+    }
+};
+
 // sign up
 exports.signUp = async (req, res) => {
     try {
@@ -120,6 +151,7 @@ exports.signUp = async (req, res) => {
         });
     }
 }
+
 // login
 exports.login = async (req, res) => {
     try {
@@ -175,7 +207,7 @@ exports.login = async (req, res) => {
     }
 };
 
-
+// get profile details
 
 exports.logout = async () => {
     try {
