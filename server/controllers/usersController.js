@@ -1,7 +1,9 @@
 const User = require('../database/User');
 const AdditionalInfo = require('../database/AdditionalInfo');
 const profileInfo = require('../database/PortfolioInfo');
+const Otp = require("../database/Otp");
 const bcrypt = require('bcryptjs');
+const otpGenerator = require("otp-generator");
 const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
 const transporter = require("../utils/mailSender");
@@ -9,6 +11,60 @@ const sendEmail = require("../utils/sendEmail");
 const supabase = require('../config/supaBase');
 const supabaseClient = supabase.default || supabase;
 require('dotenv').config();
+
+
+// send otp
+exports.sendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const userExits = await User.findOne({ email });
+        if (userExits) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exits",
+            });
+        }
+        let otp = otpGenerator.generate(6, {
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+        });
+
+        let exits = await Otp.findOne({ otp });
+        while (exits) {
+            otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+            User.exists = await Otp.findOne({ otp });
+        }
+
+        await Otp.create({
+            email,
+            otp,
+            createdAt: Date.now()
+        });
+
+        await mailSender(
+            email,
+            "Your OTP Code",
+            `<h3>Your OTP is: <b>${otp}</b></h3>
+            <p>OTP valid for 5 minutes.</p>`
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Otp sent successfully"
+        });
+    } catch (error) {
+        console.error("SEND OTP ERROR:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to send OTP",
+        });
+    }
+}
 
 
 // login
