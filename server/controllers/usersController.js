@@ -59,8 +59,67 @@ exports.sendOtp = async (req, res) => {
         });
     }
 }
+// sign up
+exports.signUp = async (req, res) => {
+    try {
+        const {
+            fullName,
+            email,
+            password,
+        } = req.body;
 
+        if (!fullName || !email || !password) {
+            return res.status(404).json({
+                success: false,
+                message: "All fields are required",
+            });
+        }
 
+        const exitUser = await User.findOne({ email });
+        if (exitUser) {
+            return res.status(400).json({
+                success: false,
+                message: "user is already exits",
+            });
+        }
+
+        const verifyEmail = await Otp.findOne({
+            email,
+            isVerified: true,
+        });
+
+        if (!verifyEmail) {
+            return res.status(400).json({
+                success: false,
+                message: "Email not verified, Please verify Otp first",
+            });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await User.create({
+            fullName,
+            email,
+            password: hashedPassword,
+            image: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName} ${lastName}`,
+            profile: null,
+        });
+
+        await Otp.deleteMany({ email });
+
+        return res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+            user: newUser,
+        });
+
+    } catch (error) {
+        console.error("SIGNUP ERROR:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Signup failed.",
+        });
+    }
+}
 // login
 exports.login = async (req, res) => {
     try {
@@ -116,176 +175,7 @@ exports.login = async (req, res) => {
     }
 };
 
-// supabase register
-exports.registerUser = async (req, res) => {
 
-    const { email, password, fullName } = req.body;
-
-    if (!email || !password || !fullName) {
-        return res.status(400).json({
-            success: false,
-            message: "All fields required"
-        });
-    }
-
-    try {
-
-        const existingUser = await User.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: "User already exists"
-            })
-        }
-
-        const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password,
-            options: {
-                data: { full_name: fullName },
-                emailRedirectTo: process.env.CLIENT_URL
-            }
-        });
-
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                message: error.message
-            })
-        }
-
-        const supabaseUser = data.user;
-
-        if (!data.user) {
-            return res.status(400).json({
-                success: false,
-                message: "Supabase user create nahi hua"
-            });
-        }
-
-        console.log("Supabase user:", data.user);
-
-        const newUser = await User.create({
-            supabaseId: supabaseUser.id,
-            email: supabaseUser.email,
-            fullName,
-            image: `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`
-        });
-        console.log("MongoDB user created:", newUser);
-        res.status(201).json({
-            success: true,
-            message: "User register ho gaya",
-            user: newUser
-        });
-
-    } catch (error) {
-
-        console.log("Registration Error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: "Internal server error"
-        });
-
-    }
-
-}
-
-// get user profile details
-// exports.getUserProfile = async (req, res) => {
-//     try {
-
-//         // Supabase user id
-//         const supabaseId = req.user.id;
-
-//         // MongoDB user find
-//         const user = await User.findOne({ supabaseId })
-//             .select('-password')
-//             .populate('profile');
-
-//         if (!user) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "User not found",
-//             });
-//         }
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "User profile fetched successfully",
-//             user
-//         });
-
-//     } catch (error) {
-
-//         console.log("Get profile error:", error);
-
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to fetch profile."
-//         });
-//     }
-// };
-
-// logout
-
-exports.getUserProfile = async (req, res) => {
-    try {
-
-        // Supabase user id from middleware
-        const supabaseId = req.user.id;
-
-        // 1️⃣ MongoDB user
-        const mongoUser = await User.findOne({ supabaseId })
-            .select("-password")
-            .populate("profile");
-
-        if (!mongoUser) {
-            return res.status(404).json({
-                success: false,
-                message: "MongoDB user not found",
-            });
-        }
-
-        // 2️⃣ Supabase user
-        const { data, error } = await supabaseClient.auth.getUser(
-            req.headers.authorization?.replace("Bearer ", "")
-        );
-
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                message: "Supabase user fetch failed",
-            });
-        }
-
-        const supabaseUser = data.user;
-
-        // 3️⃣ Send combined response
-        return res.status(200).json({
-            success: true,
-            message: "User profile fetched successfully",
-            user: {
-                supabase: {
-                    id: supabaseUser.id,
-                    email: supabaseUser.email,
-                    email_verified: supabaseUser.email_confirmed_at
-                },
-                mongodb: mongoUser
-            }
-        });
-
-    } catch (error) {
-
-        console.log("Get profile error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Failed to fetch profile."
-        });
-    }
-};
 
 exports.logout = async () => {
     try {

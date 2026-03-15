@@ -4,6 +4,7 @@ const router = express.Router();
 // controllers
 const {
     sendOtp,
+    signUp,
     login,
     logout,
     changePassword,
@@ -21,14 +22,15 @@ const authMiddleware = require('../middlewares/authMiddleware');
 // send otp
 router.post("/send-otp", sendOtp);
 
+// signup
+router.post('/signup', signUp); 
+
 // login
 router.post("/login", login);
 
-// register
-router.post('/registerUser', registerUser);
 
 // getUserProfile
-router.get('/me', authMiddleware, getUserProfile);
+// router.get('/me', authMiddleware, getUserProfile);
 
 // logout
 router.post('/logout', logout);
