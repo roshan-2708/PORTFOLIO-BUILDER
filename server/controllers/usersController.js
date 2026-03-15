@@ -1,15 +1,9 @@
 const User = require('../database/User');
-const AdditionalInfo = require('../database/AdditionalInfo');
-const profileInfo = require('../database/PortfolioInfo');
 const Otp = require("../database/Otp");
 const bcrypt = require('bcryptjs');
 const otpGenerator = require("otp-generator");
 const jwtToken = require('jsonwebtoken');
 const mailSender = require('../utils/mailSender');
-const transporter = require("../utils/mailSender");
-const sendEmail = require("../utils/sendEmail");
-const supabase = require('../config/supaBase');
-const supabaseClient = supabase.default || supabase;
 require('dotenv').config();
 
 

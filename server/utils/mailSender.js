@@ -1,22 +1,23 @@
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 
-// Create transporter using Gmail SMTP
-const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST, // smtp.gmail.com
-    port: process.env.MAIL_PORT, // 587
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER, // your Gmail
-        pass: process.env.SMTP_PASSWORD, // app password
-    },
-});
-transporter.verify((err, success) => {
-    if (err) console.error("❌ SMTP connection failed:", err);
-    else console.log("✅ SMTP connection successful");
-});
-module.exports = transporter;
+// // Create transporter using Gmail SMTP
+// const transporter = nodemailer.createTransport({
+//     host: process.env.MAIL_HOST, // smtp.gmail.com
+//     port: process.env.MAIL_PORT, // 587
+//     secure: false,
+//     auth: {
+//         user: process.env.SMTP_USER, // your Gmail
+//         pass: process.env.SMTP_PASSWORD, // app password
+//     },
+// });
+// transporter.verify((err, success) => {
+//     if (err) console.error("❌ SMTP connection failed:", err);
+//     else console.log("✅ SMTP connection successful");
+// });
+// module.exports = transporter;
 
 // // Mail sender function
+
 // const mailSender = async (email, title, body) => {
 //     try {
 //         const mailOptions = {
@@ -61,3 +62,25 @@ module.exports = transporter;
 // };
 
 // module.exports = mailSender;
+
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const mailSender = async (email, title, body) => {
+    try {
+        await resend.emails.send({
+            from: "PORTFOLIO-BUILDER <onboarding@resend.dev>",
+            to: email,
+            subject: title,
+            html: body,
+        });
+
+        console.log("✅ Email sent via Resend to:", email);
+    } catch (error) {
+        console.error("❌ Resend Email Error:", error);
+        throw error;
+    }
+};
+
+module.exports = mailSender;
